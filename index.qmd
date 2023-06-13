@@ -1,11 +1,11 @@
 ---
-title: "basicBayes"
+title: "Learn Bayesian Linear Models for Beginners"
 ---
 
-This is a Quarto website.
+This is the website of the workshop **learnBayes**.
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+Please, check the [Set-up](setup.qmd) page for important set-up instructions, before joining the workshop.
 
-```{r}
-1 + 1
-```
+This workshop assumes you have a **good command of R and tidyverse packages**, but no prior experience with linear modelling is required.
+
+If you wish to revise your basic R skills, we recommend the following resource: [R for Data Science](https://r4ds.had.co.nz) (online book).
