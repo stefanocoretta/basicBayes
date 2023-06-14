@@ -28,6 +28,7 @@ knitr::opts_knit$set(root.dir = here::here())
 
 library(tidyverse)
 theme_set(theme_minimal())
+library(glue)
 
 library(xaringanExtra)
 use_xaringan_extra(c("panelset", "tachyons", "freezeframe"))
@@ -229,7 +230,7 @@ layout: true
 ---
 
 .bg-washed-blue.b--dark-blue.ba.bw2.br3.shadow-5.ph4.mt2[
-A **probability distribution** is a mathematical function that describes *how the probabilities are distributed over the values* that a random variable can take on.
+A **probability distribution** is a mathematical function that describes *how the probabilities are distributed over the values* that a variable can take on.
 ]
 
 --
@@ -245,15 +246,13 @@ Two types of probability distributions
 --
 
 .bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt2[
-**We talked about discrete and continuous variables in Week 2!**
-
 Discrete variables follow discrete probability distributions and continuous variables follow continuous probability distributions.
 ]
 
 ---
 
 .bg-washed-blue.b--dark-blue.ba.bw2.br3.shadow-5.ph4.mt2[
-We can visualise probability distributions:
+We can **visualise probability distributions**:
 
 - Using the **probability mass function** for discrete probability distributions.
 
@@ -265,3 +264,96 @@ We can visualise probability distributions:
 .bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt2[
 You don't need to understand the math behind this, but you are free to learn about it through the internet search engine of your choice!
 ]
+
+---
+
+**Probability Density Function**
+
+```{r rt-dens}
+rt_dens <- mald %>%
+  ggplot(aes(RT)) +
+  geom_density(fill = "#9970ab", alpha = 0.5) +
+  geom_rug(alpha = 0.05) +
+  scale_x_continuous(n.breaks = 10) +
+  labs(
+    title = "Expected probability density of RT",
+    x = "VOT", y = "Probability density (relative probability)"
+  )
+rt_dens
+```
+
+---
+
+.bg-washed-blue.b--dark-blue.ba.bw2.br3.shadow-5.ph4.mt2[
+**Probability distributions can be expressed using parameters.**
+
+- We can summarise a probability distribution by specifying the **parameters' values**.
+
+- Different types of probability distributions have a different number of parameters and different parameters.
+]
+
+--
+
+.bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt2[
+The **Gaussian probability distribution** is a continuous probability distribution and it has two parameters:
+
+- The mean $\mu$.
+- The standard deviation $\sigma$.
+
+]
+
+Go to **[Seeing Theory](https://seeing-theory.brown.edu/probability-distributions/index.html#section2)**.
+
+???
+
+Seeing Theory was created by Daniel Kunin while an undergraduate at Brown University. The goal of this website is to make statistics more accessible through interactive visualizations (designed using Mike Bostock’s JavaScript library D3.js).
+
+<https://seeing-theory.brown.edu/index.html#3rdPage>
+
+---
+
+```{r rt-dist-2}
+rt_mean <- mean(mald$RT)
+rt_sd <- sd(mald$RT)
+rt_mean_text <- glue("mean: {round(rt_mean)} ms")
+rt_sd_text <- glue("SD: {round(rt_sd)} ms")
+
+rt_dist_2 <- ggplot(data = tibble(x = -500:2500), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(rt_mean, rt_sd), colour = "#9970ab", linewidth = 1.5) +
+  scale_x_continuous(n.breaks = 5) +
+  geom_vline(xintercept = rt_mean, colour = "#1b7837", linewidth = 1) +
+  annotate(
+    "label", x = rt_mean + 1, y = 0.0006,
+    label = rt_mean_text,
+    fill = "#1b7837", colour = "white"
+  ) +
+  annotate(
+    "label", x = 19.25, y = 0.0006,
+    label = rt_sd_text,
+    fill = "#8c510a", colour = "white"
+  ) +
+  annotate(
+    "label", x = 5, y = 0.0006,
+    label = "theoretical sample\ndistribution",
+    fill = "#9970ab", colour = "white"
+  ) +
+  labs(
+    title = "Theoretical sample distribution of RT",
+    subtitle = glue("Gaussian distribution: mean = {round(rt_mean)} ms, SD = {round(rt_sd)}"),
+    x = "RT (ms)", y = "Relative probability"
+  )
+rt_dist_2
+```
+
+---
+
+```{r rt-dist-2-2}
+rt_dist_2 +
+  geom_density(data = mald, aes(RT), colour = "grey", fill = "grey", alpha = 0.2) +
+  geom_rug(data = mald, aes(RT), alpha = 0.05) +
+  annotate(
+    "label", x = 20, y = 0.0015,
+    label = "empirical sample\ndistribution",
+    fill = "grey", colour = "white"
+  )
+```
