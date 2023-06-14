@@ -175,3 +175,93 @@ mald %>%
 
 ---
 
+layout: true
+
+## Probabilities
+
+---
+
+.bg-washed-blue.b--dark-blue.ba.bw2.br3.shadow-5.ph4.mt2[
+**Probability**
+
+- Probability of an **event occurring** or of a **variable taking on a specific value**.
+
+- Probabilities can only be **between 0 and 1**.
+
+  - ⛔️ 0 means **impossible**.
+  - 🤷 0.5 means **it can happen but it can also not happen**.
+  - ✅ 1 means **certain**.
+]
+
+--
+
+.center[
+![:scale 50%](../../img/probabilities.png)
+]
+
+---
+
+.bg-washed-blue.b--dark-blue.ba.bw2.br3.shadow-5.ph4.mt2[
+**Probability**
+
+- Probability of an event occurring: 0 to 100% probability.
+
+- **Probability of a variable taking on a specific value**: a bit more complicated...
+]
+
+.bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt2[
+**We need probability distributions!**
+]
+
+---
+
+layout: false
+layout: true
+
+## Probability distributions
+
+---
+
+<br>
+
+![](../../img/grubabilities.png)
+
+---
+
+.bg-washed-blue.b--dark-blue.ba.bw2.br3.shadow-5.ph4.mt2[
+A **probability distribution** is a mathematical function that describes *how the probabilities are distributed over the values* that a random variable can take on.
+]
+
+--
+
+.bg-washed-blue.b--dark-blue.ba.bw2.br3.shadow-5.ph4.mt2[
+Two types of probability distributions
+
+- **Discrete probability distributions.**
+
+- **Continuous probability distributions.**
+]
+
+--
+
+.bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt2[
+**We talked about discrete and continuous variables in Week 2!**
+
+Discrete variables follow discrete probability distributions and continuous variables follow continuous probability distributions.
+]
+
+---
+
+.bg-washed-blue.b--dark-blue.ba.bw2.br3.shadow-5.ph4.mt2[
+We can visualise probability distributions:
+
+- Using the **probability mass function** for discrete probability distributions.
+
+- Using the **probability density function** for continuous probability distributions.
+]
+
+--
+
+.bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt2[
+You don't need to understand the math behind this, but you are free to learn about it through the internet search engine of your choice!
+]
