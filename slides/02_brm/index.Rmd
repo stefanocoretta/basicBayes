@@ -1,0 +1,168 @@
+---
+title: "Bayesian Linear Models"
+subtitle: "02 - BRM basics"
+author: "Stefano Coretta"
+institute: "University of Edinburgh"
+date: "2023/05/16"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css:
+      - default
+      - "../custom.css"
+      - "../xaringan-themer.css"
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+      beforeInit: "../macros.js"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE, message = FALSE, out.height = "500px", dpi = 300,
+  fig.align = "center", fig.width = 7, fig.height = 5
+)
+knitr::opts_knit$set(root.dir = here::here())
+
+library(tidyverse)
+theme_set(theme_minimal())
+library(glue)
+
+library(xaringanExtra)
+use_xaringan_extra(c("panelset", "tachyons", "freezeframe"))
+
+options(htmltools.dir.version = FALSE)
+
+library(brms)
+
+my_seed <- 9899
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  base_color = "#1c5253",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "300", "300i", "700", "700i"),
+  code_font_google   = google_font("Fira Mono"),
+  outfile = "./slides/xaringan-themer.css"
+)
+```
+
+```{r mald, echo=FALSE}
+mald <- readRDS("./data/mald.rds")
+```
+
+```{r rt-dist-2}
+rt_mean <- mean(mald$RT)
+rt_sd <- sd(mald$RT)
+rt_mean_text <- glue("mean: {round(rt_mean)} ms")
+rt_sd_text <- glue("SD: {round(rt_sd)} ms")
+
+rt_dist_2 <- ggplot(data = tibble(x = -500:2500), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(rt_mean, rt_sd), colour = "#9970ab", linewidth = 1.5) +
+  scale_x_continuous(n.breaks = 5) +
+  geom_vline(xintercept = rt_mean, colour = "#1b7837", linewidth = 1) +
+  annotate(
+    "label", x = rt_mean + 1, y = 0.0006,
+    label = rt_mean_text,
+    fill = "#1b7837", colour = "white"
+  ) +
+  annotate(
+    "label", x = 2000, y = 0.0006,
+    label = rt_sd_text,
+    fill = "#8c510a", colour = "white"
+  ) +
+  annotate(
+    "label", x = 5, y = 0.0006,
+    label = "theoretical sample\ndistribution",
+    fill = "#9970ab", colour = "white"
+  ) +
+  labs(
+    title = "Theoretical sample distribution of RT",
+    subtitle = glue("Gaussian distribution: mean = {round(rt_mean)} ms, SD = {round(rt_sd)}"),
+    x = "RT (ms)", y = "Relative probability"
+  )
+
+rt_dist_2 +
+  geom_density(data = mald, aes(RT), colour = "grey", fill = "grey", alpha = 0.2) +
+  geom_rug(data = mald, aes(RT), alpha = 0.05) +
+  annotate(
+    "label", x = 20, y = 0.0015,
+    label = "empirical sample\ndistribution",
+    fill = "grey", colour = "white"
+  )
+```
+
+
+---
+
+.f3[
+$$
+\begin{aligned}
+RT_i & \sim Gaussian(\mu, \sigma) \\
+\\
+\mu & = 1046 \\
+\sigma & = 348
+\end{aligned}
+$$
+]
+
+--
+
+- The RT values are distributed according to a Gaussian distribution with mean $\mu$ and standard deviation $\sigma$.
+
+- The mean and SD from the sample do not take into consideration the **uncertainty and variability** in the sample.
+
+---
+
+.f3[
+$$
+\begin{aligned}
+RT_i & \sim Gaussian(\mu, \sigma) \\
+\\
+\mu & \sim Gaussian(\mu_1, \sigma_1) \\
+\sigma & \sim Gaussian_+(\mu_1, \sigma_1)
+\end{aligned}
+$$
+]
+
+--
+
+- We can account for uncertainty and variability by assuming that the mean and SD are themselves values coming from a probability distribution.
+
+- The mean $\mu$ is a value from a Gaussian distribution with mean $\mu_1$ and SD $\sigma_1$.
+
+- The SD $\sigma$ is a value from a Gaussian distribution with mean $\mu_2$ and SD $\sigma_2$.
+
+  - SD can only be positive so the Gaussian distribution is truncated to positive values only ($Gaussian_+$).
+
+---
+
+```{r rt-bm, echo=FALSE}
+rt_bm <- brm(
+  RT ~ 1,
+  data = mald,
+  backend = "cmdstanr",
+  cores = 4,
+  file = "./data/cache/rt_bm",
+  seed = my_seed
+)
+```
+
+```{r rt-bm-code, eval=FALSE, echo=TRUE}
+# Attach the brms package
+library(brms)
+
+# Run a Bayesian model
+rt_bm <- brm(
+  # This is the formula of the model.
+  RT ~ 1,
+  # This is the probability distribution family.
+  family = gaussian(),
+  # And the data.
+  data = mald
+)
+```

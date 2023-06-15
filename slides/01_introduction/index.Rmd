@@ -328,7 +328,7 @@ rt_dist_2 <- ggplot(data = tibble(x = -500:2500), aes(x)) +
     fill = "#1b7837", colour = "white"
   ) +
   annotate(
-    "label", x = 19.25, y = 0.0006,
+    "label", x = 2000, y = 0.0006,
     label = rt_sd_text,
     fill = "#8c510a", colour = "white"
   ) +
