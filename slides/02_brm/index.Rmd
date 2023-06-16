@@ -21,7 +21,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-  echo = TRUE, message = FALSE, out.height = "500px", dpi = 300,
+  echo = FALSE, message = FALSE, out.height = "500px", dpi = 300,
   fig.align = "center", fig.width = 7, fig.height = 5
 )
 knitr::opts_knit$set(root.dir = here::here())
@@ -54,6 +54,12 @@ style_mono_accent(
 ```{r mald, echo=FALSE}
 mald <- readRDS("./data/mald.rds")
 ```
+
+layout: true
+
+## Estimate mean and SD
+
+---
 
 ```{r rt-dist-2}
 rt_mean <- mean(mald$RT)
@@ -166,3 +172,171 @@ rt_bm <- brm(
   data = mald
 )
 ```
+
+---
+
+```{r rt-bm-sum}
+rt_bm
+```
+
+---
+
+```{r rt-bm-sum-2}
+summary(rt_bm, prob = 0.7)
+```
+
+
+---
+
+.f3[
+$$
+\begin{aligned}
+RT_i & \sim Gaussian(\mu, \sigma) \\
+\\
+\mu & \sim Gaussian(1046, 6.26) \\
+\sigma & \sim Gaussian_+(347, 4.38)
+\end{aligned}
+$$
+]
+
+--
+
+- There is a 95% probability that $\mu$ is between 1034 and 1059 ms. There is a 70% probability that it is between 1040 and 1053.
+
+- There is a 95% probability that $\sigma$ is between 339 and 356 ms. There is a 70% probability that it is between 343 and 352.
+
+--
+
+Great! But what about the RT when the word is a real word vs when it is not?
+
+---
+
+layout: false
+layout: true
+
+## Real vs nonce words
+
+---
+
+```{r rt-bm-2, echo=FALSE}
+rt_bm_2 <- brm(
+  RT ~ IsWord,
+  data = mald,
+  backend = "cmdstanr",
+  cores = 4,
+  file = "./data/cache/rt_bm_2",
+  seed = my_seed
+)
+```
+
+```{r rt-bm-2-code, eval=FALSE, echo=TRUE}
+# Attach the brms package
+library(brms)
+
+# Run a Bayesian model
+rt_bm_2 <- brm(
+  # This is the formula of the model.
+  RT ~ IsWord,
+  # This is the probability distribution family.
+  family = gaussian(),
+  # And the data.
+  data = mald
+)
+```
+
+---
+
+```{r rt-bm-2-sum}
+summary(rt_bm_2, prob = 0.89)
+```
+
+---
+
+```{r rt-bm-2-sum-2}
+cat(capture.output(summary(rt_bm_2, prob = 0.89))[1:15], sep = "\n")
+```
+
+
+.bg-washed-yellow.b--gold.ba.bw2.br3.shadow-5.ph4.mt2[
+- The `Intercept` is the mean RT when [IsWord=TRUE].
+
+- `IsWordFALSE` is the **difference** between the mean RT when [IsWord=FALSE] and the mean RT when [IsWord=TRUE].
+]
+
+---
+
+```{r rt-bm-2-sum-3}
+cat(capture.output(summary(rt_bm_2, prob = 0.89))[1:15], sep = "\n")
+```
+
+
+.bg-washed-blue.b--dark-blue.ba.bw2.br3.shadow-5.ph4.mt2[
+There is an **89% probability** that the mean RT when [IsWord=FALSE] is **between 113 to 152 ms longer** than the mean RT when [IsWord=TRUE].
+]
+
+---
+
+.f3[
+$$
+\begin{aligned}
+RT_i & \sim Gaussian(\mu, \sigma) \\
+\\
+\mu & = \beta_0 + \beta_1 \times IsWord_{F} \\
+\end{aligned}
+$$
+]
+
+.bg-washed-yellow.b--gold.ba.bw2.br3.shadow-5.ph4.mt2[
+- $\beta_0$ is mean RT when [IsWord=TRUE].
+
+- $\beta_1$ is the **difference** between the mean RT when [IsWord=FALSE] and the mean RT when [IsWord=TRUE].
+
+- $IsWord_F$ is `0` when [IsWord=TRUE] and `1` when [IsWord=FALSE].
+]
+
+
+---
+
+.f3[
+$$
+\begin{aligned}
+RT_i & \sim Gaussian(\mu, \sigma) \\
+\\
+\mu & = \beta_0 + \beta_1 \times IsWord_{F} \\
+\end{aligned}
+$$
+]
+
+.bg-washed-blue.b--dark-blue.ba.bw2.br3.shadow-5.ph4.mt2[
+**Mean RT when [IsWord=TRUE].**
+
+$$
+\begin{aligned}
+\mu & = \beta_0 + \beta_1 \times IsWord_{F} = \beta_0 + \beta_1 \times 0 = \beta_0 \\
+\end{aligned}
+$$
+**Mean RT when [IsWord=FALSE].**
+
+$$
+\begin{aligned}
+\mu & = \beta_0 + \beta_1 \times IsWord_{F} = \beta_0 + \beta_1 \times 1 = \beta_0 + \beta_1 \\
+\end{aligned}
+$$
+]
+
+
+---
+
+.f3[
+$$
+\begin{aligned}
+RT_i & \sim Gaussian(\mu, \sigma) \\
+\\
+\mu & = \beta_0 + \beta_1 \times IsWord_{F} \\
+\beta_0 & \sim Gaussian(\mu_0, \sigma_0) \\
+\beta_1 & \sim Gaussian(\mu_1, \sigma_1) \\
+\\
+\sigma & \sim Gaussian_+(\mu_2, \sigma_2)
+\end{aligned}
+$$
+]
