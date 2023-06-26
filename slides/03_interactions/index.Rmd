@@ -1,0 +1,133 @@
+---
+title: "Bayesian Linear Models"
+subtitle: "03 - Interactions"
+author: "Stefano Coretta"
+institute: "University of Edinburgh"
+date: "2023/05/16"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css:
+      - default
+      - "../custom.css"
+      - "../xaringan-themer.css"
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+      beforeInit: "../macros.js"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE, message = FALSE, out.height = "500px", dpi = 300,
+  fig.align = "center", fig.width = 7, fig.height = 5
+)
+knitr::opts_knit$set(root.dir = here::here())
+
+library(tidyverse)
+theme_set(theme_minimal())
+library(glue)
+
+library(xaringanExtra)
+use_xaringan_extra(c("panelset", "tachyons", "freezeframe"))
+
+options(htmltools.dir.version = FALSE)
+
+library(brms)
+
+my_seed <- 9899
+```
+
+```{r mald, echo=FALSE}
+mald <- readRDS("./data/mald.rds")
+```
+
+```{r rt-int}
+mald %>%
+  ggplot(aes(PhonLev, RT)) +
+  geom_point(alpha = 0.05) +
+  geom_smooth(aes(colour = IsWord, fill = IsWord), method = "lm")
+```
+
+---
+
+layout: true
+
+## Many predictors
+
+---
+
+```{r rt-bm-3, echo=TRUE}
+rt_bm_3 <- brm(
+  RT ~ IsWord + PhonLev,
+  data = mald,
+  backend = "cmdstanr",
+  cores = 4,
+  file = "./data/cache/rt_bm_3",
+  seed = my_seed
+)
+```
+
+---
+
+```{r rt-bm-3-sum}
+cat(capture.output(summary(rt_bm_3, prob = 0.89))[8:12], sep = "\n")
+```
+
+
+.bg-washed-yellow.b--gold.ba.bw2.br3.shadow-5.ph4.mt2[
+- The `Intercept` is the mean RT when [IsWord=TRUE] and [PhonLev=0].
+
+- `IsWordFALSE` is the **difference** between the mean RT when [IsWord=FALSE] and the mean RT when [IsWord=TRUE].
+
+- `PhonLev` is the **difference** between the mean RT when [PhonLev=1] and [PhoneLev=0].
+]
+
+---
+
+```{r rt-bm-3-plot}
+conditional_effects(rt_bm_3, "PhonLev:IsWord")
+```
+
+---
+
+```{r rt-bm-3-plot}
+conditional_effects(rt_bm_3, "IsWord:PhonLev")
+```
+
+---
+
+```{r rt-bm-4, echo=TRUE}
+rt_bm_4 <- brm(
+  RT ~ IsWord + PhonLev + IsWord:PhonLev,
+  data = mald,
+  backend = "cmdstanr",
+  cores = 4,
+  file = "./data/cache/rt_bm_4",
+  seed = my_seed
+)
+```
+
+---
+
+```{r rt-bm-4-sum}
+cat(capture.output(summary(rt_bm_4, prob = 0.89))[8:13], sep = "\n")
+```
+
+.bg-washed-yellow.b--gold.ba.bw2.br3.shadow-5.ph4.mt2[
+- The `Intercept` is the mean RT when [IsWord=TRUE] and [PhonLev=0].
+
+- `IsWordFALSE` is the **difference** between the mean RT when [IsWord=FALSE] and the mean RT when [IsWord=TRUE], when [PhonLev=0].
+
+- `PhonLev` is the **difference** between the mean RT when [PhonLev=1] and [PhoneLev=0], when [IsWord=TRUE].
+
+- `IsWordFALSE:PhonLev` is the adjustment to the difference in mean RT when [IsWord=FALSE] and [PhonLev=1].
+]
+
+---
+
+```{r rt-bm-4-plot}
+conditional_effects(rt_bm_4, "PhonLev:IsWord")
+```
