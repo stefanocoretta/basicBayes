@@ -119,7 +119,7 @@ $$
 RT_i & \sim Gaussian(\mu, \sigma) \\
 \\
 \mu & \sim Gaussian(\mu_1, \sigma_1) \\
-\sigma & \sim Gaussian_+(\mu_1, \sigma_1)
+\sigma & \sim Gaussian_+(\mu_2, \sigma_2)
 \end{aligned}
 $$
 ]
