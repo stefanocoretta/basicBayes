@@ -2,7 +2,7 @@
 title: "Learn Bayesian Linear Models for Beginners"
 ---
 
-This is the website of the workshop **learnBayes**.
+This is the website of the workshop **basicBayes**.
 
 Please, check the [Set-up](setup.qmd) page for important set-up instructions, before joining the workshop.
 

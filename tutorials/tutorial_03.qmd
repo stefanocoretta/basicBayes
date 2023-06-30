@@ -1,0 +1,127 @@
+---
+title: "Tutorial 03"
+execute: 
+  cache: true
+---
+
+```{r}
+#| label: pkgs
+#| message: false
+#| echo: false
+
+library(tidyverse)
+theme_set(theme_light())
+
+library(brms)
+
+polite <- read_csv("data/polite.csv") %>%
+  drop_na()
+```
+
+## The `shallow` data
+
+In this tutorial, you will analyse data from Song et al. 2020. *Second language users exhibit shallow morphological processing*. DOI: [10.1017/S0272263120000170](https://doi.org/10.1017/S0272263120000170).
+
+```{r}
+#| label: shallow
+#| echo: true
+
+shallow <- read_csv("data/shallow.csv")
+shallow
+```
+
+The study consisted of a lexical decision task in which participants where first shown a prime, followed by a target word for which they had to indicate whether it was a real word or a nonce word.
+
+The prime word belonged to one of three possible groups (`Relation_type` in the data) each of which refers to the morphological relation of the prime and the target word:
+
+-   `Unrelated`: for example, *prolong* (assuming *unkindness* as target, \[\[un-kind\]-ness\]).
+
+-   `Constituent`: *unkind*.
+
+-   `NonConstituent`: *kindness*.
+
+The expectation is that lexical decision for native English participants should be facilitated in the `Constituent` condition, but not in the `Unrelated` and `NonConstituent` conditions (if you are curious as to why that is the expectation, I refer you to the paper).
+
+Let's interpret that as:
+
+> The `Constituent` condition should elicit better accuracy than the other two conditions.
+
+The study compared results of English L1 vs L2 participants and of left- vs right-branching words, but for this tutorial we will only be looking at the L1 and left-branching data. The data file also contains data from the filler items, which we filter out.
+
+We also mutate the `ACC` column.
+
+```{r}
+#| label: shallow-filt
+#| echo: true
+
+shallow_filt <- shallow %>%
+  filter(
+    Group == "L1",
+    Branching == "Left",
+    Critical_Filler == "Critical",
+  ) %>%
+  mutate(
+    ACC = ifelse(ACC == 0, "incorrect", "correct")
+  )
+shallow_filt
+```
+
+Let's have a look at a plot that shows accuracy based on relation type.
+
+```{r}
+#| label: shallow-plot
+#| echo: true
+
+shallow_filt %>%
+  ggplot(aes(Relation_type, fill = ACC)) +
+  geom_bar(position = "fill")
+```
+
+## Modeling binary variables
+
+Accuracy (`ACC`) is a binary variable and to model the probability of a binary variable we need to use the Bernoulli family. Moreover, since probabilities are bounded between 0 and 1 and linear models expect unbounded variables, the estimates of the model will be in log-odds.
+
+This is how log-odds are related to probabilities.
+
+```{r}
+#| label: p-log-odds
+#| echo: false
+
+dots <- tibble(
+  p = seq(0.1, 0.9, by = 0.1),
+  log_odds = qlogis(p)
+)
+tibble(
+  p = seq(0, 1, by = 0.001),
+  log_odds = qlogis(p)
+) %>%
+  ggplot(aes(log_odds, p)) +
+  geom_hline(yintercept = 0.5, linetype = "dashed") +
+  geom_hline(yintercept = 0, colour = "#8856a7", linewidth = 1) +
+  geom_hline(yintercept = 1, colour = "#8856a7", linewidth = 1) +
+  geom_vline(xintercept = 0, alpha = 0.5) +
+  geom_line(linewidth = 2) +
+  geom_point(data = dots, size = 4) +
+  scale_x_continuous(breaks = seq(-6, 6, by = 1), minor_breaks = NULL) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.1), minor_breaks = NULL) +
+  labs(
+    title = "Correspondence between log-odds and probabilities",
+    x = "log-odds",
+    y = "probability"
+  )
+```
+Now, fit a model with `brm()`. Here's some tips:
+
+- In the formula, you want to include `ACC` as the outcome and `Relation_type` as the predictor.
+
+- This time, you have to specify `family = bernoulli`, to use the Bernoulli family (Gaussian is the default).
+
+- Remember to use `shallow_filt` as the data.
+
+Then check the model summary with `summary()`. What does it tell you?
+
+Compare what you understand from the model summary with the model of the plots (use `conditional_effects()` to get the plot).
+
+## Challenge
+
+If you feel like and you have the time, try to run the model using both L1 and L2 data. You will have to include `Group` as a predictor and make sure you also include an interaction `Group:Relation_type`.

@@ -1,0 +1,124 @@
+---
+title: "Bayesian Linear Models"
+subtitle: "04 - Binary outcomes"
+author: "Stefano Coretta"
+institute: "University of Edinburgh"
+date: "2023/05/16"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css:
+      - default
+      - "../custom.css"
+      - "../xaringan-themer.css"
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+      beforeInit: "../macros.js"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE, message = FALSE, out.height = "500px", dpi = 300,
+  fig.align = "center", fig.width = 7, fig.height = 5
+)
+knitr::opts_knit$set(root.dir = here::here())
+
+library(tidyverse)
+theme_set(theme_minimal())
+library(glue)
+
+library(xaringanExtra)
+use_xaringan_extra(c("panelset", "tachyons", "freezeframe"))
+
+options(htmltools.dir.version = FALSE)
+
+library(brms)
+
+my_seed <- 9899
+```
+
+```{r mald, echo=FALSE}
+mald <- readRDS("./data/mald.rds")
+```
+
+```{r}
+mald %>%
+  ggplot(aes(IsWord, fill = ACC)) +
+  geom_bar(position = "fill")
+```
+
+
+---
+
+```{r rt-bm-5, echo=TRUE}
+rt_bm_5 <- brm(
+  ACC ~ IsWord,
+  data = mald,
+  family = "bernoulli",
+  backend = "cmdstanr",
+  cores = 4,
+  file = "./data/cache/rt_bm_5",
+  seed = my_seed
+)
+```
+
+---
+
+```{r rt-bm-5-sum}
+cat(capture.output(summary(rt_bm_5, prob = 0.89))[8:11], sep = "\n")
+```
+
+--
+
+What are those numbers?!
+
+---
+
+```{r p-log-odds, echo=FALSE}
+dots <- tibble(
+  p = seq(0.1, 0.9, by = 0.1),
+  log_odds = qlogis(p)
+)
+tibble(
+  p = seq(0, 1, by = 0.001),
+  log_odds = qlogis(p)
+) %>%
+  ggplot(aes(log_odds, p)) +
+  geom_hline(yintercept = 0.5, linetype = "dashed") +
+  geom_hline(yintercept = 0, colour = "#8856a7", linewidth = 1) +
+  geom_hline(yintercept = 1, colour = "#8856a7", linewidth = 1) +
+  geom_vline(xintercept = 0, alpha = 0.5) +
+  geom_line(linewidth = 2) +
+  geom_point(data = dots, size = 4) +
+  scale_x_continuous(breaks = seq(-6, 6, by = 1), minor_breaks = NULL) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.1), minor_breaks = NULL) +
+  labs(
+    title = "Correspondence between log-odds and probabilities",
+    x = "log-odds",
+    y = "probability"
+  )
+```
+
+---
+
+```{r rt-bm-5-plot}
+conditional_effects(rt_bm_5, "IsWord")
+```
+
+---
+
+```{r rt-bm-5-sum-2}
+cat(capture.output(summary(rt_bm_5, prob = 0.89))[8:11], sep = "\n")
+```
+
+<br>
+
+```{r plogis, echo=TRUE}
+round(plogis(-2.24), 2)
+
+round(plogis(-2.24 + 0.43), 2)
+```
+
