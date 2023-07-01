@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>basicBayes - Pre-workshop set-up</title>
+<title>basicBayes - Tutorial 04: Diagnostics</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,59 +20,25 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -94,8 +60,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+<link href="../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 
-<link rel="stylesheet" href="styles.css">
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-fixed">
@@ -105,7 +76,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">basicBayes</span>
     </a>
   </div>
@@ -116,11 +87,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html" rel="" target="">
+    <a class="nav-link" href="../index.html" rel="" target="">
  <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./setup.html" rel="" target="" aria-current="page">
+    <a class="nav-link" href="../setup.html" rel="" target="">
  <span class="menu-text">Set-up</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -129,19 +100,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-slides">    
         <li>
-    <a class="dropdown-item" href="./slides/01_introduction/" rel="" target="">
+    <a class="dropdown-item" href="../slides/01_introduction/" rel="" target="">
  <span class="dropdown-text">01 - Introduction</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./slides/02_brm/" rel="" target="">
+    <a class="dropdown-item" href="../slides/02_brm/" rel="" target="">
  <span class="dropdown-text">02 - BRM basics</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./slides/03_interactions/" rel="" target="">
+    <a class="dropdown-item" href="../slides/03_interactions/" rel="" target="">
  <span class="dropdown-text">03 - Interactions</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./slides/04_binary/" rel="" target="">
+    <a class="dropdown-item" href="../slides/04_binary/" rel="" target="">
  <span class="dropdown-text">04 - Binary outcomes</span></a>
   </li>  
     </ul>
@@ -152,19 +123,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-tutorials">    
         <li>
-    <a class="dropdown-item" href="./tutorials/tutorial_01/" rel="" target="">
+    <a class="dropdown-item" href="../tutorials/tutorial_01/" rel="" target="">
  <span class="dropdown-text">Tutorial 01</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./tutorials/tutorial_02/" rel="" target="">
+    <a class="dropdown-item" href="../tutorials/tutorial_02/" rel="" target="">
  <span class="dropdown-text">Tutorial 02</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./tutorials/tutorial_03/" rel="" target="">
+    <a class="dropdown-item" href="../tutorials/tutorial_03/" rel="" target="">
  <span class="dropdown-text">Tutorial 03</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./tutorials/tutorial_04/" rel="" target="">
+    <a class="dropdown-item" href="../tutorials/tutorial_04/" rel="" target="">
  <span class="dropdown-text">Tutorial 04</span></a>
   </li>  
     </ul>
@@ -185,16 +156,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#pre-requisites" id="toc-pre-requisites" class="nav-link active" data-scroll-target="#pre-requisites">Pre-requisites</a></li>
-  <li><a href="#starter-kit" id="toc-starter-kit" class="nav-link" data-scroll-target="#starter-kit">Starter Kit</a></li>
-  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a>
-  <ul class="collapse">
-  <li><a href="#install-the-c-toolchain" id="toc-install-the-c-toolchain" class="nav-link" data-scroll-target="#install-the-c-toolchain">Install the C++ toolchain</a></li>
-  <li><a href="#install-the-r-packages" id="toc-install-the-r-packages" class="nav-link" data-scroll-target="#install-the-r-packages">Install the R packages</a></li>
-  <li><a href="#install-cmdstan" id="toc-install-cmdstan" class="nav-link" data-scroll-target="#install-cmdstan">Install CmdStan</a></li>
-  <li><a href="#check-your-installation-work" id="toc-check-your-installation-work" class="nav-link" data-scroll-target="#check-your-installation-work">Check your installation work</a></li>
-  </ul></li>
-  <li><a href="#troubleshoot" id="toc-troubleshoot" class="nav-link" data-scroll-target="#troubleshoot">Troubleshoot</a></li>
+  <li><a href="#diagnostics" id="toc-diagnostics" class="nav-link active" data-scroll-target="#diagnostics">Diagnostics</a></li>
+  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge">Challenge</a></li>
   </ul>
 </nav>
     </div>
@@ -203,7 +166,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Pre-workshop set-up</h1>
+<h1 class="title">Tutorial 04: Diagnostics</h1>
 </div>
 
 
@@ -218,80 +181,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>Please, follow these instructions to get ready <strong>before</strong> the workshop.</p>
-<section id="pre-requisites" class="level2">
-<h2 class="anchored" data-anchor-id="pre-requisites">Pre-requisites</h2>
-<p>Before installing the necessary software, make sure you have installed or updated the following software.</p>
+<section id="diagnostics" class="level2">
+<h2 class="anchored" data-anchor-id="diagnostics">Diagnostics</h2>
+<p>There are many ways to check for model robustness (the concept of “robustness” is not a mathematical one, so you can use a bunch of heuristics to assess robustness).</p>
+<p>Go back to the models you fitted in the tutorials 1-3 and check them with the following methods:</p>
 <ul>
-<li><p>The <strong>latest version of R</strong> (<a href="https://cloud.r-project.org" class="uri">https://cloud.r-project.org</a>).</p></li>
-<li><p>The <strong>latest version of RStudio</strong> (<a href="https://www.rstudio.com/products/rstudio/download/#download" class="uri">https://www.rstudio.com/products/rstudio/download/#download</a>).</p></li>
-<li><p>Your <strong>operating system is up-to-date</strong>.</p></li>
+<li><p>Use <code>plot()</code> to have a look at the chain plots. Do they look like “hairy caterpillars”?</p></li>
+<li><p>Plot the cumulative posterior distribution with <code>pp_check()</code>. Do the simulated posteriors (in light blue) look like the empirical distribution (in dark blue)?</p></li>
+<li><p>Check the <span class="math inline">\(\hat{R}\)</span> values using <code>summary()</code>. Are they close to one? Did you get any warnings regarding <span class="math inline">\(\hat{R}\)</span> or ESS?</p></li>
 </ul>
 </section>
-<section id="starter-kit" class="level2">
-<h2 class="anchored" data-anchor-id="starter-kit">Starter Kit</h2>
-<p>I strongly recommend you to use the Starter Kit.</p>
-<p>You can get the Starter Kit from here. It is just an RStudio project with some useful files.</p>
-</section>
-<section id="installation" class="level2">
-<h2 class="anchored" data-anchor-id="installation">Installation</h2>
-<div class="callout callout-style-default callout-important no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Important
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>If you have previously installed the C++ toolkit, CmdStan and/or cmdstanr, or if you have recently updated your OS, please follow these instructions to reinstall them.</p>
-</div>
-</div>
-<p>Now you will need to install a few packages and extra software.</p>
-<p>Here is an overview of what you will install:</p>
-<ul>
-<li>C++ toolchain.</li>
-<li>R packages: tidyverse, remotes, cmdstanr, brms.</li>
-<li>CmdStan (including Stan).</li>
-</ul>
-<section id="install-the-c-toolchain" class="level3">
-<h3 class="anchored" data-anchor-id="install-the-c-toolchain">Install the C++ toolchain</h3>
-<p>Some of the software (CmdStan) used in the workshop requires a working C++ toolchain for compilation.</p>
-<p>You can find information on how to set up the C++ toolchain in <a href="https://mc-stan.org/docs/cmdstan-guide/cmdstan-installation.html#cpp-toolchain">Section 1.2.1</a> of the CmdStan User’s Guide.</p>
-<p>Make sure to follow the instructions for your operating system. If you have Windows, installing RTools 42 seems to work better than installing RTools 40</p>
-</section>
-<section id="install-the-r-packages" class="level3">
-<h3 class="anchored" data-anchor-id="install-the-r-packages">Install the R packages</h3>
-<p>You need to install the following packages:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"tidyverse"</span>, <span class="st">"remotes"</span>))</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"stan-dev/cmdstanr"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"brms"</span>))</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"tidybayes"</span>, <span class="st">"extraDistr"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The <a href="https://mc-stan.org/cmdstanr/index.html">cmdstanr</a> package is an interface between R and CmdStan (see below), while <a href="https://paul-buerkner.github.io/brms/">brms</a> is the package you will use to run Bayesian linear models (think of it as the Bayesian equivalent of <a href="https://github.com/lme4/lme4">lme4</a>).</p>
-<p>It will take several minutes to install the packages, depending on your system and configuration.</p>
-<p><strong>If after opening the Starter Kit in RStudio you get asked to install extra packages or software, please do so.</strong></p>
-</section>
-<section id="install-cmdstan" class="level3">
-<h3 class="anchored" data-anchor-id="install-cmdstan">Install CmdStan</h3>
-<p>Now that you have installed the R packages, you need to install CmdStan.</p>
-<p><a href="https://mc-stan.org/users/interfaces/cmdstan">CmdStan</a> is a shell interface to the programming language Stan.</p>
-<p><a href="https://mc-stan.org">Stan</a> is what runs the Bayesian models, but you don’t have to know Stan, because you will use the R packages to run the models (those packages will communicate with Stan in your stead).</p>
-<p>To install CmdStan, run the following command in the R console:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>cmdstanr<span class="sc">::</span><span class="fu">install_cmdstan</span>(<span class="at">cores =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(), <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-<section id="check-your-installation-work" class="level3">
-<h3 class="anchored" data-anchor-id="check-your-installation-work">Check your installation work</h3>
-<p>Run the following in the RStudio Console. You will see text flashing.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cmdstanr)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>file <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">cmdstan_path</span>(), <span class="st">"examples"</span>, <span class="st">"bernoulli"</span>, <span class="st">"bernoulli.stan"</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">cmdstan_model</span>(file)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If a <code>mod</code> object is created, then installation went well.</p>
-</section>
-</section>
-<section id="troubleshoot" class="level2">
-<h2 class="anchored" data-anchor-id="troubleshoot">Troubleshoot</h2>
-<p>If you have issues with any of these steps, please get in touch with Stefano.</p>
+<section id="challenge" class="level2">
+<h2 class="anchored" data-anchor-id="challenge">Challenge</h2>
+<p>If you feel like it and have time, try and run other models either using the data provided or with your own data if you have some.</p>
+<p>I’ll be happy to answer your questions!</p>
 
 
 </section>

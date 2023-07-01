@@ -1,5 +1,5 @@
 ---
-title: "Tutorial 02"
+title: "Tutorial 02: Interactions"
 execute: 
   cache: true
 ---

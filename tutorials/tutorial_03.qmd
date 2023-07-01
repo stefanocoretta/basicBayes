@@ -1,5 +1,5 @@
 ---
-title: "Tutorial 03"
+title: "Tutorial 03: Binary outcomes"
 execute: 
   cache: true
 ---
