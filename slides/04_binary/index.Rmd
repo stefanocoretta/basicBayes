@@ -44,12 +44,20 @@ my_seed <- 9899
 mald <- readRDS("./data/mald.rds")
 ```
 
+## The MALD data: Accuracy
+
 ```{r}
 mald %>%
   ggplot(aes(IsWord, fill = ACC)) +
   geom_bar(position = "fill")
 ```
 
+
+---
+
+layout: true
+
+## Binary outcomes
 
 ---
 
@@ -64,6 +72,10 @@ rt_bm_5 <- brm(
   seed = my_seed
 )
 ```
+
+.bg-washed-blue.b--dark-blue.ba.bw2.br3.shadow-5.ph4.mt2[
+- Bernoulli is the family of probability distributions used for binary variables.
+]
 
 ---
 

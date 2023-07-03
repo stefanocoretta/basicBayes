@@ -32,7 +32,7 @@ class: center, middle, inverse, title-slide
 ### University of Edinburgh
 ]
 .date[
-### 2023/05/16
+### 2023/07/07
 ]
 
 ---
@@ -69,10 +69,6 @@ How do we go from data/observation to answering our question?
 We can use **inference**.
 
 **Inference** is the process of understanding something about a population based on the sample (aka the data) taken from that population.
-
----
-
-[MALD example]
 
 ---
 
@@ -136,43 +132,69 @@ Statistics helps us quantifying uncertainty and accounting for variability.
 
 ---
 
-[Statistical model]
+## Statistical model
+
+.bg-washed-blue.b--dark-blue.ba.bw2.br3.shadow-5.ph4.mt2[
+A **statistical model** is a mathematical model that represents the relationship between variables in the data.
+]
+
+--
+
+&lt;br&gt;
+
+&gt; All models are wrong, but some are useful.
+
+—[George Box](https://en.wikipedia.org/wiki/All_models_are_wrong)
 
 ---
 
+layout: true
+
+## The MALD dataset
+
+---
+
+[Massive Auditory Lexical Decision](https://aphl.artsrn.ualberta.ca/?page_id=827) (Tucker et al. 2019):
+
+- **MALD data set**: 521 subjects, RTs and accuracy.
+
+- Subset of MALD: 30 subjects, 100 observations each.
+
+- Let's investigate the effect of *mean phone-level Levenshtein distance* and *lexical status* (word vs non-word).
+
+--
+
 
 ```r
-mald %&gt;%
-  ggplot(aes(IsWord, RT)) +
-  geom_jitter(width = 0.2, alpha = 0.1) +
-  geom_violin(width = 0.2, aes(fill = IsWord)) +
-  stat_summary(fun.data = "median_hilow", geom = "point") +
-  theme(legend.position = "none")
+mald
 ```
+
+```
+## # A tibble: 3,000 × 7
+##    Subject Item         IsWord PhonLev    RT ACC       RT_log
+##    &lt;chr&gt;   &lt;chr&gt;        &lt;fct&gt;    &lt;dbl&gt; &lt;int&gt; &lt;fct&gt;      &lt;dbl&gt;
+##  1 15345   nihnaxr      FALSE     5.84   945 correct     6.85
+##  2 15345   skaep        FALSE     6.03  1046 incorrect   6.95
+##  3 15345   grandparents TRUE     10.3    797 correct     6.68
+##  4 15345   sehs         FALSE     5.88  2134 correct     7.67
+##  5 15345   cousin       TRUE      5.78   597 correct     6.39
+##  6 15345   blowup       TRUE      6.03   716 correct     6.57
+##  7 15345   hhehrnzmaxn  FALSE     7.30  1985 correct     7.59
+##  8 15345   mantic       TRUE      6.21  1591 correct     7.37
+##  9 15345   notable      TRUE      6.82   620 correct     6.43
+## 10 15345   prowthihviht FALSE     7.68  1205 correct     7.09
+## # ℹ 2,990 more rows
+```
+
+---
 
 &lt;img src="index_files/figure-html/rt-1-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ---
 
-
-```r
-mald %&gt;%
-  ggplot(aes(PhonLev, RT)) +
-  geom_point(alpha = 0.05) +
-  geom_smooth(method = "lm", colour = "purple")
-```
-
 &lt;img src="index_files/figure-html/rt-2-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ---
-
-
-```r
-mald %&gt;%
-  ggplot(aes(PhonLev, RT)) +
-  geom_point(alpha = 0.05) +
-  geom_smooth(aes(colour = IsWord, fill = IsWord), method = "lm")
-```
 
 &lt;img src="index_files/figure-html/rt-3-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
@@ -271,20 +293,6 @@ You don't need to understand the math behind this, but you are free to learn abo
 
 **Probability Density Function**
 
-
-```r
-rt_dens &lt;- mald %&gt;%
-  ggplot(aes(RT)) +
-  geom_density(fill = "#9970ab", alpha = 0.5) +
-  geom_rug(alpha = 0.05) +
-  scale_x_continuous(n.breaks = 10) +
-  labs(
-    title = "Expected probability density of RT",
-    x = "VOT", y = "Probability density (relative probability)"
-  )
-rt_dens
-```
-
 &lt;img src="index_files/figure-html/rt-dens-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ---
@@ -317,55 +325,9 @@ Seeing Theory was created by Daniel Kunin while an undergraduate at Brown Univer
 
 ---
 
-
-```r
-rt_mean &lt;- mean(mald$RT)
-rt_sd &lt;- sd(mald$RT)
-rt_mean_text &lt;- glue("mean: {round(rt_mean)} ms")
-rt_sd_text &lt;- glue("SD: {round(rt_sd)} ms")
-
-rt_dist_2 &lt;- ggplot(data = tibble(x = -500:2500), aes(x)) +
-  stat_function(fun = dnorm, n = 101, args = list(rt_mean, rt_sd), colour = "#9970ab", linewidth = 1.5) +
-  scale_x_continuous(n.breaks = 5) +
-  geom_vline(xintercept = rt_mean, colour = "#1b7837", linewidth = 1) +
-  annotate(
-    "label", x = rt_mean + 1, y = 0.0006,
-    label = rt_mean_text,
-    fill = "#1b7837", colour = "white"
-  ) +
-  annotate(
-    "label", x = 2000, y = 0.0006,
-    label = rt_sd_text,
-    fill = "#8c510a", colour = "white"
-  ) +
-  annotate(
-    "label", x = 5, y = 0.0006,
-    label = "theoretical sample\ndistribution",
-    fill = "#9970ab", colour = "white"
-  ) +
-  labs(
-    title = "Theoretical sample distribution of RT",
-    subtitle = glue("Gaussian distribution: mean = {round(rt_mean)} ms, SD = {round(rt_sd)}"),
-    x = "RT (ms)", y = "Relative probability"
-  )
-rt_dist_2
-```
-
 &lt;img src="index_files/figure-html/rt-dist-2-1.png" height="500px" style="display: block; margin: auto;" /&gt;
 
 ---
-
-
-```r
-rt_dist_2 +
-  geom_density(data = mald, aes(RT), colour = "grey", fill = "grey", alpha = 0.2) +
-  geom_rug(data = mald, aes(RT), alpha = 0.05) +
-  annotate(
-    "label", x = 20, y = 0.0015,
-    label = "empirical sample\ndistribution",
-    fill = "grey", colour = "white"
-  )
-```
 
 &lt;img src="index_files/figure-html/rt-dist-2-2-1.png" height="500px" style="display: block; margin: auto;" /&gt;
     </textarea>

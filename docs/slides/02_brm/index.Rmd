@@ -3,7 +3,7 @@ title: "Bayesian Linear Models"
 subtitle: "02 - BRM basics"
 author: "Stefano Coretta"
 institute: "University of Edinburgh"
-date: "2023/05/16"
+date: "2023/07/07"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -132,7 +132,7 @@ $$
 
 - The SD $\sigma$ is a value from a Gaussian distribution with mean $\mu_2$ and SD $\sigma_2$.
 
-  - SD can only be positive so the Gaussian distribution is truncated to positive values only ($Gaussian_+$).
+  - SD can only be positive so the Gaussian distribution is truncated to positive values only ( $Gaussian_+$ ).
 
 ---
 

@@ -42,8 +42,6 @@ class: center, middle, inverse, title-slide
 
 
 
-&lt;img src="index_files/figure-html/rt-int-1.png" height="500px" style="display: block; margin: auto;" /&gt;
-
 ---
 
 layout: true
@@ -52,8 +50,14 @@ layout: true
 
 ---
 
+&lt;img src="index_files/figure-html/rt-int-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+
+---
+
 
 ```r
+my_seed &lt;- 9899
+
 rt_bm_3 &lt;- brm(
   RT ~ IsWord + PhonLev,
   data = mald,
@@ -94,6 +98,17 @@ rt_bm_3 &lt;- brm(
 
 ---
 
+&lt;img src="index_files/figure-html/rt-int-2-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+
+---
+
+layout: false
+layout: true
+
+## We need an interaction
+
+---
+
 
 ```r
 rt_bm_4 &lt;- brm(
@@ -105,6 +120,11 @@ rt_bm_4 &lt;- brm(
   seed = my_seed
 )
 ```
+
+.bg-washed-blue.b--dark-blue.ba.bw2.br3.shadow-5.ph4.mt2[
+- `isWord:PhonLev` is called an **interaction** term.
+- `isWord:PhonLev` allows the model to capture differences in the effect of `isWord` depending on the value of `PhonLev` (and vice versa).
+]
 
 ---
 

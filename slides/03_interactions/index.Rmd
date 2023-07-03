@@ -44,6 +44,14 @@ my_seed <- 9899
 mald <- readRDS("./data/mald.rds")
 ```
 
+---
+
+layout: true
+
+## Many predictors
+
+---
+
 ```{r rt-int}
 mald %>%
   ggplot(aes(PhonLev, RT)) +
@@ -53,13 +61,9 @@ mald %>%
 
 ---
 
-layout: true
-
-## Many predictors
-
----
-
 ```{r rt-bm-3, echo=TRUE}
+my_seed <- 9899
+
 rt_bm_3 <- brm(
   RT ~ IsWord + PhonLev,
   data = mald,
@@ -99,6 +103,22 @@ conditional_effects(rt_bm_3, "IsWord:PhonLev")
 
 ---
 
+```{r rt-int-2}
+mald %>%
+  ggplot(aes(PhonLev, RT)) +
+  geom_point(alpha = 0.05) +
+  geom_smooth(aes(colour = IsWord, fill = IsWord), method = "lm")
+```
+
+---
+
+layout: false
+layout: true
+
+## We need an interaction
+
+---
+
 ```{r rt-bm-4, echo=TRUE}
 rt_bm_4 <- brm(
   RT ~ IsWord + PhonLev + IsWord:PhonLev,
@@ -109,6 +129,11 @@ rt_bm_4 <- brm(
   seed = my_seed
 )
 ```
+
+.bg-washed-blue.b--dark-blue.ba.bw2.br3.shadow-5.ph4.mt2[
+- `isWord:PhonLev` is called an **interaction** term.
+- `isWord:PhonLev` allows the model to capture differences in the effect of `isWord` depending on the value of `PhonLev` (and vice versa).
+]
 
 ---
 

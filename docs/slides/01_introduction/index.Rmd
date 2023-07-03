@@ -3,7 +3,7 @@ title: "Bayesian Linear Models"
 subtitle: "01 - Introduction"
 author: "Stefano Coretta"
 institute: "University of Edinburgh"
-date: "2023/05/16"
+date: "2023/07/07"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -79,10 +79,6 @@ We can use **inference**.
 
 ---
 
-[MALD example]
-
----
-
 class: middle center inverse
 
 ## Inference is not infallible
@@ -143,11 +139,45 @@ Statistics helps us quantifying uncertainty and accounting for variability.
 
 ---
 
-[Statistical model]
+## Statistical model
+
+.bg-washed-blue.b--dark-blue.ba.bw2.br3.shadow-5.ph4.mt2[
+A **statistical model** is a mathematical model that represents the relationship between variables in the data.
+]
+
+--
+
+<br>
+
+> All models are wrong, but some are useful.
+
+—[George Box](https://en.wikipedia.org/wiki/All_models_are_wrong)
 
 ---
 
-```{r rt-1, message=FALSE}
+layout: true
+
+## The MALD dataset
+
+---
+
+[Massive Auditory Lexical Decision](https://aphl.artsrn.ualberta.ca/?page_id=827) (Tucker et al. 2019):
+
+- **MALD data set**: 521 subjects, RTs and accuracy.
+
+- Subset of MALD: 30 subjects, 100 observations each.
+
+- Let's investigate the effect of *mean phone-level Levenshtein distance* and *lexical status* (word vs non-word).
+
+--
+
+```{r mald-print}
+mald
+```
+
+---
+
+```{r rt-1, message=FALSE, echo=FALSE}
 mald %>%
   ggplot(aes(IsWord, RT)) +
   geom_jitter(width = 0.2, alpha = 0.1) +
@@ -158,7 +188,7 @@ mald %>%
 
 ---
 
-```{r rt-2, message=FALSE}
+```{r rt-2, message=FALSE, echo=FALSE}
 mald %>%
   ggplot(aes(PhonLev, RT)) +
   geom_point(alpha = 0.05) +
@@ -167,7 +197,7 @@ mald %>%
 
 ---
 
-```{r rt-3, message=FALSE}
+```{r rt-3, message=FALSE, echo=FALSE}
 mald %>%
   ggplot(aes(PhonLev, RT)) +
   geom_point(alpha = 0.05) +
@@ -269,7 +299,7 @@ You don't need to understand the math behind this, but you are free to learn abo
 
 **Probability Density Function**
 
-```{r rt-dens}
+```{r rt-dens, echo=FALSE}
 rt_dens <- mald %>%
   ggplot(aes(RT)) +
   geom_density(fill = "#9970ab", alpha = 0.5) +
@@ -277,7 +307,7 @@ rt_dens <- mald %>%
   scale_x_continuous(n.breaks = 10) +
   labs(
     title = "Expected probability density of RT",
-    x = "VOT", y = "Probability density (relative probability)"
+    x = "RT", y = "Probability density (relative probability)"
   )
 rt_dens
 ```
@@ -312,7 +342,7 @@ Seeing Theory was created by Daniel Kunin while an undergraduate at Brown Univer
 
 ---
 
-```{r rt-dist-2}
+```{r rt-dist-2, echo=FALSE}
 rt_mean <- mean(mald$RT)
 rt_sd <- sd(mald$RT)
 rt_mean_text <- glue("mean: {round(rt_mean)} ms")
@@ -347,7 +377,7 @@ rt_dist_2
 
 ---
 
-```{r rt-dist-2-2}
+```{r rt-dist-2-2, echo=FALSE}
 rt_dist_2 +
   geom_density(data = mald, aes(RT), colour = "grey", fill = "grey", alpha = 0.2) +
   geom_rug(data = mald, aes(RT), alpha = 0.05) +

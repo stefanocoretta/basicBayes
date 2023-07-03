@@ -28,13 +28,13 @@ website:
             text: "04 - Binary outcomes"
       - text: Tutorials
         menu:
-          - href: "tutorials/tutorial_01/"
+          - href: "tutorials/tutorial_01.qmd"
             text: "Tutorial 01"
-          - href: "tutorials/tutorial_02/"
+          - href: "tutorials/tutorial_02.qmd"
             text: "Tutorial 02"
-          - href: "tutorials/tutorial_03/"
+          - href: "tutorials/tutorial_03.qmd"
             text: "Tutorial 03"
-          - href: "tutorials/tutorial_04/"
+          - href: "tutorials/tutorial_04.qmd"
             text: "Tutorial 04"
 
 format:
