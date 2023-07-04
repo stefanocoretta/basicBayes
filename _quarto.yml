@@ -26,6 +26,8 @@ website:
             text: "03 - Interactions"
           - href: "slides/04_binary/"
             text: "04 - Binary outcomes"
+          - href: "slides/05_diagnostics/"
+            text: "05 - Diagnostics"
       - text: Tutorials
         menu:
           - href: "tutorials/tutorial_01.qmd"

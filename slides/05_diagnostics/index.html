@@ -23,7 +23,7 @@ class: center, middle, inverse, title-slide
 # Bayesian Linear Models
 ]
 .subtitle[
-## 03 - Interactions
+## 05 - Diagnostics
 ]
 .author[
 ### Stefano Coretta
@@ -42,113 +42,92 @@ class: center, middle, inverse, title-slide
 
 
 
+
+
+
 layout: true
 
-## Many predictors
-
----
-
-&lt;img src="index_files/figure-html/rt-int-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+# MCMC chains diagnostics
 
 ---
 
 
 ```r
-my_seed &lt;- 9899
-
-rt_bm_3 &lt;- brm(
-  RT ~ IsWord + PhonLev,
-  data = mald,
-  backend = "cmdstanr",
-  cores = 4,
-  file = "./data/cache/rt_bm_3",
-  seed = my_seed
-)
+library(bayesplot)
+as.array(rt_bm_4) %&gt;% mcmc_trace("b_Intercept", np = nuts_params(rt_bm_4))
 ```
+
+&lt;img src="index_files/figure-html/rt-bm-4-chain-1-1.png" height="400" style="display: block; margin: auto;" /&gt;
 
 ---
 
 
-```
-## Population-Level Effects: 
-##             Estimate Est.Error l-89% CI u-89% CI Rhat Bulk_ESS Tail_ESS
-## Intercept     806.93     34.54   752.38   861.65 1.00     3876     3233
-## IsWordFALSE   131.14     12.47   111.01   151.30 1.00     4793     3214
-## PhonLev        24.71      4.73    17.09    32.19 1.00     3914     3289
+```r
+as.array(rt_bm_4) %&gt;%
+  mcmc_trace("b_IsWordFALSE:PhonLev", np = nuts_params(rt_bm_4))
 ```
 
+&lt;img src="index_files/figure-html/rt-bm-4-chain-2-1.png" height="400" style="display: block; margin: auto;" /&gt;
 
-.bg-washed-yellow.b--gold.ba.bw2.br3.shadow-5.ph4.mt2[
-- The `Intercept` is the mean RT when [IsWord=TRUE] and [PhonLev=0].
+---
 
-- `IsWordFALSE` is the **difference** between the mean RT when [IsWord=FALSE] and the mean RT when [IsWord=TRUE].
+An example of bad MCMC chain mixing.
 
-- `PhonLev` is the **difference** between the mean RT when [PhonLev=1] and [PhoneLev=0].
+.center[
+![:scale 60%](../../img/trace_c.png)
 ]
 
----
+???
 
-&lt;img src="index_files/figure-html/rt-bm-3-plot-1.png" height="500px" style="display: block; margin: auto;" /&gt;
-
----
-
-&lt;img src="index_files/figure-html/rt-bm-3-plot-2-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+Picture from &lt;https://www.rdatagen.net/post/diagnosing-and-dealing-with-estimation-issues-in-the-bayesian-meta-analysis/&gt;.
 
 ---
 
-&lt;img src="index_files/figure-html/rt-int-2-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+** `\(\hat{R}\)` and Effective Sample Size**
+
+.medium[
+
+```r
+rt_bm_4
+```
+
+```
+##  Family: gaussian 
+##   Links: mu = identity; sigma = identity 
+## Formula: RT ~ IsWord + PhonLev + IsWord:PhonLev 
+##    Data: mald (Number of observations: 3000) 
+##   Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
+##          total post-warmup draws = 4000
+## 
+## Population-Level Effects: 
+##                     Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## Intercept             756.94     47.75   663.50   849.69 1.00     2008     2259
+## IsWordFALSE           229.58     68.39    97.23   368.09 1.00     1590     1633
+## PhonLev                31.75      6.65    18.93    44.62 1.00     1965     2330
+## IsWordFALSE:PhonLev   -13.85      9.48   -32.78     4.28 1.00     1614     1700
+## 
+## Family Specific Parameters: 
+##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sigma   339.49      4.49   330.79   348.14 1.00     3106     2214
+## 
+## Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
+## and Tail_ESS are effective sample size measures, and Rhat is the potential
+## scale reduction factor on split chains (at convergence, Rhat = 1).
+```
+]
 
 ---
 
 layout: false
-layout: true
 
-## We need an interaction
-
----
+# Posterior predictive checks
 
 
 ```r
-rt_bm_4 &lt;- brm(
-  RT ~ IsWord + PhonLev + IsWord:PhonLev,
-  data = mald,
-  backend = "cmdstanr",
-  cores = 4,
-  file = "./data/cache/rt_bm_4",
-  seed = my_seed
-)
+pp_check(rt_bm_4, ndraws = 100)
 ```
 
-.bg-washed-blue.b--dark-blue.ba.bw2.br3.shadow-5.ph4.mt2[
-- `isWord:PhonLev` is called an **interaction** term.
-- `isWord:PhonLev` allows the model to capture differences in the effect of `isWord` depending on the value of `PhonLev` (and vice versa).
-]
-
----
-
-
-```
-## Population-Level Effects: 
-##                     Estimate Est.Error l-89% CI u-89% CI Rhat Bulk_ESS Tail_ESS
-## Intercept             756.94     47.75   679.47   833.45 1.00     2008     2259
-## IsWordFALSE           229.58     68.39   121.26   341.01 1.00     1590     1633
-## PhonLev                31.75      6.65    21.03    42.54 1.00     1965     2330
-## IsWordFALSE:PhonLev   -13.85      9.48   -29.32     1.10 1.00     1614     1700
-```
-
-.bg-washed-yellow.b--gold.ba.bw2.br3.shadow-5.ph4.mt2[
-- The `Intercept` is the mean RT when [IsWord=TRUE] and [PhonLev=0].
-
-- `IsWordFALSE` is the **difference** between the mean RT when [IsWord=FALSE] and the mean RT when [IsWord=TRUE], when [PhonLev=0].
-
-- `PhonLev` is the **difference** between the mean RT when [PhonLev=1] and [PhoneLev=0], when [IsWord=TRUE].
-
-- `IsWordFALSE:PhonLev` is the adjustment to the difference in mean RT when [IsWord=FALSE] and [PhonLev=1].
-]
-
----
-
-&lt;img src="index_files/figure-html/rt-bm-4-plot-1.png" height="500px" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/rt-bm-4-pp-1.png" height="400" style="display: block; margin: auto;" /&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

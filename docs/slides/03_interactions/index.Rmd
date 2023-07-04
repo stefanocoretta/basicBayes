@@ -3,7 +3,7 @@ title: "Bayesian Linear Models"
 subtitle: "03 - Interactions"
 author: "Stefano Coretta"
 institute: "University of Edinburgh"
-date: "2023/05/16"
+date: "2023/07/07"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -43,8 +43,6 @@ my_seed <- 9899
 ```{r mald, echo=FALSE}
 mald <- readRDS("./data/mald.rds")
 ```
-
----
 
 layout: true
 
