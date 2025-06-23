@@ -1,0 +1,162 @@
+---
+title: "01 - Introduction"
+format:
+  mono-light-revealjs:
+    fig-align: center
+googlefonts: ["Poetsen One", "Ubuntu Mono", "Lato"]
+filters:
+  - tachyonsextra
+bibliography: references.bib
+execute: 
+  echo: true
+---
+
+## 
+
+> The numbers have no way of speaking for themselves. We speak for them. We imbue them with meaning.
+
+— Nate Silver, *The Signal and the Noise*
+
+## Inference process
+
+![The inference process.](../img/inference.png)
+
+::: notes
+We take a **sample** from the population.
+
+This is our empirical data (the product of observation).
+
+How do we go from data/observation to answering our question?
+
+We can use **inference**.
+
+**Inference** is the process of understanding something about a population based on the sample (aka the data) taken from that population.
+:::
+
+## Fallibility
+
+::: box-note
+-   However, inference based on data does not guarantee infallible answers.
+
+-   In fact, any observation we make comes with a degree of **uncertainty and variability**.
+:::
+
+. . .
+
+::: box-tip
+-   Any one observation is uncertain.
+
+-   There aren't any two observations that are identical.
+:::
+
+## Uncertainty and variability
+
+![](../img/pliny.jpg)
+
+## 
+
+![Guess what this is...](../img/uncertainty.png)
+
+## *Statistics* as a tool
+
+::: box-note
+Statistics helps us to **quantify uncertainty** and **account for variability**.
+:::
+
+## Statistics
+
+![](../img/data-quant.png)
+
+## Statistical model
+
+::: box-note
+A **statistical model** is a mathematical model that represents the relationship between variables in the data.
+:::
+
+. . .
+
+<br>
+
+> All models are wrong, but some are useful.
+
+—[George Box](https://en.wikipedia.org/wiki/All_models_are_wrong)
+
+## The path ahead
+
+##  {background-color="var(--inverse)"}
+
+::: {style="font-size: 3em;"}
+What is the mean reaction time in an auditory lexical decision task with?
+:::
+
+## The MALD data set
+
+::: box-note
+**Massive Auditory Lexical Decision** data set @tucker2019.
+
+-   MALD data set:
+
+    -   Lexical decision task in English.
+
+    -   Stimuli presented aurally.
+
+    -   521 subjects.
+
+-   Subset of MALD
+
+    -   30 subjects, 100 observations each.
+:::
+
+## MALD: the data
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+
+```
+
+```{r}
+#| label: mald
+
+mald <- readRDS("data/tucker2019/mald_1_1.rds")
+
+mald
+```
+
+## Mean RT (with standard deviation)
+
+```{r}
+#| label: mald-mean
+
+mald |> 
+  summarise(
+    mean_rt = round(mean(RT)),
+    sd_rt = round(sd(RT))
+  )
+```
+
+##  {background-color="var(--inverse)"}
+
+::: {style="font-size: 3em;"}
+Are you happy with the answer?
+:::
+
+## Problem: uncertainty and variability
+
+::: box-note
+-   These are the *sample* mean and standard deviation (SD).
+
+-   But what about the *population* mean and SD?
+:::
+
+. . .
+
+::: box-tip
+-   In the face of uncertainty and variability, we can use probability distributions.
+
+-   A family of probability distributions that can be identified (i.e. summarised) by a mean and SD is the Gaussian (aka "normal") distribution family (Gaussian distribution for short).
+:::
+
+## References
