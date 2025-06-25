@@ -1,0 +1,80 @@
+---
+title: "02 - Binary oucomets"
+author: "Stefano Coretta"
+format:
+  mono-light-revealjs:
+    fig-align: center
+googlefonts: ["Poetsen One", "Ubuntu Mono", "Lato"]
+filters:
+  - tachyonsextra
+bibliography: references.bib
+execute:
+  echo: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+theme_set(theme_light())
+library(brms)
+```
+
+```{r}
+#| label: mald
+
+mald <- readRDS("data/tucker2019/mald_1_1.rds")
+```
+
+```{r}
+#| label: acc-bern
+
+acc_bern <- brm(
+  ACC ~ 1 + PhonLev,
+  family = bernoulli,
+  data = mald,
+  cores = 4,
+  seed = 8230,
+  file = "data/cache/acc_bern"
+)
+```
+
+```{r}
+#| label: fig-acc-bern-cond
+
+conditional_effects(acc_bern)
+```
+
+```{r}
+#| label: brentari2024
+#| 
+brentari2024 <- read_csv("data/brentari2024/verb_org.csv")
+```
+
+```{r}
+brentari2024 <- brentari2024 |> 
+  mutate(
+    Pred_Type = factor(Num_Predicates, levels = c("single", "multiple"))
+  )
+```
+
+```{r}
+#| label: pred-bern
+#| 
+pred_bern <- brm(
+  Pred_Type ~ 0 + Group,
+  family = bernoulli,
+  data = brentari2024,
+  cores = 4,
+  seed = 3218,
+  file = "data/cache/pred_bern"
+)
+```
+
+```{r}
+#| label: pred-bern-summary
+
+summary(pred_bern)
+```
+

@@ -1,5 +1,6 @@
 ---
 title: "01 - Introduction"
+author: "Stefano Coretta"
 format:
   mono-light-revealjs:
     fig-align: center
@@ -114,6 +115,7 @@ What is the mean reaction time in an auditory lexical decision task with?
 #| include: false
 
 library(tidyverse)
+theme_set(theme_light())
 
 ```
 
@@ -156,7 +158,283 @@ Are you happy with the answer?
 ::: box-tip
 -   In the face of uncertainty and variability, we can use probability distributions.
 
--   A family of probability distributions that can be identified (i.e. summarised) by a mean and SD is the Gaussian (aka "normal") distribution family (Gaussian distribution for short).
+-   A family of probability distributions that can be identified (i.e. summarised) by a mean and SD is the **Gaussian** (aka "normal") **distribution** family (Gaussian distribution for short).
 :::
+
+## Gaussian distribution
+
+```{r}
+#| label: fig-gaussian
+#| fig-cap: "Gaussian distributions with varying mean and SD."
+#| echo: false
+# Define x values
+x_values <- seq(-10, 20, length.out = 1000)
+
+# Parameters for two cases
+param_list <- list(
+  varying_mean = data.frame(mean = c(-2, 0, 5), sd = 1, group = c("μ=-2", "μ=0", "μ=3")),
+  varying_sd   = data.frame(mean = 0, sd = c(0.5, 1, 2), group = c("σ=0.5", "σ=1", "σ=2"))
+)
+
+# Generate data
+plot_data <- bind_rows(
+  lapply(names(param_list), function(facet_name) {
+    params <- param_list[[facet_name]]
+    do.call(rbind, lapply(1:nrow(params), function(i) {
+      data.frame(
+        x = x_values,
+        density = dnorm(x_values, mean = params$mean[i], sd = params$sd[i]),
+        Distribution = params$group[i],
+        Panel = facet_name
+      )
+    }))
+  })
+)
+
+# Make readable facet labels
+plot_data$Panel <- factor(plot_data$Panel,
+                          levels = c("varying_mean", "varying_sd"),
+                          labels = c("Varying Mean (σ=1)", "Varying SD (μ=0)"))
+
+# Plot
+ggplot(plot_data, aes(x = x, y = density, colour = Distribution)) +
+  geom_line(size = 1) +
+  facet_wrap(~ Panel, scales = "free_y") +
+  labs(
+    # title = "Gaussian Distributions: Effects of Varying Mean and Standard Deviation",
+    x = "x",
+    y = "Density"
+  ) +
+  xlim(-10, 10) +
+  theme(legend.position = "bottom")
+
+
+```
+
+## Reaction Times
+
+$$
+RT \sim Gaussian(\mu, \sigma)
+$$
+
+::: box-note
+-   Reaction Times ($RT$) are distributed according to ($\sim$) a Gaussian distribution ($Gaussian()$) with mean $\mu$ and SD $\sigma$.
+:::
+
+. . .
+
+$$
+\begin{align}
+\mu & \sim P(\mu_1, \sigma_1)\\
+\sigma & \sim P(\mu_2, \sigma_2)
+\end{align}
+$$
+
+::: box-note
+-   The mean $\mu$ comes from an undefined probability distribution $P()$ with its own mean $\mu_1$ and SD $\sigma_1$.
+
+-   The SD $\sigma$ comes from an undefined probability distribution $P()$ with its own mean $\mu_2$ and SD $\sigma_2$.
+:::
+
+## A Gaussian model of RTs
+
+$$
+\begin{align}
+RT & \sim Gaussian(\mu, \sigma)\\
+\mu & \sim P(\mu_1, \sigma_1)\\
+\sigma & \sim P(\mu_2, \sigma_2)
+\end{align}
+$$
+
+::: box-note
+-   We can fit a Bayesian Gaussian model of RT.
+
+-   The model estimates four parameters from the data: $\mu_1, \sigma_1, \mu_2, \sigma_2$.
+:::
+
+## Fitting Bayesian models in R
+
+::: box-tip
+-   Bayesian (regression) models can be fitted using the R [@rcoreteam2025] package **brms** @burkner2017.
+
+-   brms is an interface between R and **Stan** (a statistical software written in C++).
+:::
+
+. . .
+
+::: box-note
+-   brms (and Stan) use a special algorithm to estimate the model's parameters.
+
+-   Markov Chain Monte Carlo, or **MCMC** for short.
+:::
+
+## A Gaussian model of RTs: the code
+
+```{r}
+#| label: rt-gauss-code
+#| eval: false
+
+library(brms)
+
+rt_gauss <- brm(
+  RT ~ 1,
+  family = gaussian,
+  data = mald
+)
+
+```
+
+. . .
+
+```         
+Compiling Stan program...
+Start sampling
+SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).
+Chain 1: 
+Chain 1: Gradient evaluation took 0.000186 seconds
+Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.86 seconds.
+Chain 1: Adjust your expectations accordingly!
+Chain 1: 
+Chain 1: 
+Chain 1: Iteration:    1 / 2000 [  0%]  (Warmup)
+Chain 1: Iteration:  200 / 2000 [ 10%]  (Warmup)
+Chain 1: Iteration:  400 / 2000 [ 20%]  (Warmup)
+Chain 1: Iteration:  600 / 2000 [ 30%]  (Warmup)
+Chain 1: Iteration:  800 / 2000 [ 40%]  (Warmup)
+Chain 1: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Chain 1: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Chain 1: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Chain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
+Chain 1: 
+Chain 1:  Elapsed Time: 0.518 seconds (Warm-up)
+Chain 1:                0.307 seconds (Sampling)
+Chain 1:                0.825 seconds (Total)
+Chain 1: 
+
+SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).
+Chain 2: 
+Chain 2: Gradient evaluation took 7.1e-05 seconds
+Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.71 seconds.
+Chain 2: Adjust your expectations accordingly!
+Chain 2: 
+Chain 2: 
+Chain 2: Iteration:    1 / 2000 [  0%]  (Warmup)
+Chain 2: Iteration:  200 / 2000 [ 10%]  (Warmup)
+Chain 2: Iteration:  400 / 2000 [ 20%]  (Warmup)
+Chain 2: Iteration:  600 / 2000 [ 30%]  (Warmup)
+Chain 2: Iteration:  800 / 2000 [ 40%]  (Warmup)
+Chain 2: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Chain 2: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Chain 2: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Chain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
+Chain 2: 
+Chain 2:  Elapsed Time: 0.667 seconds (Warm-up)
+Chain 2:                0.264 seconds (Sampling)
+Chain 2:                0.931 seconds (Total)
+Chain 2: 
+
+SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 3).
+Chain 3: 
+Chain 3: Gradient evaluation took 6.7e-05 seconds
+Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.67 seconds.
+Chain 3: Adjust your expectations accordingly!
+Chain 3: 
+Chain 3: 
+Chain 3: Iteration:    1 / 2000 [  0%]  (Warmup)
+Chain 3: Iteration:  200 / 2000 [ 10%]  (Warmup)
+Chain 3: Iteration:  400 / 2000 [ 20%]  (Warmup)
+Chain 3: Iteration:  600 / 2000 [ 30%]  (Warmup)
+Chain 3: Iteration:  800 / 2000 [ 40%]  (Warmup)
+Chain 3: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Chain 3: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Chain 3: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Chain 3: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Chain 3: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)
+Chain 3: 
+Chain 3:  Elapsed Time: 0.574 seconds (Warm-up)
+Chain 3:                0.333 seconds (Sampling)
+Chain 3:                0.907 seconds (Total)
+Chain 3: 
+
+SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 4).
+Chain 4: 
+Chain 4: Gradient evaluation took 6.7e-05 seconds
+Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.67 seconds.
+Chain 4: Adjust your expectations accordingly!
+Chain 4: 
+Chain 4: 
+Chain 4: Iteration:    1 / 2000 [  0%]  (Warmup)
+Chain 4: Iteration:  200 / 2000 [ 10%]  (Warmup)
+Chain 4: Iteration:  400 / 2000 [ 20%]  (Warmup)
+Chain 4: Iteration:  600 / 2000 [ 30%]  (Warmup)
+Chain 4: Iteration:  800 / 2000 [ 40%]  (Warmup)
+Chain 4: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Chain 4: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Chain 4: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Chain 4: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Chain 4: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)
+Chain 4: 
+Chain 4:  Elapsed Time: 0.458 seconds (Warm-up)
+Chain 4:                0.334 seconds (Sampling)
+Chain 4:                0.792 seconds (Total)
+Chain 4: 
+```
+
+```{r}
+#| label: rt-gauss
+#| echo: false
+
+library(brms)
+
+rt_gauss <- brm(
+  RT ~ 1,
+  family = gaussian,
+  data = mald,
+  cores = 4,
+  seed = 7382,
+  file = "data/cache/rt_gauss"
+)
+
+```
+
+## A Gaussian model of RTs: plot $P()$
+
+```{r}
+#| label: fig-rt-gauss-mcmc-dens
+#| fig-cap: "Posterior distributions of $\\mu$ and $\\sigma$ of RTs from the `mald` data."
+#| echo: false
+
+bayesplot::mcmc_dens(rt_gauss, pars = c("b_Intercept", "sigma"))
+```
+
+## A Gaussian model of RTs: model summary
+
+```{r}
+#| label: rt-gauss-summary
+
+summary(rt_gauss)
+```
+
+## Is a Gaussian model a good choice?
+
+. . .
+
+```{r}
+#| label: fig-rt-gauss-pp
+#| fig-cap: "Posterior predictive checks of `rt_gauss`."
+
+pp_check(rt_gauss, ndraws = 20)
+
+```
 
 ## References

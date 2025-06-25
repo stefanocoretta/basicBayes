@@ -1,0 +1,72 @@
+---
+title: "02 - Regression"
+author: "Stefano Coretta"
+format:
+  mono-light-revealjs:
+    fig-align: center
+googlefonts: ["Poetsen One", "Ubuntu Mono", "Lato"]
+filters:
+  - tachyonsextra
+bibliography: references.bib
+execute: 
+  echo: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+theme_set(theme_light())
+library(brms)
+```
+
+```{r}
+#| label: mald
+
+mald <- readRDS("data/tucker2019/mald_1_1.rds")
+```
+
+```{r}
+#| label: rt-logn
+
+rt_logn <- brm(
+  RT ~ 1,
+  family = lognormal,
+  data = mald,
+  cores = 4,
+  seed = 1032,
+  file = "data/cache/rt_logn"
+)
+```
+
+```{r}
+#| label: fig-rt-logn-pp
+pp_check(rt_logn, ndraws = 20)
+```
+
+```{r}
+#| label: rt-phonlev
+
+rt_phonlev <- brm(
+  RT ~ 1 + PhonLev,
+  family = lognormal,
+  data = mald,
+  cores = 4,
+  seed = 1032,
+  file = "data/cache/rt_phonlev"
+)
+```
+
+```{r}
+#| label: rt-phonlev-summary
+
+summary(rt_phonlev)
+```
+
+```{r}
+#| label: fig-rt-phonlevl-cond
+
+conditional_effects(rt_phonlev)
+```
+
