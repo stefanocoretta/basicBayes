@@ -1,5 +1,5 @@
 ---
-title: "02 - Binary oucomets"
+title: "03 - Binary outcomes"
 author: "Stefano Coretta"
 format:
   mono-light-revealjs:
