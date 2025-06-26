@@ -53,6 +53,8 @@ brentari2024 <- read_csv("data/brentari2024/verb_org.csv")
 ```
 
 ```{r}
+#| label: pred-type
+
 brentari2024 <- brentari2024 |> 
   mutate(
     Pred_Type = factor(Num_Predicates, levels = c("single", "multiple"))
@@ -76,5 +78,84 @@ pred_bern <- brm(
 #| label: pred-bern-summary
 
 summary(pred_bern)
+```
+
+```{r}
+#| label: pred-bern-cond
+
+conditional_effects(pred_bern)
+```
+
+```{r}
+#| label: pred-bern-draws
+
+pred_bern_draws <- as_draws_df(pred_bern)
+
+pred_bern_draws
+```
+
+```{r}
+#| label: pred-bern-ci
+
+library(posterior)
+
+pred_bern_draws |> 
+  pivot_longer(b_Grouphomesign:b_GroupNSL2, names_to = "coef", values_to = "est") |> 
+  group_by(coef) |> 
+  summarise(
+    ci_lo = quantile2(est, probs = 0.025),
+    ci_hi = quantile2(est, probs = 0.975)
+  )
+```
+
+```{r}
+#| label: pred-bern-ci-2
+
+pred_bern_draws |> 
+  pivot_longer(b_Grouphomesign:b_GroupNSL2, names_to = "coef", values_to = "est") |> 
+  group_by(coef) |> 
+  summarise(
+    ci_lo = round(quantile2(plogis(est), probs = 0.025), 2),
+    ci_hi = round(quantile2(plogis(est), probs = 0.975), 2)
+  )
+```
+
+```{r}
+#| label: pred-bern-diff
+pred_bern_draws <- pred_bern_draws |> 
+  mutate(
+    NSL1_homesign = b_GroupNSL1 - b_Grouphomesign,
+    NSL2_homesign = b_GroupNSL2 - b_Grouphomesign,
+    NSL2_NSL1 = b_GroupNSL2 - b_GroupNSL1
+  )
+
+pred_bern_draws
+```
+
+```{r}
+#| label: pred-bern-diff-ci
+pred_bern_draws |> 
+  pivot_longer(NSL1_homesign:NSL2_NSL1, names_to = "coef", values_to = "est") |> 
+  group_by(coef) |> 
+  summarise(
+    ci_lo = round(quantile2(est, probs = 0.025), 2),
+    ci_hi = round(quantile2(est, probs = 0.975), 2)
+  )
+```
+
+```{r}
+#| label: pred-bern-diff-ci-p
+pred_bern_draws |> 
+  mutate(
+    NSL1_homesign_p = plogis(b_GroupNSL1) - plogis(b_Grouphomesign),
+    NSL2_homesign_p = plogis(b_GroupNSL2) - plogis(b_Grouphomesign),
+    NSL2_NSL1_p = plogis(b_GroupNSL2) - plogis(b_GroupNSL1)
+  ) |> 
+  pivot_longer(NSL1_homesign_p:NSL2_NSL1_p, names_to = "coef", values_to = "est_p") |> 
+  group_by(coef) |> 
+  summarise(
+    ci_lo = round(quantile2(est_p, probs = 0.025), 2),
+    ci_hi = round(quantile2(est_p, probs = 0.975), 2)
+  )
 ```
 
