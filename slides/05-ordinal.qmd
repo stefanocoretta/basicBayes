@@ -1,0 +1,60 @@
+---
+title: "05 - Likert scales"
+author: "Stefano Coretta"
+format:
+  mono-light-revealjs:
+    fig-align: center
+googlefonts: ["Poetsen One", "Ubuntu Mono", "Lato"]
+filters:
+  - tachyonsextra
+bibliography: references.bib
+execute:
+  echo: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+theme_set(theme_light())
+library(brms)
+```
+
+```{r}
+emilianto <- readRDS("data/hampton2023/emilianto_attitude.rds")
+emilian <- emilianto |> 
+  filter(language == "Emilian")
+```
+
+```{r}
+compr_ord <- brm(
+  comprehend ~ cs(commuter),
+  family = acat(link = "probit"),
+  data = emilian,
+  cores = 4,
+  seed = 1523,
+  file = "data/cache/compr_ord"
+)
+```
+
+```{r}
+conditional_effects(compr_ord, categorical = TRUE)
+```
+
+```{r}
+speak_ord <- brm(
+  speak ~ age,
+  family = acat(link = "probit"),
+  data = emilian,
+  cores = 4,
+  seed = 1523,
+  file = "data/cache/speak_ord"
+)
+```
+
+```{r}
+conditional_effects(speak_ord, categorical = TRUE)
+```
+
+
