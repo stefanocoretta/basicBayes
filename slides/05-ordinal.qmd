@@ -1,15 +1,6 @@
 ---
 title: "05 - Likert scales"
 author: "Stefano Coretta"
-format:
-  mono-light-revealjs:
-    fig-align: center
-googlefonts: ["Poetsen One", "Ubuntu Mono", "Lato"]
-filters:
-  - tachyonsextra
-bibliography: references.bib
-execute:
-  echo: true
 ---
 
 ```{r}

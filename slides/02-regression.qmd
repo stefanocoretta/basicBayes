@@ -1,15 +1,6 @@
 ---
 title: "02 - Regression"
 author: "Stefano Coretta"
-format:
-  mono-light-revealjs:
-    fig-align: center
-googlefonts: ["Poetsen One", "Ubuntu Mono", "Lato"]
-filters:
-  - tachyonsextra
-bibliography: references.bib
-execute: 
-  echo: true
 ---
 
 ```{r}
@@ -47,7 +38,7 @@ pp_check(rt_gauss, ndraws = 20)
 - Variables that can take only positive numbers (and are continuous) usually follow a **log-normal** distribution.
 :::
 
-. . .
+## The log-normal distribution
 
 ```{r}
 #| label: fig-lognormal
@@ -85,7 +76,7 @@ plot_data$Panel <- factor(plot_data$Panel,
 
 # Plot
 ggplot(plot_data, aes(x = x, y = density, colour = Distribution)) +
-  geom_line(size = 1) +
+  geom_line(linewidth = 1) +
   facet_wrap(~ Panel, scales = "free_y") +
   labs(
     title = "Lognormal Distributions: Effects of Varying Meanlog and Sdlog",

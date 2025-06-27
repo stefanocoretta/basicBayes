@@ -4,6 +4,7 @@ project:
   output-dir: docs
   render:
     - "*.qmd"
+    - "!data/"
   resources:
     - "slides/"
     - "img/"
@@ -18,26 +19,16 @@ website:
         text: Set-up
       - text: Slides
         menu:
-          - href: "slides/01_introduction/"
+          - href: "slides/01-introduction.qmd"
             text: "01 - Introduction"
-          - href: "slides/02_brm/"
-            text: "02 - BRM basics"
-          - href: "slides/03_interactions/"
-            text: "03 - Interactions"
-          - href: "slides/04_binary/"
-            text: "04 - Binary outcomes"
-          - href: "slides/05_diagnostics/"
-            text: "05 - Diagnostics"
-      - text: Tutorials
-        menu:
-          - href: "tutorials/tutorial_01.qmd"
-            text: "Tutorial 01"
-          - href: "tutorials/tutorial_02.qmd"
-            text: "Tutorial 02"
-          - href: "tutorials/tutorial_03.qmd"
-            text: "Tutorial 03"
-          - href: "tutorials/tutorial_04.qmd"
-            text: "Tutorial 04"
+          - href: "slides/02-regression.qmd"
+            text: "02 - Regression"
+          - href: "slides/03-bernoulli.qmd"
+            text: "03 - Benroulli"
+          - href: "slides/04-poisson.qmd"
+            text: "04 - Poisson"
+          - href: "slides/05-ordinal.qmd"
+            text: "05 - Ordinal"
 
 format:
   html:
