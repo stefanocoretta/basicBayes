@@ -23,9 +23,106 @@ library(brms)
 
 ```{r}
 #| label: mald
+#| echo: false
 
 mald <- readRDS("data/tucker2019/mald_1_1.rds")
 ```
+
+## Is a Gaussian model a good choice?
+
+```{r}
+#| label: fig-rt-gauss-pp
+#| fig-cap: "Posterior predictive check plot of `rt_gauss`."
+#| echo: false
+
+rt_gauss <- readRDS("data/cache/rt_gauss.rds")
+
+pp_check(rt_gauss, ndraws = 20)
+```
+## Gaussian variables are rare...
+
+::: box-note
+- Reaction times can only be positive (negative values are excluded).
+
+- Variables that can take only positive numbers (and are continuous) usually follow a **log-normal** distribution.
+:::
+
+. . .
+
+```{r}
+#| label: fig-lognormal
+#| fig-cap: "Log-normal distributions with varying mean and SD."
+#| echo: false
+
+# Define x values (lognorm is only positive)
+x_values <- seq(0.001, 20, length.out = 1000)
+
+# Parameters for varying mean and sd
+param_list <- list(
+  varying_mean = data.frame(mean = c(0, 1, 2), sd = 0.5, group = c("μ=0", "μ=1", "μ=2")),
+  varying_sd   = data.frame(mean = 2, sd = c(0.3, 0.7, 1.2), group = c("σ=0.3", "σ=0.7", "σ=1.2"))
+)
+
+# Generate data
+plot_data <- bind_rows(
+  lapply(names(param_list), function(facet_name) {
+    params <- param_list[[facet_name]]
+    do.call(rbind, lapply(1:nrow(params), function(i) {
+      data.frame(
+        x = x_values,
+        density = dlnorm(x_values, meanlog = params$mean[i], sdlog = params$sd[i]),
+        Distribution = params$group[i],
+        Panel = facet_name
+      )
+    }))
+  })
+)
+
+# Make readable facet labels
+plot_data$Panel <- factor(plot_data$Panel,
+                          levels = c("varying_mean", "varying_sd"),
+                          labels = c("Varying Meanlog (σ=0.5)", "Varying Sdlog (μ=2)"))
+
+# Plot
+ggplot(plot_data, aes(x = x, y = density, colour = Distribution)) +
+  geom_line(size = 1) +
+  facet_wrap(~ Panel, scales = "free_y") +
+  labs(
+    title = "Lognormal Distributions: Effects of Varying Meanlog and Sdlog",
+    x = "x",
+    y = "Density"
+  ) +
+  theme(legend.position = "bottom")
+
+```
+
+## A log-normal model of RTs
+
+$$
+\begin{align}
+RT & \sim LogNormal(\mu, \sigma)\\
+\end{align}
+$$
+
+::: box-note
+- RT follow a log-normal distribution with mean $\mu$ and standard deviation $\sigma$.
+
+- $\mu$ and $sigma$ are the mean and SD of *logged* RTs.
+:::
+
+. . .
+
+::: box-tip
+equivalent to:
+
+$$
+\begin{align}
+log(RT) & \sim Gaussian(\mu, \sigma)\\
+\end{align}
+$$
+:::
+
+## A log-normal model of RTs: code
 
 ```{r}
 #| label: rt-logn
@@ -34,16 +131,71 @@ rt_logn <- brm(
   RT ~ 1,
   family = lognormal,
   data = mald,
+  
+  ## Technical stuff
   cores = 4,
   seed = 1032,
   file = "data/cache/rt_logn"
 )
 ```
 
+## A log-normal model of RTs: posterior predictive checks
+
 ```{r}
 #| label: fig-rt-logn-pp
 pp_check(rt_logn, ndraws = 20)
 ```
+
+## A log-normal model of RTs: summary
+
+```{r}
+#| label: rt-logn-summary
+
+summary(rt_logn)
+```
+
+## A log-normal model of RTs: MCMC draws
+
+::: box-note
+- The MCMC draws are also called the **posterior draws**.
+
+- They allow us to construct the **posterior probability distribution** of each model parameter.
+:::
+
+. . .
+
+```{r}
+#| label: rt-logn-draws
+
+rt_logn_draws <- as_draws_df(rt_logn)
+
+rt_logn_draws
+```
+
+## Plot the MCMC draws: $\mu$
+
+```{r}
+#| label: fig-rt-logn-intercept
+#| fig-cap: "Posterior probability distribution of $\\mu$ of RTs."
+
+rt_logn_draws |> 
+  ggplot(aes(b_Intercept)) +
+  geom_density(alpha = 0.5, fill = "darkgreen")
+```
+
+
+## Summarise the MCMC draws: $\mu$
+
+```{r}
+#| label: rt-logn-intercept-summaries
+rt_logn_draws |> 
+  summarise(
+    mu_mean = round(mean(b_Intercept), 2),
+    mu_sd = round(sd(b_Intercept), 3)
+  )
+```
+
+## Regression models
 
 ```{r}
 #| label: rt-phonlev
