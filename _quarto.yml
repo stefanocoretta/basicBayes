@@ -21,14 +21,16 @@ website:
         menu:
           - href: "slides/01-introduction.qmd"
             text: "01 - Introduction"
-          - href: "slides/02-regression.qmd"
-            text: "02 - Regression"
-          - href: "slides/03-bernoulli.qmd"
-            text: "03 - Benroulli"
-          - href: "slides/04-poisson.qmd"
-            text: "04 - Poisson"
-          - href: "slides/05-ordinal.qmd"
-            text: "05 - Ordinal"
+          - href: "slides/02-lognormal.qmd"
+            text: "02 - Log-normal"
+          - href: "slides/03-regression.qmd"
+            text: "03 - Regression"
+          - href: "slides/04-bernoulli.qmd"
+            text: "04 - Benroulli"
+          - href: "slides/05-poisson.qmd"
+            text: "05 - Poisson"
+          - href: "slides/06-ordinal.qmd"
+            text: "06 - Ordinal"
 
 format:
   html:

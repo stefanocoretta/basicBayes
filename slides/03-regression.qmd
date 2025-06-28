@@ -30,6 +30,7 @@ rt_gauss <- readRDS("data/cache/rt_gauss.rds")
 
 pp_check(rt_gauss, ndraws = 20)
 ```
+
 ## Gaussian variables are rare...
 
 ::: box-note
