@@ -88,39 +88,123 @@ $$
 y = a + b \cdot x
 $$
 
-- $a$ is the line's **intercept**.
+- $a$ is the line's **intercept**. This is $y$ when $x$ is 0.
 
-- $b$ is the line's **slope** (aka gradient).
+- $b$ is the line's **slope** (aka gradient). This is the change in $y$ for every unit increase of $x$.
 
 See [Linear models illustrated](https://stefanocoretta.shinyapps.io/lines/).
 
 :::
 
+## Regression model of vowel duration
 
-## Regression models
+$$
+\begin{align}
+dur_i & \sim LogNormal(\mu_i, \sigma)\\
+\mu_i & = \beta_0 + \beta_1 \cdot SR_i\\
+\end{align}
+$$
+
+::: box-note
+- $\beta_0$ is the intercept. This is the mean vowel duration when speech rate is 0.
+
+- $\beta_1$ is the slope. This is the change in vowel duration for each unit increase of speech rate (syl/s).
+:::
+
+## But...
+
+::: box-warning
+**Speech rate 0 doesn't make sense!**
+
+- Speech rate cannot be zero syllables per second.
+:::
+
+. . .
+
+::: box-tip
+We can **centre** speech rate.
+
+- Subtract the mean speech rate from all the speech rate values.
+:::
+
+## Centred speech rate
+
+```{r}
+#| label: centre
+
+mean(durations$speech_rate, na.rm = TRUE)
+
+durations <- durations |> 
+  mutate(
+    speech_rate_c = speech_rate - mean(speech_rate, na.rm = TRUE)
+  )
+```
+
+::: box-note
+- `speach_rate_c` = 0 means mean speech rate. 
+:::
+
+## Centred speech rate: plot
+
+```{r}
+#| label: fig-durations-centred
+#| fig-cap: "Vowel duration and (centred) speech rate."
+#| warning: false
+#| echo: false
+
+durations |> 
+  ggplot(aes(speech_rate_c, v1_duration)) +
+  geom_point(alpha = 0.5) +
+  labs(
+    x = "Speech rate (syl/s centred)", y = "Vowel duration (ms)"
+  )
+```
+
+## Regression model of vowel durations: centred speech rate
+
+$$
+\begin{align}
+dur_i & \sim LogNormal(\mu_i, \sigma)\\
+\mu_i & = \beta_0 + \beta_1 \cdot (SR_{ctr[i]})\\
+\end{align}
+$$
+
+::: box-note
+- $\beta_0$ is the intercept. This is the mean RT when centred speech rate is 0 (i.e. when speech rate is at its mean = `{r} mean(durations$speech_rate)`).
+
+- $\beta_1$ is the slope. This is the change in RT for each unit increase of centred speech rate (i.e for every unit increase of speech rate).
+:::
+
+## Regression model of vowel durations: code
 
 ```{r}
 #| label: rt-phonlev
 
-rt_phonlev <- brm(
-  RT ~ 1 + PhonLev,
+dur_sr <- brm(
+  v1_duration ~ 1 + speech_rate_c,
   family = lognormal,
-  data = mald,
+  data = durations,
   cores = 4,
   seed = 1032,
-  file = "data/cache/rt_phonlev"
+  file = "data/cache/dur_sr"
 )
 ```
 
 ```{r}
-#| label: rt-phonlev-summary
+#| label: dur-sr-summary
 
-summary(rt_phonlev)
+summary(dur_sr)
 ```
 
 ```{r}
-#| label: fig-rt-phonlevl-cond
+#| label: fig-dur-sr-cond
 
-conditional_effects(rt_phonlev)
+conditional_effects(dur_sr)
+```
+
+```{r}
+#| label: fig-dur-sr-pp
+#| fig-cap: "Posterior predictive check plot of `dur_sr`."
+pp_check(dur_sr, ndraws = 20)
 ```
 
