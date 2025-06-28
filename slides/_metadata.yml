@@ -2,6 +2,7 @@ format:
   purple-light-revealjs:
     theme: [default, "custom.scss"]
     fig-align: center
+    preview-links: true
 googlefonts: ["Poetsen One", "Ubuntu Mono", "Lato"]
 filters:
   - tachyonsextra
