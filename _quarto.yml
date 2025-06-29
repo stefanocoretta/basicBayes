@@ -39,5 +39,5 @@ format:
     toc: true
     df-print: paged
 
-
+freeze: auto
 

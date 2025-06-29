@@ -317,4 +317,18 @@ rt_logn_draws |>
 >
 > According to the model, the mean RT is between 962 and 977 ms, at 95% confidence (in logged ms, \\(\\beta\\) = 6.88, SD = 0.004). At 80% probability, the mean RT is 965-975 ms, while at 60% probability it is 967-973 ms.
 
+## Summary
+
+::: box-tip
+-   Gaussian variables are rare.
+
+-   Variables that are bounded to positive (real) numbers only usually follow a log-normal distribution. For example reaction times.
+
+-   Log-normal models estimate the mean and standard deviation of log-normal variables.
+
+$$
+y \sim LogNormal(\mu, \sigma)
+$$
+:::
+
 ## References

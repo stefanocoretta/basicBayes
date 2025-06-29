@@ -428,4 +428,18 @@ pp_check(rt_gauss, ndraws = 20)
 
 ```
 
+## Summary
+
+::: box-tip
+- Inference allows us to learn something about a population from a sample of that population.
+
+- Statistics is a tool to quantify uncertainty and account for variability.
+
+- Gaussian models are a statistical tool that can estimate a mean and standard deviation from the data.
+
+$$
+y \sim Gaussian(\mu, \sigma)
+$$
+:::
+
 ## References

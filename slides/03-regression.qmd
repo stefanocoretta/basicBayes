@@ -1,5 +1,5 @@
 ---
-title: "02 - Regression"
+title: "03 - Regression"
 author: "Stefano Coretta"
 ---
 
@@ -165,7 +165,7 @@ durations |>
 $$
 \begin{align}
 dur_i & \sim LogNormal(\mu_i, \sigma)\\
-\mu_i & = \beta_0 + \beta_1 \cdot (SR_{ctr[i]})\\
+\mu_i & = \beta_0 + \beta_1 \cdot SR_{ctr[i]}\\
 \end{align}
 $$
 
@@ -190,11 +190,63 @@ dur_sr <- brm(
 )
 ```
 
+## Regression model: summary
+
 ```{r}
 #| label: dur-sr-summary
 
 summary(dur_sr)
 ```
+
+## Interpreting the summary
+
+$$
+\begin{align}
+dur_i & \sim LogNormal(\mu_i, \sigma)\\
+\mu_i & = \beta_0 + \beta_1 \cdot SR_{ctr[i]}\\
+\end{align}
+$$
+
+```{r}
+#| label: dur-sr-fixef
+fixef(dur_sr)
+```
+
+::: box-note
+- `Intercept` is $\beta_0$: mean duration when speech rate is at mean.
+
+- `speech_rate_c` is $\beta_1$: change in duration for each unit increase of speech rate.
+:::
+
+## Interpreting the summary: `Intercept`
+
+```{r}
+#| label: dur-sr-fixef-2
+fixef(dur_sr)
+```
+
+::: box-note
+- The mean logged vowel duration is on average 4.72 (SD = 0.008).
+
+- There is a 95% probability that the mean logged vowel duration is between 4.71 and 4.74.
+:::
+
+## Interpreting the summary: `speech_rate_c`
+
+```{r}
+#| label: dur-sr-fixef-3
+fixef(dur_sr)
+```
+
+::: box-note
+- The average change in logged vowel duration for each unit increase of speech rate is -0.23 (SD = 0.01).
+
+- In other words, for each increase of one syllable per second, the logged vowel duration decreases on average by -0.23.
+
+- We can be 95% confident that the decrease in logged duration is between -0.22 and -0.25.
+:::
+
+## Plotting the model predictions
 
 ```{r}
 #| label: fig-dur-sr-cond
@@ -202,9 +254,25 @@ summary(dur_sr)
 conditional_effects(dur_sr)
 ```
 
+## Posterior predictive checks
+
 ```{r}
 #| label: fig-dur-sr-pp
 #| fig-cap: "Posterior predictive check plot of `dur_sr`."
 pp_check(dur_sr, ndraws = 20)
 ```
 
+## Summary
+
+::: box-tip
+- Regression models are models that use the formula of a line.
+
+- A simple regression model with one numeric predictor estimates the line's intercept ($beta_0$) and slope ($beta_1$) and the overall standard deviation ($sigma$).
+
+$$
+\begin{align}
+y_i & \sim LogNormal(\mu_i, \sigma)\\
+\mu_i & = \beta_0 + \beta_1 \cdot x
+\end{align}
+$$
+:::
