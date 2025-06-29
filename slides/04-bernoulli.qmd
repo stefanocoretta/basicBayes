@@ -1,5 +1,5 @@
 ---
-title: "03 - Binary outcomes"
+title: "04 - Binary outcomes"
 author: "Stefano Coretta"
 ---
 
@@ -18,6 +18,99 @@ library(brms)
 mald <- readRDS("data/tucker2019/mald_1_1.rds")
 ```
 
+## MALD: accuracy
+
+::: box-note
+- **Accuracy of responses**: correctly or incorrectly recognised the word type (real or nonce-word).
+
+- Let's model the effect of phonetic distance on accuracy.
+
+- Accuracy is a **binary variable**.
+:::
+
+. . .
+
+::: box-tip
+- With binary variables we model the probability of one of the two levels. Here, correct.
+
+- The probability of one level of a binary variable follows a Bernoulli distribution.
+:::
+
+## Bernoulli model
+
+$$
+p(correct) \sim Bernoulli(p)
+$$
+
+. . .
+
+::: box-note
+- But... probabilities are bounded between 0 and 1.
+
+- For variables that can only have positive real numbers, we used the logarithmic function (log-normal models).
+:::
+
+. . .
+
+::: box-tip
+- With probabilities, we can use the **logistic function**.
+
+- The logistic (or logit) function converts probabilities to log-odds (`qlogis()` in R).
+:::
+
+## Logistic function
+
+```{r}
+#| label: fig-p-log-odds
+#| fig-cap: "Correspondence between log-odds and probabilities."
+#| warning: false
+#| echo: false
+
+dots <- tibble(
+  p = seq(0.1, 0.9, by = 0.1),
+  log_odds = qlogis(p)
+)
+
+p_log_odds <- tibble(
+  p = seq(0, 1, by = 0.001),
+  log_odds = qlogis(p)
+) %>%
+  ggplot(aes(log_odds, p)) +
+  geom_hline(yintercept = 0.5, linetype = "dashed") +
+  geom_hline(yintercept = 0, colour = "#8856a7", linewidth = 1) +
+  geom_hline(yintercept = 1, colour = "#8856a7", linewidth = 1) +
+  geom_vline(xintercept = 0, alpha = 0.5) +
+  geom_line(linewidth = 2) +
+  # geom_point(data = dots, size = 4) +
+  geom_point(x = 0, y = 0.5, colour = "#8856a7", size = 4) +
+  annotate("text", x = -4, y = 0.8, label = "logit(p) = log-odds") +
+  scale_x_continuous(breaks = seq(-6, 6, by = 1), minor_breaks = NULL, limits = c(-6, 6)) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.1), minor_breaks = NULL) +
+  labs(
+    x = "Log-odds",
+    y = "Probability"
+  )
+p_log_odds
+```
+
+## Bernoulli (regression) models
+
+::: box-note
+- Bernoulli models use the logistic function to treat probabilities as if they were unbounded.
+
+- The model's estimates are in log-odds.
+
+- Log-odds can be converted back to probabilities with the inverse logit function (`plogis()` in R).
+:::
+
+. . .
+
+::: box-warning
+- Bernoulli models are also known as binomial or logistic regression.
+:::
+
+## A Bernoulli regression of accuracy: code
+
 ```{r}
 #| label: acc-bern
 
@@ -31,17 +124,35 @@ acc_bern <- brm(
 )
 ```
 
+## A Bernoulli regression of accuracy: predicted accuracy
+
 ```{r}
 #| label: fig-acc-bern-cond
+#| fig-cap: "Predicted accuracy based on phonetic distance."
 
 conditional_effects(acc_bern)
 ```
 
+## Brentari 2024: Lengua de Señas Nicaragüense (LSN)
+
 ```{r}
 #| label: brentari2024
-#| 
+#| message: false
+
 brentari2024 <- read_csv("data/brentari2024/verb_org.csv")
+
+brentari2024
 ```
+
+## Brentari 2024
+
+```{r}
+brentari2024 |> 
+  ggplot(aes(Group, fill = Num_Predicates)) +
+  geom_bar(position = "fill") +
+  labs(y = "Proportion")
+```
+
 
 ```{r}
 #| label: pred-type
