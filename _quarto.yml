@@ -27,10 +27,10 @@ website:
             text: "03 - Regression"
           - href: "slides/04-bernoulli.qmd"
             text: "04 - Bernoulli"
-          - href: "slides/05-poisson.qmd"
-            text: "05 - Poisson"
-          - href: "slides/06-ordinal.qmd"
-            text: "06 - Ordinal"
+          # - href: "slides/05-poisson.qmd"
+          #   text: "05 - Poisson"
+          # - href: "slides/06-ordinal.qmd"
+          #   text: "06 - Ordinal"
 
 format:
   html:

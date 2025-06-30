@@ -1,8 +1,8 @@
 ---
-title: "Learn Bayesian Linear Models for Beginners"
+title: "Learn Bayesian Regression Models for Beginners"
 ---
 
-This is the website of the workshop **basicBayes**.
+This is the website of the workshop **Bayesian Regression Models for the Advancement of Linguistics**.
 
 Please, check the [Set-up](setup.qmd) page for important set-up instructions, before joining the workshop.
 

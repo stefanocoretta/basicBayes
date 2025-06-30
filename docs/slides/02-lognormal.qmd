@@ -1,0 +1,334 @@
+---
+title: "02 - Lognormal models"
+author: "Stefano Coretta"
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+theme_set(theme_light())
+library(brms)
+```
+
+```{r}
+#| label: mald
+#| echo: false
+
+mald <- readRDS("data/tucker2019/mald_1_1.rds")
+```
+
+## Is a Gaussian model a good choice?
+
+```{r}
+#| label: fig-rt-gauss-pp
+#| fig-cap: "Posterior predictive check plot of `rt_gauss`."
+#| echo: false
+
+rt_gauss <- readRDS("data/cache/rt_gauss.rds")
+
+pp_check(rt_gauss, ndraws = 20)
+```
+
+## Gaussian variables are rare...
+
+::: box-note
+-   Reaction times can only be positive (negative values are excluded).
+
+-   Variables that can take only positive numbers (and are continuous) usually follow a **log-normal** distribution.
+:::
+
+## The log-normal distribution
+
+```{r}
+#| label: fig-lognormal
+#| fig-cap: "Log-normal distributions with varying mean and SD."
+#| echo: false
+
+# Define x values (lognorm is only positive)
+x_values <- seq(0.001, 20, length.out = 1000)
+
+# Parameters for varying mean and sd
+param_list <- list(
+  varying_mean = data.frame(mean = c(0, 1, 2), sd = 0.5, group = c("μ=0", "μ=1", "μ=2")),
+  varying_sd   = data.frame(mean = 2, sd = c(0.3, 0.7, 1.2), group = c("σ=0.3", "σ=0.7", "σ=1.2"))
+)
+
+# Generate data
+plot_data <- bind_rows(
+  lapply(names(param_list), function(facet_name) {
+    params <- param_list[[facet_name]]
+    do.call(rbind, lapply(1:nrow(params), function(i) {
+      data.frame(
+        x = x_values,
+        density = dlnorm(x_values, meanlog = params$mean[i], sdlog = params$sd[i]),
+        Distribution = params$group[i],
+        Panel = facet_name
+      )
+    }))
+  })
+)
+
+# Make readable facet labels
+plot_data$Panel <- factor(plot_data$Panel,
+                          levels = c("varying_mean", "varying_sd"),
+                          labels = c("Varying Meanlog (σ=0.5)", "Varying Sdlog (μ=2)"))
+
+# Plot
+ggplot(plot_data, aes(x = x, y = density, colour = Distribution)) +
+  geom_line(linewidth = 1) +
+  facet_wrap(~ Panel, scales = "free_y") +
+  labs(
+    title = "Lognormal Distributions: Effects of Varying Meanlog and Sdlog",
+    x = "x",
+    y = "Density"
+  ) +
+  theme(legend.position = "bottom")
+
+```
+
+## A log-normal model of RTs
+
+$$
+\begin{align}
+RT & \sim LogNormal(\mu, \sigma)\\
+\end{align}
+$$
+
+::: box-note
+-   RT follow a log-normal distribution with mean $\mu$ and standard deviation $\sigma$.
+
+-   $\mu$ and $sigma$ are the mean and SD of *logged* RTs.
+:::
+
+. . .
+
+::: box-tip
+equivalent to:
+
+$$
+\begin{align}
+log(RT) & \sim Gaussian(\mu, \sigma)\\
+\end{align}
+$$
+:::
+
+## A log-normal model of RTs: code
+
+```{r}
+#| label: rt-logn
+
+rt_logn <- brm(
+  RT ~ 1,
+  family = lognormal,
+  data = mald,
+  
+  ## Technical stuff
+  cores = 4,
+  seed = 1032,
+  file = "data/cache/rt_logn"
+)
+```
+
+## A log-normal model of RTs: posterior predictive checks
+
+```{r}
+#| label: fig-rt-logn-pp
+pp_check(rt_logn, ndraws = 20)
+```
+
+## A log-normal model of RTs: summary
+
+```{r}
+#| label: rt-logn-summary
+
+summary(rt_logn)
+```
+
+## A log-normal model of RTs: MCMC draws
+
+::: box-note
+-   The MCMC draws are also called the **posterior draws**.
+
+-   They allow us to construct the **posterior probability distribution** of each model parameter.
+:::
+
+. . .
+
+```{r}
+#| label: rt-logn-draws
+
+rt_logn_draws <- as_draws_df(rt_logn)
+
+rt_logn_draws
+```
+
+## Plot the MCMC draws: $\mu$
+
+```{r}
+#| label: fig-rt-logn-intercept
+#| fig-cap: "Posterior probability distribution of $\\mu$ of RTs."
+
+rt_logn_draws |> 
+  ggplot(aes(b_Intercept)) +
+  geom_density(alpha = 0.5, fill = "darkgreen") +
+  labs(x = expression(mu~"of RTs (logged)"))
+```
+
+## Plot the MCMC draws: $\mu$ (ms)
+
+```{r}
+#| label: fig-rt-logn-intercept-ms
+#| fig-cap: "Posterior probability distribution of $\\mu$ of RTs in ms."
+
+rt_logn_draws |> 
+  ggplot(aes(exp(b_Intercept))) +
+  geom_density(alpha = 0.5, fill = "darkgreen") +
+  labs(x = expression(mu~"of RTs (ms)"))
+```
+
+## Summarise the MCMC draws: $\mu$
+
+```{r}
+#| label: rt-logn-intercept-summaries
+rt_logn_draws |> 
+  summarise(
+    mu_mean = round(mean(b_Intercept), 2),
+    mu_sd = round(sd(b_Intercept), 3)
+  )
+```
+
+## Summarise the MCMC draws: $\mu$ (ms)
+
+```{r}
+#| label: rt-logn-intercept-summaries-ms
+
+rt_logn_draws |> 
+  summarise(
+    mu_mean = round(mean(exp(b_Intercept))),
+    mu_sd = round(sd(exp(b_Intercept)))
+  )
+```
+
+::: box-note
+-   The mean RTs is on average 970 ms (SD = 4).
+
+-   Always conditional on the model and the data.
+:::
+
+::: notes
+$$
+\text{SD}_{\text{natural}} = \sqrt{ \left( e^{\sigma^2} - 1 \right) \cdot e^{2\mu + \sigma^2} }
+$$
+:::
+
+## Credible Intervals
+
+::: box-note
+-   Uncertainty can be quantified with Bayesian **Credible Intervals** (CrIs).
+
+-   A 95% CrI means that we can be 95% confident that the value is within the interval.
+:::
+
+. . .
+
+::: box-warning
+Frequentist Confidence Intervals are often wrongly interpreted as Bayesian Credible Intervals [@tan2010; @foster2014; @crooks2019; @gigerenzer2004; @cassidy2019].
+:::
+
+. . .
+
+::: box-note
+-   There is nothing special about 95%. You should obtain several.
+:::
+
+## Credible Intervals: higher level = larger width
+
+```{r}
+#| label: fig-cris
+#| fig-cap: "Several quantiles of a Gaussian distribution."
+#| echo: false
+
+x <- seq(-4, 4, by = 0.01)
+y <- dnorm(x, 0, 1)
+
+ggplot() +
+  aes(x, y) +
+  geom_ribbon(aes(x = ifelse(x >= -1.96 & x <= 1.96, x, NA), ymin = 0, ymax = y), 
+              alpha = 0.1, fill = "#8970FF") +  # 95%
+  geom_ribbon(aes(x = ifelse(x >= -1.645 & x <= 1.645, x, NA), ymin = 0, ymax = y), 
+              alpha = 0.2, fill = "#8970FF") +  # 90%
+  geom_ribbon(aes(x = ifelse(x >= -1.281 & x <= 1.281, x, NA), ymin = 0, ymax = y), 
+              alpha = 0.3, fill = "#8970FF") +  # 80%
+  geom_ribbon(aes(x = ifelse(x >= -1.036 & x <= 1.036, x, NA), ymin = 0, ymax = y), 
+              alpha = 0.5, fill = "#8970FF") +  # 70%
+  geom_ribbon(aes(x = ifelse(x >= -0.842 & x <= 0.842, x, NA), ymin = 0, ymax = y), 
+              alpha = 0.8, fill = "#8970FF") +  # 60%
+  geom_line(linewidth = 2, colour = "#FFA70B") +
+  annotate("segment", x = -1.96, xend = 1.96, y = 0.05, yend = 0.05,
+           arrow = arrow(ends = "both", angle = 90, length = unit(.2, "cm")), linewidth = 1) +
+  annotate("label", x = 0, y = 0.05, label = "95%") +
+  annotate("segment", x = -1.645, xend = 1.645, y = 0.1, yend = 0.1,
+           arrow = arrow(ends = "both", angle = 90, length = unit(.2, "cm")), linewidth = 1) +
+  annotate("label", x = 0, y = 0.1, label = "90%") +
+  annotate("segment", x = -1.281, xend = 1.281, y = 0.15, yend = 0.15,
+           arrow = arrow(ends = "both", angle = 90, length = unit(.2, "cm")), linewidth = 1) +
+  annotate("label", x = 0, y = 0.15, label = "80%") +
+  annotate("segment", x = -1.036, xend = 1.036, y = 0.2, yend = 0.2,
+           arrow = arrow(ends = "both", angle = 90, length = unit(.2, "cm")), linewidth = 1) +
+  annotate("label", x = 0, y = 0.2, label = "70%") +
+  annotate("segment", x = -0.842, xend = 0.842, y = 0.25, yend = 0.25,
+           arrow = arrow(ends = "both", angle = 90, length = unit(.2, "cm")), linewidth = 1) +
+  annotate("label", x = 0, y = 0.25, label = "60%") +
+  labs(x = NULL, y = NULL)
+
+
+```
+
+## Calculate CrIs
+
+```{r}
+#| label: rt-logn-ci
+#| message: false
+
+library(posterior)
+
+rt_logn_draws |> 
+  mutate(
+    mu_ms = exp(b_Intercept)
+  ) |> 
+  summarise(
+    hi_95 = quantile2(mu_ms, probs = 0.025),
+    lo_95 = quantile2(mu_ms, probs = 0.975),
+    hi_80 = quantile2(mu_ms, probs = 0.1),
+    lo_80 = quantile2(mu_ms, probs = 0.9),
+    hi_60 = quantile2(mu_ms, probs = 0.2),
+    lo_60 = quantile2(mu_ms, probs = 0.8),
+  ) |> 
+  mutate(across(everything(), round))
+  
+
+```
+
+## Report
+
+> We fitted a Bayesian log-normal model of reaction times (RTs) with brms [@burkner2017] in R [@rcoreteam2025].
+>
+> According to the model, the mean RT is between 962 and 977 ms, at 95% confidence (in logged ms, \\(\\beta\\) = 6.88, SD = 0.004). At 80% probability, the mean RT is 965-975 ms, while at 60% probability it is 967-973 ms.
+
+## Summary
+
+::: box-tip
+-   Gaussian variables are rare.
+
+-   Variables that are bounded to positive (real) numbers only usually follow a log-normal distribution. For example reaction times.
+
+-   Log-normal models estimate the mean and standard deviation of log-normal variables.
+
+$$
+y \sim LogNormal(\mu, \sigma)
+$$
+:::
+
+## References

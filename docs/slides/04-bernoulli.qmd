@@ -1,0 +1,403 @@
+---
+title: "04 - Binary outcomes"
+author: "Stefano Coretta"
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+theme_set(theme_light())
+library(brms)
+```
+
+```{r}
+#| label: mald
+
+mald <- readRDS("data/tucker2019/mald_1_1.rds")
+```
+
+## MALD: accuracy
+
+::: box-note
+-   **Accuracy of responses**: correctly or incorrectly recognised the word type (real or nonce-word).
+
+-   Let's model the effect of phonetic distance on accuracy.
+
+-   Accuracy is a **binary variable**.
+:::
+
+. . .
+
+::: box-tip
+-   With binary variables we model the probability of one of the two levels. Here, correct.
+
+-   The probability of one level of a binary variable follows a Bernoulli distribution.
+:::
+
+## Bernoulli model
+
+$$
+p(correct) \sim Bernoulli(p)
+$$
+
+. . .
+
+::: box-note
+-   But... probabilities are bounded between 0 and 1.
+
+-   For variables that can only have positive real numbers, we used the logarithmic function (log-normal models).
+:::
+
+. . .
+
+::: box-tip
+-   With probabilities, we can use the **logistic function**.
+
+-   The logistic (or logit) function converts probabilities to log-odds (`qlogis()` in R).
+:::
+
+## Logistic function
+
+```{r}
+#| label: fig-p-log-odds
+#| fig-cap: "Correspondence between log-odds and probabilities."
+#| warning: false
+#| echo: false
+
+dots <- tibble(
+  p = seq(0.1, 0.9, by = 0.1),
+  log_odds = qlogis(p)
+)
+
+p_log_odds <- tibble(
+  p = seq(0, 1, by = 0.001),
+  log_odds = qlogis(p)
+) %>%
+  ggplot(aes(log_odds, p)) +
+  geom_hline(yintercept = 0.5, linetype = "dashed") +
+  geom_hline(yintercept = 0, colour = "#8856a7", linewidth = 1) +
+  geom_hline(yintercept = 1, colour = "#8856a7", linewidth = 1) +
+  geom_vline(xintercept = 0, alpha = 0.5) +
+  geom_line(linewidth = 2) +
+  # geom_point(data = dots, size = 4) +
+  geom_point(x = 0, y = 0.5, colour = "#8856a7", size = 4) +
+  annotate("text", x = -4, y = 0.8, label = "logit(p) = log-odds") +
+  scale_x_continuous(breaks = seq(-6, 6, by = 1), minor_breaks = NULL, limits = c(-6, 6)) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.1), minor_breaks = NULL) +
+  labs(
+    x = "Log-odds",
+    y = "Probability"
+  )
+p_log_odds
+```
+
+## Bernoulli (regression) models
+
+::: box-note
+-   Bernoulli models use the logistic function to treat probabilities as if they were unbounded.
+
+-   The model's estimates are in log-odds.
+
+-   Log-odds can be converted back to probabilities with the inverse logit function (`plogis()` in R).
+:::
+
+. . .
+
+::: box-warning
+-   Bernoulli models are also known as binomial or logistic regression.
+:::
+
+## A Bernoulli regression of accuracy: code
+
+```{r}
+#| label: acc-bern
+
+acc_bern <- brm(
+  ACC ~ 1 + PhonLev,
+  family = bernoulli,
+  data = mald,
+  cores = 4,
+  seed = 8230,
+  file = "data/cache/acc_bern"
+)
+```
+
+## A Bernoulli regression of accuracy: predicted accuracy
+
+```{r}
+#| label: fig-acc-bern-cond
+#| fig-cap: "Predicted accuracy based on phonetic distance."
+
+conditional_effects(acc_bern)
+```
+
+## Brentari 2024: Lengua de Señas Nicaragüense (LSN)
+
+```{r}
+#| label: brentari2024
+#| message: false
+
+brentari2024 <- read_csv("data/brentari2024/verb_org.csv")
+
+brentari2024
+```
+
+## Brentari 2024
+
+```{r}
+#| label: fig-prop
+#| fig-cap: "Proportion of predicate type by group."
+brentari2024 |> 
+  ggplot(aes(Group, fill = Num_Predicates)) +
+  geom_bar(position = "fill") +
+  labs(y = "Proportion")
+```
+
+## A Bernoulli model of predicate type
+
+$$
+\begin{align}
+pred_i & \sim Bernoulli(p_i)\\
+logit(p_i) & = \beta_1 \cdot G_{\text{HS}[i]} + \beta_2 \cdot G_{\text{NSL1}[i]} + \beta_3 \cdot G_{\text{NSL2}[i]}
+\end{align}
+$$
+
+::: box-note
+-   `logit(p)` indicates a logit function is used (so the estimates are in log-odds).
+
+-   $G_{\text{HS}[i]}, G_{\text{NSL1}[i]},G_{\text{NSL2}[i]}$ are **indicator variables**, a way of including categorical predictors in a regression model.
+:::
+
+## Indicator variables
+
+|          | $G_{\text{HS}}$ | $G_{\text{NSL1}}$ | $G_{\text{NSL2}}$ |
+|----------|-----------------|-------------------|-------------------|
+| Homesign | 1               | 0                 | 0                 |
+| NSL1     | 0               | 1                 | 0                 |
+| NSL2     | 0               | 0                 | 1                 |
+
+. . .
+
+$$
+\begin{align}
+logit(p_i) & = \beta_1 \cdot G_{\text{HS}[i]} + \beta_2 \cdot G_{\text{NSL1}[i]} + \beta_3 \cdot G_{\text{NSL2}[i]}\\
+\text{homesign, } logit(p_i) & = \beta_1 \cdot 1 + \beta_2 \cdot 0 + \beta_3 \cdot 0\\
+& = \beta_1\\
+\text{NSL1, } logit(p_i) & = \beta_1 \cdot 0 + \beta_2 \cdot 1 + \beta_3 \cdot 0\\
+& = \beta_2\\
+\text{NSL2, } logit(p_i) & = \beta_1 \cdot 0 + \beta_2 \cdot 0 + \beta_3 \cdot 1\\
+& = \beta_3\\
+\end{align}
+$$
+
+## Indicator variables
+
+::: box-warning
+-   Note that indicator variables are dealt with by brms under the hood.
+
+-   We talk about them to understand how the model is set up.
+:::
+
+. . .
+
+::: box-note
+-   The model will estimate the probability $p$ for each group.
+
+-   But... the probability of what?
+:::
+
+## Prepare data
+
+```{r}
+#| label: pred-type-table
+
+table(brentari2024$Num_Predicates)
+```
+
+. . .
+
+```{r}
+#| label: pred-type
+
+brentari2024 <- brentari2024 |> 
+  mutate(
+    Pred_Type = factor(Num_Predicates, levels = c("single", "multiple"))
+  )
+
+table(brentari2024$Pred_Type)
+```
+
+. . .
+
+::: box-tip
+-   The model will estimate the probability $p$ of finding a multiple predicate, depending on group.
+:::
+
+## A Bernoulli model of predicate type: suppress the intercept
+
+:::: box-note
+::: {style="text-align: center;"}
+`v1_duration ~ 1 + speech_rate_c`
+:::
+
+- `1` stands for "intercept". The model has an intercept and a slope.
+::::
+
+. . .
+
+:::: box-note
+::: {style="text-align: center;"}
+`Pred_Type ~ 0 + Group`
+:::
+
+- `0` stands for "suppress the overall intercept". The model estimates one "intercept" per level.
+::::
+
+## A Bernoulli model of predicate type: code
+
+```{r}
+#| label: pred-bern
+
+pred_bern <- brm(
+  Pred_Type ~ 0 + Group,
+  family = bernoulli,
+  data = brentari2024,
+  cores = 4,
+  seed = 3218,
+  file = "data/cache/pred_bern"
+)
+```
+
+## A Bernoulli model of predicate type: summary
+
+```{r}
+#| label: pred-bern-summary
+
+summary(pred_bern)
+```
+
+## A Bernoulli model of predicate type: predicted probability
+
+```{r}
+#| label: fig-pred-bern-cond
+#| fig-cap: "Predicted probability of multiple predicate by group."
+
+conditional_effects(pred_bern)
+```
+
+## Posterior draws
+
+```{r}
+#| label: pred-bern-draws
+
+pred_bern_draws <- as_draws_df(pred_bern)
+
+pred_bern_draws
+```
+
+## Credible intervals: log-odds
+
+```{r}
+#| label: pred-bern-ci
+#| message: false
+#| warning: false
+
+library(posterior)
+
+pred_bern_draws |> 
+  pivot_longer(b_Grouphomesign:b_GroupNSL2, names_to = "coef", values_to = "est") |> 
+  group_by(coef) |> 
+  summarise(
+    ci_lo = quantile2(est, probs = 0.025),
+    ci_hi = quantile2(est, probs = 0.975)
+  )
+```
+
+## Credible intervals: probabilities
+
+```{r}
+#| label: pred-bern-ci-2
+#| message: false
+#| warning: false
+
+pred_bern_draws |> 
+  pivot_longer(b_Grouphomesign:b_GroupNSL2, names_to = "coef", values_to = "est") |> 
+  group_by(coef) |> 
+  summarise(
+    ci_lo = round(quantile2(plogis(est), probs = 0.025), 2),
+    ci_hi = round(quantile2(plogis(est), probs = 0.975), 2)
+  )
+```
+
+## What about comparing the groups?
+
+::: box-note
+What if we want to know the difference between each group?
+:::
+
+. . .
+
+::: box-tip
+- We can use the posterior draws. Simply take the row-wise difference and you will get a list of differences.
+
+- These are the posterior differences.
+:::
+
+## Comparing groups
+
+```{r}
+#| label: pred-bern-diff
+pred_bern_draws <- pred_bern_draws |> 
+  mutate(
+    NSL1_homesign = b_GroupNSL1 - b_Grouphomesign,
+    NSL2_homesign = b_GroupNSL2 - b_Grouphomesign,
+    NSL2_NSL1 = b_GroupNSL2 - b_GroupNSL1
+  )
+
+pred_bern_draws
+```
+
+## Credible Intervals of the difference: log-odds
+
+```{r}
+#| label: pred-bern-diff-ci
+pred_bern_draws |> 
+  pivot_longer(NSL1_homesign:NSL2_NSL1, names_to = "coef", values_to = "est") |> 
+  group_by(coef) |> 
+  summarise(
+    ci_lo = round(quantile2(est, probs = 0.025), 2),
+    ci_hi = round(quantile2(est, probs = 0.975), 2)
+  )
+```
+
+## Credible Intervals of the difference: probabilities
+
+```{r}
+#| label: pred-bern-diff-ci-p
+pred_bern_draws |> 
+  mutate(
+    NSL1_homesign_p = plogis(b_GroupNSL1) - plogis(b_Grouphomesign),
+    NSL2_homesign_p = plogis(b_GroupNSL2) - plogis(b_Grouphomesign),
+    NSL2_NSL1_p = plogis(b_GroupNSL2) - plogis(b_GroupNSL1)
+  ) |> 
+  pivot_longer(NSL1_homesign_p:NSL2_NSL1_p, names_to = "coef", values_to = "est_p") |> 
+  group_by(coef) |> 
+  summarise(
+    ci_lo = round(quantile2(est_p, probs = 0.025), 2),
+    ci_hi = round(quantile2(est_p, probs = 0.975), 2)
+  )
+```
+
+## Summary
+
+::: box-tip
+- Binary variables can be modelled with a Bernoulli distribution.
+
+- Bernoulli models estimate the probability $p$ of the second level in the variable.
+
+- Categorical predictors are modelled using indexing variables.
+
+- You can obtain posterior differences between levels by taking the difference of the posterior draws of those levels.
+:::

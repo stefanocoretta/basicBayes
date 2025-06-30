@@ -1,9 +1,12 @@
 ---
 title: "Pre-workshop set-up"
-editor: visual
 ---
 
-Please, follow these instructions to get ready **before** the workshop.
+Please, follow these instructions carefully to get ready **at least one day before the workshop**.
+
+::: callout-important
+Installing the necessary software takes a lot of space on your computer and can take a long of time (1-3 hours depending on the system).
+:::
 
 ## Pre-requisites
 
@@ -15,77 +18,84 @@ Before installing the necessary software, make sure you have installed or update
 
 -   Your **operating system is up-to-date**.
 
-## Starter Kit
-
-Please, download the [Starter Kit](https://github.com/stefanocoretta/basicBayesKit).
-
-You can get the Starter Kit from [here](https://github.com/stefanocoretta/basicBayesKit). It is just an RStudio project with some useful files.
-
 ## Installation
 
 ::: {.callout-important icon="false"}
-If you have previously installed the C++ toolkit, CmdStan and/or cmdstanr, or if you have recently updated your OS, please follow these instructions to reinstall them.
+If you have previously installed the C++ toolkit or if you have recently updated your OS, please follow these instructions to reinstall them.
 :::
 
 Now you will need to install a few packages and extra software.
 
 Here is an overview of what you will install:
 
--   C++ toolchain.
--   R packages: tidyverse, remotes, cmdstanr, brms.
--   CmdStan (including Stan).
+1.  C++ toolchain.
 
-### Install the C++ toolchain
+2.  R packages: tidyverse, brms.
 
-Some of the software (CmdStan) used in the workshop requires a working C++ toolchain for compilation.
+### 1. Install the C++ toolchain
 
-You can find information on how to set up the C++ toolchain in [Section 1.2.1](https://mc-stan.org/docs/cmdstan-guide/cmdstan-installation.html#cpp-toolchain) of the CmdStan User's Guide.
+The package brms used in the workshop requires a working C++ toolchain to compile models.
 
-Make sure to follow the instructions for your operating system. If you have Windows, installing RTools 42 seems to work better than installing RTools 40
+#### Windows
 
-### Install the R packages
+For Windows, follow the instructions here: <https://cran.r-project.org/bin/windows/Rtools/rtools43/rtools.html>
+
+#### macOS
+
+For macOS, open the Terminal and write the following line then press enter/return:
+
+```         
+xcode-select --install
+```
+
+You'll see a panel that asks you to install the Xcode Command Line Tools. Install them. Downloading and installation will take 30 to 60 minutes.
+
+#### Linux
+
+For Linux, follow the instructions here: <https://github.com/stan-dev/rstan/wiki/Configuring-C-Toolchain-for-Linux>
+
+### 2. Install the R packages
 
 You need to install the following packages:
 
 ``` r
-install.packages(c("tidyverse", "remotes"))
-remotes::install_github("stan-dev/cmdstanr")
-install.packages(c("brms"))
-install.packages(c("tidybayes", "extraDistr"))
+install.packages(c("tidyverse", "brms"))
 ```
-
-The [cmdstanr](https://mc-stan.org/cmdstanr/index.html) package is an interface between R and CmdStan (see below), while [brms](https://paul-buerkner.github.io/brms/) is the package you will use to run Bayesian linear models (think of it as the Bayesian equivalent of [lme4](https://github.com/lme4/lme4)).
 
 It will take several minutes to install the packages, depending on your system and configuration.
 
-**If after opening the Starter Kit in RStudio you get asked to install extra packages or software, please do so.**
+**If after opening the workshop project in RStudio you get asked to install extra packages or software, please do so.**
 
-### Install CmdStan
+### Check your installation
 
-Now that you have installed the R packages, you need to install CmdStan.
-
-[CmdStan](https://mc-stan.org/users/interfaces/cmdstan) is a shell interface to the programming language Stan.
-
-[Stan](https://mc-stan.org) is what runs the Bayesian models, but you don't have to know Stan, because you will use the R packages to run the models (those packages will communicate with Stan in your stead).
-
-To install CmdStan, run the following command in the R console:
+Run the following in the RStudio Console:
 
 ``` r
-cmdstanr::install_cmdstan(cores = parallel::detectCores(), overwrite = TRUE)
+example(stan_model, package = "rstan", run.dontrun = TRUE)
 ```
 
-### Check your installation work
+If you see some strange looking text printed in the Console and then `fit` and `fit2` in the Environment, then you are sorted!
 
-Run the following in the RStudio Console. You will see text flashing.
+## Troubleshooting
 
-``` r
-library(cmdstanr)
-file <- file.path(cmdstan_path(), "examples", "bernoulli", "bernoulli.stan")
-mod <- cmdstan_model(file)
-```
+If you are having issues with installation, the best place to ask for help are:
 
-If a `mod` object is created, then installation went well.
+-   The Stan Forums: <https://discourse.mc-stan.org>
 
-## Troubleshoot
+-   StackOverflow: <https://stackoverflow.com>
 
-If you have issues with any of these steps, please get in touch with Stefano.
+-   Any search engine.
+
+## Download the materials
+
+All the materials of the workshop (data, code, slides) are in the workshop [repository](https://github.com/stefanocoretta/basicBayes) on GitHub.
+
+You have two options:
+
+1.  You can fork the repository and clone it locally if you use git/GitHub.
+
+2.  You can simply download the repo by clicking on the `Code` button \> `Download ZIP` on GitHub.
+
+::: callout-tip
+This is an RStudio project. You can open it by double clicking on the `basicBayes.Rproj` file.
+:::
