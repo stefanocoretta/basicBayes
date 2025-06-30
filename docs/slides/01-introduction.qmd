@@ -3,6 +3,14 @@ title: "01 - Introduction"
 author: "Stefano Coretta"
 ---
 
+## Disclaimer
+
+::: box-error
+- This workshop introduces you to the very basics of Bayesian regression modelling.
+
+- To be able to able to analyse real-world data you will need much more!
+:::
+
 ## 
 
 > The numbers have no way of speaking for themselves. We speak for them. We imbue them with meaning.

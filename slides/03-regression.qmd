@@ -1,5 +1,5 @@
 ---
-title: "03 - Regression"
+title: "03 - Regression models"
 author: "Stefano Coretta"
 ---
 

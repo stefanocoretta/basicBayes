@@ -1,339 +1,269 @@
 [
   {
-    "objectID": "slides/04-bernoulli.html#mald-accuracy",
-    "href": "slides/04-bernoulli.html#mald-accuracy",
-    "title": "04 - Binary outcomes",
-    "section": "MALD: accuracy",
-    "text": "MALD: accuracy\n\n\nAccuracy of responses: correctly or incorrectly recognised the word type (real or nonce-word).\nLet’s model the effect of phonetic distance on accuracy.\nAccuracy is a binary variable.\n\n\n\n\n\nWith binary variables we model the probability of one of the two levels. Here, correct.\nThe probability of one level of a binary variable follows a Bernoulli distribution."
+    "objectID": "slides/05-pois-ord.html#summary",
+    "href": "slides/05-pois-ord.html#summary",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "Summary",
+    "text": "Summary\n\n\nGaussian for Gaussian variables (very rare).\nLog-normal for outcome variables that can take only positive (real) values.\nBernoulli for binary outcome variables.\n\n\n\n\nOther common types of outcome variables:\n\nCount data: Poisson and negative binomial models.\nLikert scales: Ordinal models."
   },
   {
-    "objectID": "slides/04-bernoulli.html#bernoulli-model",
-    "href": "slides/04-bernoulli.html#bernoulli-model",
-    "title": "04 - Binary outcomes",
-    "section": "Bernoulli model",
-    "text": "Bernoulli model\n\\[\np(correct) \\sim Bernoulli(p)\n\\]\n\n\n\nBut… probabilities are bounded between 0 and 1.\nFor variables that can only have positive real numbers, we used the logarithmic function (log-normal models).\n\n\n\n\n\n\nWith probabilities, we can use the logistic function.\nThe logistic (or logit) function converts probabilities to log-odds (qlogis() in R)."
+    "objectID": "slides/05-pois-ord.html#counts-of-infants-gestures",
+    "href": "slides/05-pois-ord.html#counts-of-infants-gestures",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "Counts of infants’ gestures",
+    "text": "Counts of infants’ gestures\n\ngestures &lt;- read_csv(\"data/cameron2020/gestures.csv\")\ngestures_count &lt;- gestures |&gt;\n  filter(months == 11) |&gt; \n  summarise(\n    count = sum(count, na.rm = TRUE),\n    .by = c(background, dyad)\n  )\n\ngestures_count\n\n# A tibble: 60 × 3\n   background dyad  count\n   &lt;chr&gt;      &lt;chr&gt; &lt;dbl&gt;\n 1 Bengali    b01       9\n 2 Bengali    b02      18\n 3 Bengali    b03      15\n 4 Bengali    b04      21\n 5 Bengali    b05      13\n 6 Bengali    b06       6\n 7 Bengali    b07       6\n 8 Bengali    b08      19\n 9 Bengali    b09       6\n10 Bengali    b10       1\n# ℹ 50 more rows"
   },
   {
-    "objectID": "slides/04-bernoulli.html#logistic-function",
-    "href": "slides/04-bernoulli.html#logistic-function",
-    "title": "04 - Binary outcomes",
-    "section": "Logistic function",
-    "text": "Logistic function\n\n\nFigure 1: Correspondence between log-odds and probabilities."
+    "objectID": "slides/05-pois-ord.html#infants-gestures",
+    "href": "slides/05-pois-ord.html#infants-gestures",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "Infants’ gestures",
+    "text": "Infants’ gestures\n\ngestures_count |&gt; \n  ggplot(aes(background, count, colour = background)) +\n  geom_point() +\n  labs(x = element_blank(), y = \"Number of gestures\") +\n  theme(legend.position = \"none\")\n\n\n\nFigure 1: Number of gestures by infant and group."
   },
   {
-    "objectID": "slides/04-bernoulli.html#bernoulli-regression-models",
-    "href": "slides/04-bernoulli.html#bernoulli-regression-models",
-    "title": "04 - Binary outcomes",
-    "section": "Bernoulli (regression) models",
-    "text": "Bernoulli (regression) models\n\n\nBernoulli models use the logistic function to treat probabilities as if they were unbounded.\nThe model’s estimates are in log-odds.\nLog-odds can be converted back to probabilities with the inverse logit function (plogis() in R).\n\n\n\n\n\nBernoulli models are also known as binomial or logistic regression."
+    "objectID": "slides/05-pois-ord.html#infants-gestures-histogram",
+    "href": "slides/05-pois-ord.html#infants-gestures-histogram",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "Infants’ gestures: histogram",
+    "text": "Infants’ gestures: histogram\n\ngestures_count |&gt; \n  ggplot(aes(count, fill = background)) +\n  geom_histogram(alpha = 0.9, binwidth = 5) +\n  facet_grid(rows = vars(background)) +\n  labs(x = \"Number of gestures\", y = \"Number of infants\", caption = \"Bin width = 5.\") +\n  theme(legend.position = \"none\")\n\n\n\nFigure 2: Histogram of number of gestures by group."
   },
   {
-    "objectID": "slides/04-bernoulli.html#a-bernoulli-regression-of-accuracy-code",
-    "href": "slides/04-bernoulli.html#a-bernoulli-regression-of-accuracy-code",
-    "title": "04 - Binary outcomes",
-    "section": "A Bernoulli regression of accuracy: code",
-    "text": "A Bernoulli regression of accuracy: code\n\nacc_bern &lt;- brm(\n  ACC ~ 1 + PhonLev,\n  family = bernoulli,\n  data = mald,\n  cores = 4,\n  seed = 8230,\n  file = \"data/cache/acc_bern\"\n)"
+    "objectID": "slides/05-pois-ord.html#poisson-regression-code",
+    "href": "slides/05-pois-ord.html#poisson-regression-code",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "Poisson regression: code",
+    "text": "Poisson regression: code\n\ngest_pois &lt;- brm(\n  count ~ 0 + background,\n  family = poisson,\n  data = gestures_count,\n  cores = 4,\n  seed = 8712,\n  file = \"data/cache/gest_pois\"\n)"
   },
   {
-    "objectID": "slides/04-bernoulli.html#a-bernoulli-regression-of-accuracy-predicted-accuracy",
-    "href": "slides/04-bernoulli.html#a-bernoulli-regression-of-accuracy-predicted-accuracy",
-    "title": "04 - Binary outcomes",
-    "section": "A Bernoulli regression of accuracy: predicted accuracy",
-    "text": "A Bernoulli regression of accuracy: predicted accuracy\n\nconditional_effects(acc_bern)\n\n\n\nFigure 2: Predicted accuracy based on phonetic distance."
+    "objectID": "slides/05-pois-ord.html#poisson-regression-posterior-predictive-check",
+    "href": "slides/05-pois-ord.html#poisson-regression-posterior-predictive-check",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "Poisson regression: posterior predictive check",
+    "text": "Poisson regression: posterior predictive check\n\npp_check(gest_pois, ndraws = 20)\n\n\n\nFigure 3: Posterior predictive check plot of gest_pois."
   },
   {
-    "objectID": "slides/04-bernoulli.html#brentari-2024-lengua-de-señas-nicaragüense-lsn",
-    "href": "slides/04-bernoulli.html#brentari-2024-lengua-de-señas-nicaragüense-lsn",
-    "title": "04 - Binary outcomes",
-    "section": "Brentari 2024: Lengua de Señas Nicaragüense (LSN)",
-    "text": "Brentari 2024: Lengua de Señas Nicaragüense (LSN)\n\nbrentari2024 &lt;- read_csv(\"data/brentari2024/verb_org.csv\")\n\nbrentari2024\n\n# A tibble: 630 × 6\n   Group    Participant Object   Number Agency   Num_Predicates\n   &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt;         \n 1 homesign           1 book     single agent    multiple      \n 2 homesign           1 book     single agent    multiple      \n 3 homesign           1 book     plural no_agent multiple      \n 4 homesign           1 coin     single agent    single        \n 5 homesign           1 coin     plural no_agent single        \n 6 homesign           1 coin     single no_agent single        \n 7 homesign           1 coin     single no_agent multiple      \n 8 homesign           1 lollipop single agent    single        \n 9 homesign           1 lollipop single agent    single        \n10 homesign           1 lollipop plural no_agent single        \n# ℹ 620 more rows"
+    "objectID": "slides/05-pois-ord.html#negative-binomial-regression-code",
+    "href": "slides/05-pois-ord.html#negative-binomial-regression-code",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "Negative binomial regression: code",
+    "text": "Negative binomial regression: code\n\ngest_negb &lt;- brm(\n  count ~ 0 + background,\n  family = negbinomial,\n  data = gestures_count,\n  cores = 4,\n  seed = 8258,\n  file = \"data/cache/gest_negb\"\n)"
   },
   {
-    "objectID": "slides/04-bernoulli.html#brentari-2024",
-    "href": "slides/04-bernoulli.html#brentari-2024",
-    "title": "04 - Binary outcomes",
-    "section": "Brentari 2024",
-    "text": "Brentari 2024\n\nbrentari2024 |&gt; \n  ggplot(aes(Group, fill = Num_Predicates)) +\n  geom_bar(position = \"fill\") +\n  labs(y = \"Proportion\")\n\n\n\nFigure 3: Proportion of predicate type by group."
+    "objectID": "slides/05-pois-ord.html#negative-binomial-posterior-predictive-check",
+    "href": "slides/05-pois-ord.html#negative-binomial-posterior-predictive-check",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "Negative binomial: posterior predictive check",
+    "text": "Negative binomial: posterior predictive check\n\npp_check(gest_negb, ndraws = 20)\n\n\n\nFigure 4: Posterior predictive check of gest_negb."
   },
   {
-    "objectID": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type",
-    "href": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type",
-    "title": "04 - Binary outcomes",
-    "section": "A Bernoulli model of predicate type",
-    "text": "A Bernoulli model of predicate type\n\\[\n\\begin{align}\npred_i & \\sim Bernoulli(p_i)\\\\\nlogit(p_i) & = \\beta_1 \\cdot G_{\\text{HS}[i]} + \\beta_2 \\cdot G_{\\text{NSL1}[i]} + \\beta_3 \\cdot G_{\\text{NSL2}[i]}\n\\end{align}\n\\]\n\n\nlogit(p) indicates a logit function is used (so the estimates are in log-odds).\n\\(G_{\\text{HS}[i]}, G_{\\text{NSL1}[i]},G_{\\text{NSL2}[i]}\\) are indicator variables, a way of including categorical predictors in a regression model."
+    "objectID": "slides/05-pois-ord.html#negative-binomial-predicted-counts",
+    "href": "slides/05-pois-ord.html#negative-binomial-predicted-counts",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "Negative binomial: predicted counts",
+    "text": "Negative binomial: predicted counts\n\nconditional_effects(gest_negb)\n\n\n\nFigure 5: Predicted counts of gestures by background."
   },
   {
-    "objectID": "slides/04-bernoulli.html#indicator-variables",
-    "href": "slides/04-bernoulli.html#indicator-variables",
-    "title": "04 - Binary outcomes",
-    "section": "Indicator variables",
-    "text": "Indicator variables\n\n\n\n\n\\(G_{\\text{HS}}\\)\n\\(G_{\\text{NSL1}}\\)\n\\(G_{\\text{NSL2}}\\)\n\n\n\n\nHomesign\n1\n0\n0\n\n\nNSL1\n0\n1\n0\n\n\nNSL2\n0\n0\n1\n\n\n\n\n\\[\n\\begin{align}\nlogit(p_i) & = \\beta_1 \\cdot G_{\\text{HS}[i]} + \\beta_2 \\cdot G_{\\text{NSL1}[i]} + \\beta_3 \\cdot G_{\\text{NSL2}[i]}\\\\\n\\text{homesign, } logit(p_i) & = \\beta_1 \\cdot 1 + \\beta_2 \\cdot 0 + \\beta_3 \\cdot 0\\\\\n& = \\beta_1\\\\\n\\text{NSL1, } logit(p_i) & = \\beta_1 \\cdot 0 + \\beta_2 \\cdot 1 + \\beta_3 \\cdot 0\\\\\n& = \\beta_2\\\\\n\\text{NSL2, } logit(p_i) & = \\beta_1 \\cdot 0 + \\beta_2 \\cdot 0 + \\beta_3 \\cdot 1\\\\\n& = \\beta_3\\\\\n\\end{align}\n\\]"
-  },
-  {
-    "objectID": "slides/04-bernoulli.html#indicator-variables-1",
-    "href": "slides/04-bernoulli.html#indicator-variables-1",
-    "title": "04 - Binary outcomes",
-    "section": "Indicator variables",
-    "text": "Indicator variables\n\n\nNote that indicator variables are dealt with by brms under the hood.\nWe talk about them to understand how the model is set up.\n\n\n\n\n\nThe model will estimate the probability \\(p\\) for each group.\nBut… the probability of what?"
-  },
-  {
-    "objectID": "slides/04-bernoulli.html#prepare-data",
-    "href": "slides/04-bernoulli.html#prepare-data",
-    "title": "04 - Binary outcomes",
-    "section": "Prepare data",
-    "text": "Prepare data\n\ntable(brentari2024$Num_Predicates)\n\n\nmultiple   single \n     215      415 \n\n\n\n\nbrentari2024 &lt;- brentari2024 |&gt; \n  mutate(\n    Pred_Type = factor(Num_Predicates, levels = c(\"single\", \"multiple\"))\n  )\n\ntable(brentari2024$Pred_Type)\n\n\n  single multiple \n     415      215 \n\n\n\n\n\n\nThe model will estimate the probability \\(p\\) of finding a multiple predicate, depending on group."
-  },
-  {
-    "objectID": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-suppress-the-intercept",
-    "href": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-suppress-the-intercept",
-    "title": "04 - Binary outcomes",
-    "section": "A Bernoulli model of predicate type: suppress the intercept",
-    "text": "A Bernoulli model of predicate type: suppress the intercept\n\n\nv1_duration ~ 1 + speech_rate_c\n\n\n1 stands for “intercept”. The model has an intercept and a slope.\n\n\n\n\n\nPred_Type ~ 0 + Group\n\n\n0 stands for “suppress the overall intercept”. The model estimates one “intercept” per level."
-  },
-  {
-    "objectID": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-code",
-    "href": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-code",
-    "title": "04 - Binary outcomes",
-    "section": "A Bernoulli model of predicate type: code",
-    "text": "A Bernoulli model of predicate type: code\n\npred_bern &lt;- brm(\n  Pred_Type ~ 0 + Group,\n  family = bernoulli,\n  data = brentari2024,\n  cores = 4,\n  seed = 3218,\n  file = \"data/cache/pred_bern\"\n)"
-  },
-  {
-    "objectID": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-summary",
-    "href": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-summary",
-    "title": "04 - Binary outcomes",
-    "section": "A Bernoulli model of predicate type: summary",
-    "text": "A Bernoulli model of predicate type: summary\n\nsummary(pred_bern)\n\n Family: bernoulli \n  Links: mu = logit \nFormula: Pred_Type ~ 0 + Group \n   Data: brentari2024 (Number of observations: 630) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n              Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nGrouphomesign    -0.57      0.16    -0.87    -0.26 1.00     4384     3351\nGroupNSL1        -1.46      0.17    -1.79    -1.14 1.00     4209     2946\nGroupNSL2        -0.02      0.14    -0.29     0.25 1.00     3865     2727\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
-  },
-  {
-    "objectID": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-predicted-probability",
-    "href": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-predicted-probability",
-    "title": "04 - Binary outcomes",
-    "section": "A Bernoulli model of predicate type: predicted probability",
-    "text": "A Bernoulli model of predicate type: predicted probability\n\nconditional_effects(pred_bern)\n\n\n\nFigure 4: Predicted probability of multiple predicate by group."
-  },
-  {
-    "objectID": "slides/04-bernoulli.html#posterior-draws",
-    "href": "slides/04-bernoulli.html#posterior-draws",
-    "title": "04 - Binary outcomes",
+    "objectID": "slides/05-pois-ord.html#posterior-draws",
+    "href": "slides/05-pois-ord.html#posterior-draws",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Posterior draws",
-    "text": "Posterior draws\n\npred_bern_draws &lt;- as_draws_df(pred_bern)\n\npred_bern_draws\n\n# A draws_df: 1000 iterations, 4 chains, and 5 variables\n   b_Grouphomesign b_GroupNSL1 b_GroupNSL2 lprior lp__\n1            -0.43        -1.6      -0.112      0 -381\n2            -0.17        -1.5      -0.049      0 -384\n3            -0.81        -1.4      -0.205      0 -383\n4            -0.52        -1.4      -0.110      0 -381\n5            -0.74        -1.4      -0.175      0 -382\n6            -0.21        -1.2       0.065      0 -384\n7            -0.89        -1.3      -0.037      0 -383\n8            -0.47        -1.3       0.095      0 -381\n9            -0.56        -1.3       0.081      0 -381\n10           -0.67        -1.5       0.048      0 -381\n# ... with 3990 more draws\n# ... hidden reserved variables {'.chain', '.iteration', '.draw'}"
+    "text": "Posterior draws\n\ngest_negb_draws &lt;- as_draws_df(gest_negb)\n\ngest_negb_draws\n\n# A draws_df: 1000 iterations, 4 chains, and 6 variables\n   b_backgroundBengali b_backgroundChinese b_backgroundEnglish shape lprior\n1                  2.6                 2.3                 2.3  1.05   -1.6\n2                  2.7                 2.5                 2.4  0.97   -1.5\n3                  2.6                 2.3                 2.5  0.77   -1.3\n4                  2.6                 2.6                 2.0  1.07   -1.6\n5                  2.8                 2.1                 2.2  1.70   -2.2\n6                  2.5                 2.3                 2.8  1.39   -2.0\n7                  2.4                 2.3                 2.7  1.29   -1.9\n8                  2.5                 2.7                 2.2  0.83   -1.4\n9                  2.7                 2.1                 2.7  0.97   -1.5\n10                 2.7                 2.8                 2.5  0.81   -1.4\n   lp__\n1  -211\n2  -211\n3  -212\n4  -212\n5  -218\n6  -217\n7  -215\n8  -212\n9  -214\n10 -213\n# ... with 3990 more draws\n# ... hidden reserved variables {'.chain', '.iteration', '.draw'}"
   },
   {
-    "objectID": "slides/04-bernoulli.html#credible-intervals-log-odds",
-    "href": "slides/04-bernoulli.html#credible-intervals-log-odds",
-    "title": "04 - Binary outcomes",
-    "section": "Credible intervals: log-odds",
-    "text": "Credible intervals: log-odds\n\nlibrary(posterior)\n\npred_bern_draws |&gt; \n  pivot_longer(b_Grouphomesign:b_GroupNSL2, names_to = \"coef\", values_to = \"est\") |&gt; \n  group_by(coef) |&gt; \n  summarise(\n    ci_lo = quantile2(est, probs = 0.025),\n    ci_hi = quantile2(est, probs = 0.975)\n  )\n\n# A tibble: 3 × 3\n  coef             ci_lo  ci_hi\n  &lt;chr&gt;            &lt;dbl&gt;  &lt;dbl&gt;\n1 b_GroupNSL1     -1.79  -1.14 \n2 b_GroupNSL2     -0.292  0.250\n3 b_Grouphomesign -0.870 -0.257"
+    "objectID": "slides/05-pois-ord.html#predicted-counts",
+    "href": "slides/05-pois-ord.html#predicted-counts",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "Predicted counts",
+    "text": "Predicted counts\n\ngest_negb_draws &lt;- gest_negb_draws |&gt; \n  mutate(\n    Bengali = exp(b_backgroundBengali),\n    Chinese = exp(b_backgroundChinese),\n    English = exp(b_backgroundEnglish)\n  )\n\ngest_negb_draws |&gt; select(Bengali:English)\n\n# A tibble: 4,000 × 3\n   Bengali Chinese English\n     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;\n 1    13.0    9.86    9.83\n 2    14.4   11.8    10.5 \n 3    14.0    9.74   12.5 \n 4    13.9   13.7     7.16\n 5    17.1    8.31    9.35\n 6    12.2    9.90   16.3 \n 7    11.5   10.3    14.3 \n 8    12.4   15.1     8.72\n 9    14.7    8.29   15.0 \n10    15.1   16.8    11.9 \n# ℹ 3,990 more rows"
   },
   {
-    "objectID": "slides/04-bernoulli.html#credible-intervals-probabilities",
-    "href": "slides/04-bernoulli.html#credible-intervals-probabilities",
-    "title": "04 - Binary outcomes",
-    "section": "Credible intervals: probabilities",
-    "text": "Credible intervals: probabilities\n\npred_bern_draws |&gt; \n  pivot_longer(b_Grouphomesign:b_GroupNSL2, names_to = \"coef\", values_to = \"est\") |&gt; \n  group_by(coef) |&gt; \n  summarise(\n    ci_lo = round(quantile2(plogis(est), probs = 0.025), 2),\n    ci_hi = round(quantile2(plogis(est), probs = 0.975), 2)\n  )\n\n# A tibble: 3 × 3\n  coef            ci_lo ci_hi\n  &lt;chr&gt;           &lt;dbl&gt; &lt;dbl&gt;\n1 b_GroupNSL1      0.14  0.24\n2 b_GroupNSL2      0.43  0.56\n3 b_Grouphomesign  0.3   0.44"
+    "objectID": "slides/05-pois-ord.html#credible-intervals-counts",
+    "href": "slides/05-pois-ord.html#credible-intervals-counts",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "Credible intervals: counts",
+    "text": "Credible intervals: counts\n\ngest_negb_draws |&gt; \n  select(Bengali:English) |&gt; \n  pivot_longer(Bengali:English, names_to = \"coef\", values_to = \"est\") |&gt; \n  group_by(coef) |&gt; \n  summarise(\n    ci_lo = round(quantile2(est, probs = 0.025)),\n    ci_hi = round(quantile2(est, probs = 0.975))\n  )\n\n# A tibble: 3 × 3\n  coef    ci_lo ci_hi\n  &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;\n1 Bengali     9    24\n2 Chinese     7    20\n3 English     6    16"
   },
   {
-    "objectID": "slides/04-bernoulli.html#what-about-comparing-the-groups",
-    "href": "slides/04-bernoulli.html#what-about-comparing-the-groups",
-    "title": "04 - Binary outcomes",
-    "section": "What about comparing the groups?",
-    "text": "What about comparing the groups?\n\nWhat if we want to know the difference between each group?\n\n\n\n\nWe can use the posterior draws. Simply take the row-wise difference and you will get a list of differences.\nThese are the posterior differences."
+    "objectID": "slides/05-pois-ord.html#summary-i",
+    "href": "slides/05-pois-ord.html#summary-i",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "Summary I",
+    "text": "Summary I\n\n\nCount data (like the number of infants’ gestures, or number of occurrences in a corpus) can be modelled with a Poisson distribution.\nIf the data has over-dispersion, the negative binomial distribution might be better.\nThe model estimates are in logged counts. Use exp() to convert them back to counts."
   },
   {
-    "objectID": "slides/04-bernoulli.html#comparing-groups",
-    "href": "slides/04-bernoulli.html#comparing-groups",
-    "title": "04 - Binary outcomes",
-    "section": "Comparing groups",
-    "text": "Comparing groups\n\npred_bern_draws &lt;- pred_bern_draws |&gt; \n  mutate(\n    NSL1_homesign = b_GroupNSL1 - b_Grouphomesign,\n    NSL2_homesign = b_GroupNSL2 - b_Grouphomesign,\n    NSL2_NSL1 = b_GroupNSL2 - b_GroupNSL1\n  )\n\npred_bern_draws\n\n# A draws_df: 1000 iterations, 4 chains, and 8 variables\n   b_Grouphomesign b_GroupNSL1 b_GroupNSL2 lprior lp__ NSL1_homesign\n1            -0.43        -1.6      -0.112      0 -381         -1.13\n2            -0.17        -1.5      -0.049      0 -384         -1.29\n3            -0.81        -1.4      -0.205      0 -383         -0.64\n4            -0.52        -1.4      -0.110      0 -381         -0.86\n5            -0.74        -1.4      -0.175      0 -382         -0.71\n6            -0.21        -1.2       0.065      0 -384         -1.04\n7            -0.89        -1.3      -0.037      0 -383         -0.44\n8            -0.47        -1.3       0.095      0 -381         -0.85\n9            -0.56        -1.3       0.081      0 -381         -0.78\n10           -0.67        -1.5       0.048      0 -381         -0.83\n   NSL2_homesign NSL2_NSL1\n1           0.32       1.4\n2           0.12       1.4\n3           0.61       1.2\n4           0.41       1.3\n5           0.56       1.3\n6           0.28       1.3\n7           0.85       1.3\n8           0.57       1.4\n9           0.64       1.4\n10          0.72       1.6\n# ... with 3990 more draws\n# ... hidden reserved variables {'.chain', '.iteration', '.draw'}"
+    "objectID": "slides/05-pois-ord.html#likert-scales",
+    "href": "slides/05-pois-ord.html#likert-scales",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "Likert scales",
+    "text": "Likert scales\n\nemilianto &lt;- readRDS(\"data/hampton2023/emilianto_attitude.rds\")\n\nemilian &lt;- emilianto |&gt; \n  filter(language == \"Emilian\")\n\nemilian |&gt; select(comprehend, speak, commuter, age)\n\n# A tibble: 434 × 4\n   comprehend speak commuter   age\n   &lt;ord&gt;      &lt;ord&gt; &lt;chr&gt;    &lt;dbl&gt;\n 1 VG         VG    Sí          57\n 2 G          50/50 No          20\n 3 VG         VG    No          50\n 4 50/50      NO    No          25\n 5 VG         VG    No          65\n 6 VG         VG    No          56\n 7 VG         VG    No          62\n 8 VG         VG    No          65\n 9 VG         VG    No          63\n10 VG         G     No          61\n# ℹ 424 more rows"
   },
   {
-    "objectID": "slides/04-bernoulli.html#credible-intervals-of-the-difference-log-odds",
-    "href": "slides/04-bernoulli.html#credible-intervals-of-the-difference-log-odds",
-    "title": "04 - Binary outcomes",
-    "section": "Credible Intervals of the difference: log-odds",
-    "text": "Credible Intervals of the difference: log-odds\n\npred_bern_draws |&gt; \n  pivot_longer(NSL1_homesign:NSL2_NSL1, names_to = \"coef\", values_to = \"est\") |&gt; \n  group_by(coef) |&gt; \n  summarise(\n    ci_lo = round(quantile2(est, probs = 0.025), 2),\n    ci_hi = round(quantile2(est, probs = 0.975), 2)\n  )\n\n# A tibble: 3 × 3\n  coef          ci_lo ci_hi\n  &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt;\n1 NSL1_homesign -1.34 -0.46\n2 NSL2_NSL1      1.03  1.87\n3 NSL2_homesign  0.11  0.95"
+    "objectID": "slides/05-pois-ord.html#an-ordinal-model-of-comprehension-code",
+    "href": "slides/05-pois-ord.html#an-ordinal-model-of-comprehension-code",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "An ordinal model of comprehension: code",
+    "text": "An ordinal model of comprehension: code\n\ncompr_ord &lt;- brm(\n  comprehend ~ cs(commuter),\n  family = acat(link = \"probit\"),\n  data = emilian,\n  cores = 4,\n  seed = 1523,\n  file = \"data/cache/compr_ord\"\n)"
   },
   {
-    "objectID": "slides/04-bernoulli.html#credible-intervals-of-the-difference-probabilities",
-    "href": "slides/04-bernoulli.html#credible-intervals-of-the-difference-probabilities",
-    "title": "04 - Binary outcomes",
-    "section": "Credible Intervals of the difference: probabilities",
-    "text": "Credible Intervals of the difference: probabilities\n\npred_bern_draws |&gt; \n  mutate(\n    NSL1_homesign_p = plogis(b_GroupNSL1) - plogis(b_Grouphomesign),\n    NSL2_homesign_p = plogis(b_GroupNSL2) - plogis(b_Grouphomesign),\n    NSL2_NSL1_p = plogis(b_GroupNSL2) - plogis(b_GroupNSL1)\n  ) |&gt; \n  pivot_longer(NSL1_homesign_p:NSL2_NSL1_p, names_to = \"coef\", values_to = \"est_p\") |&gt; \n  group_by(coef) |&gt; \n  summarise(\n    ci_lo = round(quantile2(est_p, probs = 0.025), 2),\n    ci_hi = round(quantile2(est_p, probs = 0.975), 2)\n  )\n\n# A tibble: 3 × 3\n  coef            ci_lo ci_hi\n  &lt;chr&gt;           &lt;dbl&gt; &lt;dbl&gt;\n1 NSL1_homesign_p -0.26 -0.09\n2 NSL2_NSL1_p      0.22  0.39\n3 NSL2_homesign_p  0.03  0.23"
+    "objectID": "slides/05-pois-ord.html#predicted-probability-of-each",
+    "href": "slides/05-pois-ord.html#predicted-probability-of-each",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "Predicted probability of each",
+    "text": "Predicted probability of each\n\nconditional_effects(compr_ord, categorical = TRUE)\n\n\n\nFigure 6: Predicted probability of comprehension levels by commuter status."
   },
   {
-    "objectID": "slides/04-bernoulli.html#summary",
-    "href": "slides/04-bernoulli.html#summary",
-    "title": "04 - Binary outcomes",
+    "objectID": "slides/05-pois-ord.html#an-ordinal-model-of-speaking-proficiency-code",
+    "href": "slides/05-pois-ord.html#an-ordinal-model-of-speaking-proficiency-code",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "An ordinal model of speaking proficiency: code",
+    "text": "An ordinal model of speaking proficiency: code\n\nspeak_ord &lt;- brm(\n  speak ~ age,\n  family = acat(link = \"probit\"),\n  data = emilian,\n  cores = 4,\n  seed = 1523,\n  file = \"data/cache/speak_ord\"\n)"
+  },
+  {
+    "objectID": "slides/05-pois-ord.html#predicted-probability-of-speaking-proficiency",
+    "href": "slides/05-pois-ord.html#predicted-probability-of-speaking-proficiency",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "Predicted probability of speaking proficiency",
+    "text": "Predicted probability of speaking proficiency\n\nconditional_effects(speak_ord, categorical = TRUE)\n\n\n\nFigure 7: Predicted probability of speaking proficiency levels by age."
+  },
+  {
+    "objectID": "slides/05-pois-ord.html#summary-ii",
+    "href": "slides/05-pois-ord.html#summary-ii",
+    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "Summary II",
+    "text": "Summary II\n\n\nLikert scale data can be modelled with a an ordinal distribution.\nOrdinal models estimate the probability of each level in the scale."
+  },
+  {
+    "objectID": "slides/03-regression.html#vowel-duration",
+    "href": "slides/03-regression.html#vowel-duration",
+    "title": "03 - Regression models",
+    "section": "Vowel duration",
+    "text": "Vowel duration"
+  },
+  {
+    "objectID": "slides/03-regression.html#vowel-durations-plot",
+    "href": "slides/03-regression.html#vowel-durations-plot",
+    "title": "03 - Regression models",
+    "section": "Vowel durations: plot",
+    "text": "Vowel durations: plot\n\n\nFigure 1: Vowel duration and speech rate."
+  },
+  {
+    "objectID": "slides/03-regression.html#a-log-normal-model-of-vowel-duration",
+    "href": "slides/03-regression.html#a-log-normal-model-of-vowel-duration",
+    "title": "03 - Regression models",
+    "section": "A log-normal model of vowel duration",
+    "text": "A log-normal model of vowel duration\n\\[\ndur \\sim LogNormal(\\mu, \\sigma)\n\\]\n\n\ndur_logn &lt;- brm(\n  v1_duration ~ 1,\n  family = lognormal,\n  data = durations\n)\n\n\n\n\nBut we want to investigate the relationship between speech rate and vowel duration!"
+  },
+  {
+    "objectID": "slides/03-regression.html#allow-mu-to-vary-depending-on-speech-rate",
+    "href": "slides/03-regression.html#allow-mu-to-vary-depending-on-speech-rate",
+    "title": "03 - Regression models",
+    "section": "Allow \\(\\mu\\) to vary depending on speech rate",
+    "text": "Allow \\(\\mu\\) to vary depending on speech rate\n\\[\n\\begin{align}\ndur_i & \\sim LogNormal(\\mu_i, \\sigma)\\\\\n\\mu_i & = \\beta_0 + \\beta_1 \\cdot SR_i\\\\\n\\end{align}\n\\]\n\n\nDoes the formula for \\(\\mu\\) ring a bell?"
+  },
+  {
+    "objectID": "slides/03-regression.html#the-formula-of-a-line",
+    "href": "slides/03-regression.html#the-formula-of-a-line",
+    "title": "03 - Regression models",
+    "section": "The formula of a line",
+    "text": "The formula of a line\n\n\\[\ny = a + b \\cdot x\n\\]\n\n\\(a\\) is the line’s intercept. This is \\(y\\) when \\(x\\) is 0.\n\\(b\\) is the line’s slope (aka gradient). This is the change in \\(y\\) for every unit increase of \\(x\\).\n\nSee Linear models illustrated."
+  },
+  {
+    "objectID": "slides/03-regression.html#regression-model-of-vowel-duration",
+    "href": "slides/03-regression.html#regression-model-of-vowel-duration",
+    "title": "03 - Regression models",
+    "section": "Regression model of vowel duration",
+    "text": "Regression model of vowel duration\n\\[\n\\begin{align}\ndur_i & \\sim LogNormal(\\mu_i, \\sigma)\\\\\n\\mu_i & = \\beta_0 + \\beta_1 \\cdot SR_i\\\\\n\\end{align}\n\\]\n\n\n\\(\\beta_0\\) is the intercept. This is the mean vowel duration when speech rate is 0.\n\\(\\beta_1\\) is the slope. This is the change in vowel duration for each unit increase of speech rate (syl/s)."
+  },
+  {
+    "objectID": "slides/03-regression.html#but",
+    "href": "slides/03-regression.html#but",
+    "title": "03 - Regression models",
+    "section": "But…",
+    "text": "But…\n\nSpeech rate 0 doesn’t make sense!\n\nSpeech rate cannot be zero syllables per second.\n\n\n\n\nWe can centre speech rate.\n\nSubtract the mean speech rate from all the speech rate values."
+  },
+  {
+    "objectID": "slides/03-regression.html#centred-speech-rate",
+    "href": "slides/03-regression.html#centred-speech-rate",
+    "title": "03 - Regression models",
+    "section": "Centred speech rate",
+    "text": "Centred speech rate\n\nmean(durations$speech_rate, na.rm = TRUE)\n\n[1] 5.314752\n\ndurations &lt;- durations |&gt; \n  mutate(\n    speech_rate_c = speech_rate - mean(speech_rate, na.rm = TRUE)\n  )\n\n\n\nspeach_rate_c = 0 means mean speech rate."
+  },
+  {
+    "objectID": "slides/03-regression.html#centred-speech-rate-plot",
+    "href": "slides/03-regression.html#centred-speech-rate-plot",
+    "title": "03 - Regression models",
+    "section": "Centred speech rate: plot",
+    "text": "Centred speech rate: plot\n\n\nFigure 2: Vowel duration and (centred) speech rate."
+  },
+  {
+    "objectID": "slides/03-regression.html#regression-model-of-vowel-durations-centred-speech-rate",
+    "href": "slides/03-regression.html#regression-model-of-vowel-durations-centred-speech-rate",
+    "title": "03 - Regression models",
+    "section": "Regression model of vowel durations: centred speech rate",
+    "text": "Regression model of vowel durations: centred speech rate\n\\[\n\\begin{align}\ndur_i & \\sim LogNormal(\\mu_i, \\sigma)\\\\\n\\mu_i & = \\beta_0 + \\beta_1 \\cdot SR_{ctr[i]}\\\\\n\\end{align}\n\\]\n\n\n\\(\\beta_0\\) is the intercept. This is the mean RT when centred speech rate is 0 (i.e. when speech rate is at its mean = NA).\n\\(\\beta_1\\) is the slope. This is the change in RT for each unit increase of centred speech rate (i.e for every unit increase of speech rate)."
+  },
+  {
+    "objectID": "slides/03-regression.html#regression-model-of-vowel-durations-code",
+    "href": "slides/03-regression.html#regression-model-of-vowel-durations-code",
+    "title": "03 - Regression models",
+    "section": "Regression model of vowel durations: code",
+    "text": "Regression model of vowel durations: code\n\ndur_sr &lt;- brm(\n  v1_duration ~ 1 + speech_rate_c,\n  family = lognormal,\n  data = durations,\n  cores = 4,\n  seed = 1032,\n  file = \"data/cache/dur_sr\"\n)"
+  },
+  {
+    "objectID": "slides/03-regression.html#regression-model-summary",
+    "href": "slides/03-regression.html#regression-model-summary",
+    "title": "03 - Regression models",
+    "section": "Regression model: summary",
+    "text": "Regression model: summary\n\nsummary(dur_sr)\n\n Family: lognormal \n  Links: mu = identity; sigma = identity \nFormula: v1_duration ~ 1 + speech_rate_c \n   Data: durations (Number of observations: 886) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n              Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept         4.72      0.01     4.71     4.74 1.00     4388     2452\nspeech_rate_c    -0.23      0.01    -0.25    -0.22 1.00     4482     2982\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma     0.22      0.01     0.21     0.23 1.00     3913     2983\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
+  },
+  {
+    "objectID": "slides/03-regression.html#interpreting-the-summary",
+    "href": "slides/03-regression.html#interpreting-the-summary",
+    "title": "03 - Regression models",
+    "section": "Interpreting the summary",
+    "text": "Interpreting the summary\n\\[\n\\begin{align}\ndur_i & \\sim LogNormal(\\mu_i, \\sigma)\\\\\n\\mu_i & = \\beta_0 + \\beta_1 \\cdot SR_{ctr[i]}\\\\\n\\end{align}\n\\]\n\nfixef(dur_sr)\n\n                Estimate   Est.Error       Q2.5      Q97.5\nIntercept      4.7230357 0.007580906  4.7081901  4.7379128\nspeech_rate_c -0.2344362 0.009378120 -0.2525304 -0.2157794\n\n\n\n\nIntercept is \\(\\beta_0\\): mean duration when speech rate is at mean.\nspeech_rate_c is \\(\\beta_1\\): change in duration for each unit increase of speech rate."
+  },
+  {
+    "objectID": "slides/03-regression.html#interpreting-the-summary-intercept",
+    "href": "slides/03-regression.html#interpreting-the-summary-intercept",
+    "title": "03 - Regression models",
+    "section": "Interpreting the summary: Intercept",
+    "text": "Interpreting the summary: Intercept\n\nfixef(dur_sr)\n\n                Estimate   Est.Error       Q2.5      Q97.5\nIntercept      4.7230357 0.007580906  4.7081901  4.7379128\nspeech_rate_c -0.2344362 0.009378120 -0.2525304 -0.2157794\n\n\n\n\nThe mean logged vowel duration is on average 4.72 (SD = 0.008).\nThere is a 95% probability that the mean logged vowel duration is between 4.71 and 4.74."
+  },
+  {
+    "objectID": "slides/03-regression.html#interpreting-the-summary-speech_rate_c",
+    "href": "slides/03-regression.html#interpreting-the-summary-speech_rate_c",
+    "title": "03 - Regression models",
+    "section": "Interpreting the summary: speech_rate_c",
+    "text": "Interpreting the summary: speech_rate_c\n\nfixef(dur_sr)\n\n                Estimate   Est.Error       Q2.5      Q97.5\nIntercept      4.7230357 0.007580906  4.7081901  4.7379128\nspeech_rate_c -0.2344362 0.009378120 -0.2525304 -0.2157794\n\n\n\n\nThe average change in logged vowel duration for each unit increase of speech rate is -0.23 (SD = 0.01).\nIn other words, for each increase of one syllable per second, the logged vowel duration decreases on average by -0.23.\nWe can be 95% confident that the decrease in logged duration is between -0.22 and -0.25."
+  },
+  {
+    "objectID": "slides/03-regression.html#plotting-the-model-predictions",
+    "href": "slides/03-regression.html#plotting-the-model-predictions",
+    "title": "03 - Regression models",
+    "section": "Plotting the model predictions",
+    "text": "Plotting the model predictions\n\nconditional_effects(dur_sr)\n\n\n\nFigure 3"
+  },
+  {
+    "objectID": "slides/03-regression.html#posterior-predictive-checks",
+    "href": "slides/03-regression.html#posterior-predictive-checks",
+    "title": "03 - Regression models",
+    "section": "Posterior predictive checks",
+    "text": "Posterior predictive checks\n\npp_check(dur_sr, ndraws = 20)\n\n\n\nFigure 4: Posterior predictive check plot of dur_sr."
+  },
+  {
+    "objectID": "slides/03-regression.html#summary",
+    "href": "slides/03-regression.html#summary",
+    "title": "03 - Regression models",
     "section": "Summary",
-    "text": "Summary\n\n\nBinary variables can be modelled with a Bernoulli distribution.\nBernoulli models estimate the probability \\(p\\) of the second level in the variable.\nCategorical predictors are modelled using indexing variables.\nYou can obtain posterior differences between levels by taking the difference of the posterior draws of those levels."
+    "text": "Summary\n\n\nRegression models are models that use the formula of a line.\nA simple regression model with one numeric predictor estimates the line’s intercept (\\(beta_0\\)) and slope (\\(beta_1\\)) and the overall standard deviation (\\(sigma\\)).\n\n\\[\n\\begin{align}\ny_i & \\sim LogNormal(\\mu_i, \\sigma)\\\\\n\\mu_i & = \\beta_0 + \\beta_1 \\cdot x\n\\end{align}\n\\]"
   },
   {
-    "objectID": "slides/02-lognormal.html#is-a-gaussian-model-a-good-choice",
-    "href": "slides/02-lognormal.html#is-a-gaussian-model-a-good-choice",
-    "title": "02 - Lognormal models",
-    "section": "Is a Gaussian model a good choice?",
-    "text": "Is a Gaussian model a good choice?\n\n\nFigure 1: Posterior predictive check plot of rt_gauss."
-  },
-  {
-    "objectID": "slides/02-lognormal.html#gaussian-variables-are-rare",
-    "href": "slides/02-lognormal.html#gaussian-variables-are-rare",
-    "title": "02 - Lognormal models",
-    "section": "Gaussian variables are rare…",
-    "text": "Gaussian variables are rare…\n\n\nReaction times can only be positive (negative values are excluded).\nVariables that can take only positive numbers (and are continuous) usually follow a log-normal distribution."
-  },
-  {
-    "objectID": "slides/02-lognormal.html#the-log-normal-distribution",
-    "href": "slides/02-lognormal.html#the-log-normal-distribution",
-    "title": "02 - Lognormal models",
-    "section": "The log-normal distribution",
-    "text": "The log-normal distribution\n\n\nFigure 2: Log-normal distributions with varying mean and SD."
-  },
-  {
-    "objectID": "slides/02-lognormal.html#a-log-normal-model-of-rts",
-    "href": "slides/02-lognormal.html#a-log-normal-model-of-rts",
-    "title": "02 - Lognormal models",
-    "section": "A log-normal model of RTs",
-    "text": "A log-normal model of RTs\n\\[\n\\begin{align}\nRT & \\sim LogNormal(\\mu, \\sigma)\\\\\n\\end{align}\n\\]\n\n\nRT follow a log-normal distribution with mean \\(\\mu\\) and standard deviation \\(\\sigma\\).\n\\(\\mu\\) and \\(sigma\\) are the mean and SD of logged RTs.\n\n\n\n\nequivalent to:\n\\[\n\\begin{align}\nlog(RT) & \\sim Gaussian(\\mu, \\sigma)\\\\\n\\end{align}\n\\]"
-  },
-  {
-    "objectID": "slides/02-lognormal.html#a-log-normal-model-of-rts-code",
-    "href": "slides/02-lognormal.html#a-log-normal-model-of-rts-code",
-    "title": "02 - Lognormal models",
-    "section": "A log-normal model of RTs: code",
-    "text": "A log-normal model of RTs: code\n\nrt_logn &lt;- brm(\n  RT ~ 1,\n  family = lognormal,\n  data = mald,\n  \n  ## Technical stuff\n  cores = 4,\n  seed = 1032,\n  file = \"data/cache/rt_logn\"\n)"
-  },
-  {
-    "objectID": "slides/02-lognormal.html#a-log-normal-model-of-rts-posterior-predictive-checks",
-    "href": "slides/02-lognormal.html#a-log-normal-model-of-rts-posterior-predictive-checks",
-    "title": "02 - Lognormal models",
-    "section": "A log-normal model of RTs: posterior predictive checks",
-    "text": "A log-normal model of RTs: posterior predictive checks\n\npp_check(rt_logn, ndraws = 20)\n\n\n\nFigure 3"
-  },
-  {
-    "objectID": "slides/02-lognormal.html#a-log-normal-model-of-rts-summary",
-    "href": "slides/02-lognormal.html#a-log-normal-model-of-rts-summary",
-    "title": "02 - Lognormal models",
-    "section": "A log-normal model of RTs: summary",
-    "text": "A log-normal model of RTs: summary\n\nsummary(rt_logn)\n\n Family: lognormal \n  Links: mu = identity; sigma = identity \nFormula: RT ~ 1 \n   Data: mald (Number of observations: 5000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n          Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept     6.88      0.00     6.87     6.88 1.00     3517     2562\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma     0.28      0.00     0.27     0.28 1.00     2245     2019\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
-  },
-  {
-    "objectID": "slides/02-lognormal.html#a-log-normal-model-of-rts-mcmc-draws",
-    "href": "slides/02-lognormal.html#a-log-normal-model-of-rts-mcmc-draws",
-    "title": "02 - Lognormal models",
-    "section": "A log-normal model of RTs: MCMC draws",
-    "text": "A log-normal model of RTs: MCMC draws\n\n\nThe MCMC draws are also called the posterior draws.\nThey allow us to construct the posterior probability distribution of each model parameter.\n\n\n\n\nrt_logn_draws &lt;- as_draws_df(rt_logn)\n\nrt_logn_draws\n\n# A draws_df: 1000 iterations, 4 chains, and 5 variables\n   b_Intercept sigma Intercept lprior   lp__\n1          6.9  0.28       6.9   -3.2 -35094\n2          6.9  0.28       6.9   -3.2 -35095\n3          6.9  0.27       6.9   -3.1 -35094\n4          6.9  0.28       6.9   -3.2 -35094\n5          6.9  0.28       6.9   -3.2 -35093\n6          6.9  0.28       6.9   -3.2 -35093\n7          6.9  0.27       6.9   -3.1 -35095\n8          6.9  0.28       6.9   -3.2 -35094\n9          6.9  0.28       6.9   -3.2 -35094\n10         6.9  0.28       6.9   -3.2 -35096\n# ... with 3990 more draws\n# ... hidden reserved variables {'.chain', '.iteration', '.draw'}"
-  },
-  {
-    "objectID": "slides/02-lognormal.html#plot-the-mcmc-draws-mu",
-    "href": "slides/02-lognormal.html#plot-the-mcmc-draws-mu",
-    "title": "02 - Lognormal models",
-    "section": "Plot the MCMC draws: \\(\\mu\\)",
-    "text": "Plot the MCMC draws: \\(\\mu\\)\n\nrt_logn_draws |&gt; \n  ggplot(aes(b_Intercept)) +\n  geom_density(alpha = 0.5, fill = \"darkgreen\") +\n  labs(x = expression(mu~\"of RTs (logged)\"))\n\n\n\nFigure 4: Posterior probability distribution of \\(\\mu\\) of RTs."
-  },
-  {
-    "objectID": "slides/02-lognormal.html#plot-the-mcmc-draws-mu-ms",
-    "href": "slides/02-lognormal.html#plot-the-mcmc-draws-mu-ms",
-    "title": "02 - Lognormal models",
-    "section": "Plot the MCMC draws: \\(\\mu\\) (ms)",
-    "text": "Plot the MCMC draws: \\(\\mu\\) (ms)\n\nrt_logn_draws |&gt; \n  ggplot(aes(exp(b_Intercept))) +\n  geom_density(alpha = 0.5, fill = \"darkgreen\") +\n  labs(x = expression(mu~\"of RTs (ms)\"))\n\n\n\nFigure 5: Posterior probability distribution of \\(\\mu\\) of RTs in ms."
-  },
-  {
-    "objectID": "slides/02-lognormal.html#summarise-the-mcmc-draws-mu",
-    "href": "slides/02-lognormal.html#summarise-the-mcmc-draws-mu",
-    "title": "02 - Lognormal models",
-    "section": "Summarise the MCMC draws: \\(\\mu\\)",
-    "text": "Summarise the MCMC draws: \\(\\mu\\)\n\nrt_logn_draws |&gt; \n  summarise(\n    mu_mean = round(mean(b_Intercept), 2),\n    mu_sd = round(sd(b_Intercept), 3)\n  )\n\n# A tibble: 1 × 2\n  mu_mean mu_sd\n    &lt;dbl&gt; &lt;dbl&gt;\n1    6.88 0.004"
-  },
-  {
-    "objectID": "slides/02-lognormal.html#summarise-the-mcmc-draws-mu-ms",
-    "href": "slides/02-lognormal.html#summarise-the-mcmc-draws-mu-ms",
-    "title": "02 - Lognormal models",
-    "section": "Summarise the MCMC draws: \\(\\mu\\) (ms)",
-    "text": "Summarise the MCMC draws: \\(\\mu\\) (ms)\n\nrt_logn_draws |&gt; \n  summarise(\n    mu_mean = round(mean(exp(b_Intercept))),\n    mu_sd = round(sd(exp(b_Intercept)))\n  )\n\n# A tibble: 1 × 2\n  mu_mean mu_sd\n    &lt;dbl&gt; &lt;dbl&gt;\n1     970     4\n\n\n\n\nThe mean RTs is on average 970 ms (SD = 4).\nAlways conditional on the model and the data.\n\n\n\n\\[\n\\text{SD}_{\\text{natural}} = \\sqrt{ \\left( e^{\\sigma^2} - 1 \\right) \\cdot e^{2\\mu + \\sigma^2} }\n\\]"
-  },
-  {
-    "objectID": "slides/02-lognormal.html#credible-intervals",
-    "href": "slides/02-lognormal.html#credible-intervals",
-    "title": "02 - Lognormal models",
-    "section": "Credible Intervals",
-    "text": "Credible Intervals\n\n\nUncertainty can be quantified with Bayesian Credible Intervals (CrIs).\nA 95% CrI means that we can be 95% confident that the value is within the interval.\n\n\n\n\nFrequentist Confidence Intervals are often wrongly interpreted as Bayesian Credible Intervals (Tan and Tan 2010; Foster 2014; Crooks, Bartel, and Alibali 2019; Gigerenzer 2004; Cassidy et al. 2019).\n\n\n\n\n\nThere is nothing special about 95%. You should obtain several."
-  },
-  {
-    "objectID": "slides/02-lognormal.html#credible-intervals-higher-level-larger-width",
-    "href": "slides/02-lognormal.html#credible-intervals-higher-level-larger-width",
-    "title": "02 - Lognormal models",
-    "section": "Credible Intervals: higher level = larger width",
-    "text": "Credible Intervals: higher level = larger width\n\n\nFigure 6: Several quantiles of a Gaussian distribution."
-  },
-  {
-    "objectID": "slides/02-lognormal.html#calculate-cris",
-    "href": "slides/02-lognormal.html#calculate-cris",
-    "title": "02 - Lognormal models",
-    "section": "Calculate CrIs",
-    "text": "Calculate CrIs\n\nlibrary(posterior)\n\nrt_logn_draws |&gt; \n  mutate(\n    mu_ms = exp(b_Intercept)\n  ) |&gt; \n  summarise(\n    hi_95 = quantile2(mu_ms, probs = 0.025),\n    lo_95 = quantile2(mu_ms, probs = 0.975),\n    hi_80 = quantile2(mu_ms, probs = 0.1),\n    lo_80 = quantile2(mu_ms, probs = 0.9),\n    hi_60 = quantile2(mu_ms, probs = 0.2),\n    lo_60 = quantile2(mu_ms, probs = 0.8),\n  ) |&gt; \n  mutate(across(everything(), round))\n\n# A tibble: 1 × 6\n  hi_95 lo_95 hi_80 lo_80 hi_60 lo_60\n  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1   962   977   965   975   967   973"
-  },
-  {
-    "objectID": "slides/02-lognormal.html#report",
-    "href": "slides/02-lognormal.html#report",
-    "title": "02 - Lognormal models",
-    "section": "Report",
-    "text": "Report\n\nWe fitted a Bayesian log-normal model of reaction times (RTs) with brms (Bürkner 2017) in R (R Core Team 2025).\nAccording to the model, the mean RT is between 962 and 977 ms, at 95% confidence (in logged ms, \\(\\beta\\) = 6.88, SD = 0.004). At 80% probability, the mean RT is 965-975 ms, while at 60% probability it is 967-973 ms."
-  },
-  {
-    "objectID": "slides/02-lognormal.html#summary",
-    "href": "slides/02-lognormal.html#summary",
-    "title": "02 - Lognormal models",
-    "section": "Summary",
-    "text": "Summary\n\n\nGaussian variables are rare.\nVariables that are bounded to positive (real) numbers only usually follow a log-normal distribution. For example reaction times.\nLog-normal models estimate the mean and standard deviation of log-normal variables.\n\n\\[\ny \\sim LogNormal(\\mu, \\sigma)\n\\]"
-  },
-  {
-    "objectID": "slides/02-lognormal.html#references",
-    "href": "slides/02-lognormal.html#references",
-    "title": "02 - Lognormal models",
-    "section": "References",
-    "text": "References\n\n\n\n\nBürkner, Paul-Christian. 2017. “Brms: An r Package for Bayesian Multilevel Models Using Stan.” Journal of Statistical Software 80 (1): 128. https://doi.org/10.18637/jss.v080.i01.\n\n\nCassidy, Scott A., Ralitza Dimova, Benjamin Giguère, Jeffrey R. Spence, and David J. Stanley. 2019. “Failing Grade: 89 Per-Cent of Introduction to Psychology Textbooks That Define/Explain Statistical Significance Do so Incorrectly.” Advances in Methods and Practices in Psychological Science. https://doi.org/10.1177/2515245919858072.\n\n\nCrooks, Noelle M., Anna N. Bartel, and Martha W. Alibali. 2019. “Conceptual Knowledge of Confidence Intervals in Psychology Undergraduate and Graduate Students.” Statistics Education Research Journal 18 (1): 46–62. https://doi.org/10.52041/serj.v18i1.149.\n\n\nFoster, Colin. 2014. “Confidence Trick: The Interpretation of Confidence Intervals.” Canadian Journal of Science, Mathematics and Technology Education 14 (1): 2334. https://doi.org/10.1080/14926156.2014.874615.\n\n\nGigerenzer, Gerd. 2004. “Mindless Statistics.” The Journal of Socio-Economics 33 (5): 587606. https://doi.org/10.1016/j.socec.2004.09.033.\n\n\nR Core Team. 2025. R: A Language and Environment for Statistical Computing [Version 4.5.0].\n\n\nTan, Sze Huey, and Say Beng Tan. 2010. “The Correct Interpretation of Confidence Intervals.” Proceedings of Singapore Healthcare 19 (3): 276278. https://doi.org/10.1177/201010581001900316."
-  },
-  {
-    "objectID": "setup.html",
-    "href": "setup.html",
-    "title": "Pre-workshop set-up",
-    "section": "",
-    "text": "Please, follow these instructions carefully to get ready at least one day before the workshop."
-  },
-  {
-    "objectID": "setup.html#pre-requisites",
-    "href": "setup.html#pre-requisites",
-    "title": "Pre-workshop set-up",
-    "section": "Pre-requisites",
-    "text": "Pre-requisites\nBefore installing the necessary software, make sure you have installed or updated the following software.\n\nThe latest version of R (https://cloud.r-project.org).\nThe latest version of RStudio (https://www.rstudio.com/products/rstudio/download/#download).\nYour operating system is up-to-date."
-  },
-  {
-    "objectID": "setup.html#installation",
-    "href": "setup.html#installation",
-    "title": "Pre-workshop set-up",
-    "section": "Installation",
-    "text": "Installation\n\n\n\n\n\n\nImportant\n\n\n\nIf you have previously installed the C++ toolkit or if you have recently updated your OS, please follow these instructions to reinstall them.\n\n\nNow you will need to install a few packages and extra software.\nHere is an overview of what you will install:\n\nC++ toolchain.\nR packages: tidyverse, brms.\n\n\n1. Install the C++ toolchain\nThe package brms used in the workshop requires a working C++ toolchain to compile models.\n\nWindows\nFor Windows, follow the instructions here: https://cran.r-project.org/bin/windows/Rtools/rtools43/rtools.html\n\n\nmacOS\nFor macOS, open the Terminal and write the following line then press enter/return:\nxcode-select --install\nYou’ll see a panel that asks you to install the Xcode Command Line Tools. Install them. Downloading and installation will take 30 to 60 minutes.\n\n\nLinux\nFor Linux, follow the instructions here: https://github.com/stan-dev/rstan/wiki/Configuring-C-Toolchain-for-Linux\n\n\n\n2. Install the R packages\nYou need to install the following packages:\ninstall.packages(c(\"tidyverse\", \"brms\"))\nIt will take several minutes to install the packages, depending on your system and configuration.\nIf after opening the workshop project in RStudio you get asked to install extra packages or software, please do so.\n\n\nCheck your installation\nRun the following in the RStudio Console:\nexample(stan_model, package = \"rstan\", run.dontrun = TRUE)\nIf you see some strange looking text printed in the Console and then fit and fit2 in the Environment, then you are sorted!"
-  },
-  {
-    "objectID": "setup.html#troubleshooting",
-    "href": "setup.html#troubleshooting",
-    "title": "Pre-workshop set-up",
-    "section": "Troubleshooting",
-    "text": "Troubleshooting\nIf you are having issues with installation, the best place to ask for help are:\n\nThe Stan Forums: https://discourse.mc-stan.org\nStackOverflow: https://stackoverflow.com\nAny search engine."
-  },
-  {
-    "objectID": "setup.html#download-the-materials",
-    "href": "setup.html#download-the-materials",
-    "title": "Pre-workshop set-up",
-    "section": "Download the materials",
-    "text": "Download the materials\nAll the materials of the workshop (data, code, slides) are in the workshop repository on GitHub.\nYou have two options:\n\nYou can fork the repository and clone it locally if you use git/GitHub.\nYou can simply download the repo by clicking on the Code button &gt; Download ZIP on GitHub.\n\n\n\n\n\n\n\nTip\n\n\n\nThis is an RStudio project. You can open it by double clicking on the basicBayes.Rproj file."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Learn Bayesian Regression Models for Beginners",
-    "section": "",
-    "text": "This is the website of the workshop Bayesian Regression Models for the Advancement of Linguistics.\nPlease, check the Set-up page for important set-up instructions, before joining the workshop.\nThis workshop assumes you have a good command of R and tidyverse packages, but no prior experience with linear modelling is required.\nIf you wish to revise your basic R skills, we recommend the following resource: R for Data Science (online book)."
+    "objectID": "slides/01-introduction.html#disclaimer",
+    "href": "slides/01-introduction.html#disclaimer",
+    "title": "01 - Introduction",
+    "section": "Disclaimer",
+    "text": "Disclaimer\n\n\nThis workshop introduces you to the very basics of Bayesian regression modelling.\nTo be able to able to analyse real-world data you will need much more!"
   },
   {
     "objectID": "slides/01-introduction.html#section",
@@ -511,129 +441,339 @@
     "text": "References\n\n\n\n\nBürkner, Paul-Christian. 2017. “Brms: An r Package for Bayesian Multilevel Models Using Stan.” Journal of Statistical Software 80 (1): 128. https://doi.org/10.18637/jss.v080.i01.\n\n\nR Core Team. 2025. R: A Language and Environment for Statistical Computing [Version 4.5.0].\n\n\nTucker, Benjamin V, Daniel Brenner, Kyle Danielson D, Matthew C Kelley, Filip Nenadić, and Michelle Sims. 2019. “The Massive Auditory Lexical Decision (MALD) Database.” Behavior Research Methods 51 (3): 11871204. https://doi.org/10.3758/s13428-018-1056-1."
   },
   {
-    "objectID": "slides/03-regression.html#vowel-duration",
-    "href": "slides/03-regression.html#vowel-duration",
-    "title": "03 - Regression",
-    "section": "Vowel duration",
-    "text": "Vowel duration\n\n\n# A tibble: 887 × 57\n   index speaker file     rec_date        ipu   prompt word    time sentence_ons\n   &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;           &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;dbl&gt;        &lt;dbl&gt;\n 1     1 it01    it01-001 29/11/2016 15:… ipu_1 Dico … pugu   0.990        0.990\n 2     2 it01    it01-002 29/11/2016 15:… ipu_2 Dico … pada   3.62         0.502\n 3     3 it01    it01-003 29/11/2016 15:… ipu_3 Dico … poco   6.13         0.697\n 4     4 it01    it01-004 29/11/2016 15:… ipu_4 Dico … pata   8.82         0.623\n 5     5 it01    it01-005 29/11/2016 15:… ipu_5 Dico … boco  11.5          0.665\n 6     6 it01    it01-006 29/11/2016 15:… ipu_6 Dico … podo  14.3          0.647\n 7     7 it01    it01-007 29/11/2016 15:… ipu_7 Dico … boto  17.2          0.740\n 8     8 it01    it01-008 29/11/2016 15:… ipu_8 Dico … paca  19.7          0.502\n 9     9 it01    it01-009 29/11/2016 15:… ipu_9 Dico … bodo  22.3          0.556\n10    10 it01    it01-010 29/11/2016 15:… ipu_… Dico … pucu  24.8          0.535\n# ℹ 877 more rows\n# ℹ 48 more variables: sentence_off &lt;dbl&gt;, word_ons &lt;dbl&gt;, word_off &lt;dbl&gt;,\n#   v1_ons &lt;dbl&gt;, c2_ons &lt;dbl&gt;, v2_ons &lt;dbl&gt;, c1_rel &lt;dbl&gt;, c2_rel &lt;dbl&gt;,\n#   voicing_start &lt;dbl&gt;, voicing_end &lt;dbl&gt;, voicing_duration &lt;dbl&gt;,\n#   voiced_points &lt;dbl&gt;, GONS &lt;dbl&gt;, max &lt;dbl&gt;, NOFF &lt;dbl&gt;, NONS &lt;dbl&gt;,\n#   peak1 &lt;dbl&gt;, peak2 &lt;dbl&gt;, c1_duration &lt;dbl&gt;, c1_clos_duration &lt;dbl&gt;,\n#   c1_vot &lt;dbl&gt;, c1_rvoff &lt;dbl&gt;, v1_duration &lt;dbl&gt;, c2_duration &lt;dbl&gt;, …"
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Learn Bayesian Regression Models for Beginners",
+    "section": "",
+    "text": "This is the website of the workshop Bayesian Regression Models for the Advancement of Linguistics.\nPlease, check the Set-up page for important set-up instructions, before joining the workshop.\nThis workshop assumes you have a good command of R and tidyverse packages, but no prior experience with linear modelling is required.\nIf you wish to revise your basic R skills, we recommend the following resource: R for Data Science (online book)."
   },
   {
-    "objectID": "slides/03-regression.html#vowel-durations-plot",
-    "href": "slides/03-regression.html#vowel-durations-plot",
-    "title": "03 - Regression",
-    "section": "Vowel durations: plot",
-    "text": "Vowel durations: plot\n\n\nFigure 1: Vowel duration and speech rate."
+    "objectID": "setup.html",
+    "href": "setup.html",
+    "title": "Pre-workshop set-up",
+    "section": "",
+    "text": "Please, follow these instructions carefully to get ready at least one day before the workshop."
   },
   {
-    "objectID": "slides/03-regression.html#a-log-normal-model-of-vowel-duration",
-    "href": "slides/03-regression.html#a-log-normal-model-of-vowel-duration",
-    "title": "03 - Regression",
-    "section": "A log-normal model of vowel duration",
-    "text": "A log-normal model of vowel duration\n\\[\ndur \\sim LogNormal(\\mu, \\sigma)\n\\]\n\n\ndur_logn &lt;- brm(\n  v1_duration ~ 1,\n  family = lognormal,\n  data = durations\n)\n\n\n\n\nBut we want to investigate the relationship between speech rate and vowel duration!"
+    "objectID": "setup.html#pre-requisites",
+    "href": "setup.html#pre-requisites",
+    "title": "Pre-workshop set-up",
+    "section": "Pre-requisites",
+    "text": "Pre-requisites\nBefore installing the necessary software, make sure you have installed or updated the following software.\n\nThe latest version of R (https://cloud.r-project.org).\nThe latest version of RStudio (https://www.rstudio.com/products/rstudio/download/#download).\nYour operating system is up-to-date."
   },
   {
-    "objectID": "slides/03-regression.html#allow-mu-to-vary-depending-on-speech-rate",
-    "href": "slides/03-regression.html#allow-mu-to-vary-depending-on-speech-rate",
-    "title": "03 - Regression",
-    "section": "Allow \\(\\mu\\) to vary depending on speech rate",
-    "text": "Allow \\(\\mu\\) to vary depending on speech rate\n\\[\n\\begin{align}\ndur_i & \\sim LogNormal(\\mu_i, \\sigma)\\\\\n\\mu_i & = \\beta_0 + \\beta_1 \\cdot SR_i\\\\\n\\end{align}\n\\]\n\n\nDoes the formula for \\(\\mu\\) ring a bell?"
+    "objectID": "setup.html#installation",
+    "href": "setup.html#installation",
+    "title": "Pre-workshop set-up",
+    "section": "Installation",
+    "text": "Installation\n\n\n\n\n\n\nImportant\n\n\n\nIf you have previously installed the C++ toolkit or if you have recently updated your OS, please follow these instructions to reinstall them.\n\n\nNow you will need to install a few packages and extra software.\nHere is an overview of what you will install:\n\nC++ toolchain.\nR packages: tidyverse, brms.\n\n\n1. Install the C++ toolchain\nThe package brms used in the workshop requires a working C++ toolchain to compile models.\n\nWindows\nFor Windows, follow the instructions here: https://cran.r-project.org/bin/windows/Rtools/rtools43/rtools.html\n\n\nmacOS\nFor macOS, open the Terminal and write the following line then press enter/return:\nxcode-select --install\nYou’ll see a panel that asks you to install the Xcode Command Line Tools. Install them. Downloading and installation will take 30 to 60 minutes.\n\n\nLinux\nFor Linux, follow the instructions here: https://github.com/stan-dev/rstan/wiki/Configuring-C-Toolchain-for-Linux\n\n\n\n2. Install the R packages\nYou need to install the following packages:\ninstall.packages(c(\"tidyverse\", \"brms\"))\nIt will take several minutes to install the packages, depending on your system and configuration.\nIf after opening the workshop project in RStudio you get asked to install extra packages or software, please do so.\n\n\nCheck your installation\nRun the following in the RStudio Console:\nexample(stan_model, package = \"rstan\", run.dontrun = TRUE)\nIf you see some strange looking text printed in the Console and then fit and fit2 in the Environment, then you are sorted!"
   },
   {
-    "objectID": "slides/03-regression.html#the-formula-of-a-line",
-    "href": "slides/03-regression.html#the-formula-of-a-line",
-    "title": "03 - Regression",
-    "section": "The formula of a line",
-    "text": "The formula of a line\n\n\\[\ny = a + b \\cdot x\n\\]\n\n\\(a\\) is the line’s intercept. This is \\(y\\) when \\(x\\) is 0.\n\\(b\\) is the line’s slope (aka gradient). This is the change in \\(y\\) for every unit increase of \\(x\\).\n\nSee Linear models illustrated."
+    "objectID": "setup.html#troubleshooting",
+    "href": "setup.html#troubleshooting",
+    "title": "Pre-workshop set-up",
+    "section": "Troubleshooting",
+    "text": "Troubleshooting\nIf you are having issues with installation, the best place to ask for help are:\n\nThe Stan Forums: https://discourse.mc-stan.org\nStackOverflow: https://stackoverflow.com\nAny search engine."
   },
   {
-    "objectID": "slides/03-regression.html#regression-model-of-vowel-duration",
-    "href": "slides/03-regression.html#regression-model-of-vowel-duration",
-    "title": "03 - Regression",
-    "section": "Regression model of vowel duration",
-    "text": "Regression model of vowel duration\n\\[\n\\begin{align}\ndur_i & \\sim LogNormal(\\mu_i, \\sigma)\\\\\n\\mu_i & = \\beta_0 + \\beta_1 \\cdot SR_i\\\\\n\\end{align}\n\\]\n\n\n\\(\\beta_0\\) is the intercept. This is the mean vowel duration when speech rate is 0.\n\\(\\beta_1\\) is the slope. This is the change in vowel duration for each unit increase of speech rate (syl/s)."
+    "objectID": "setup.html#download-the-materials",
+    "href": "setup.html#download-the-materials",
+    "title": "Pre-workshop set-up",
+    "section": "Download the materials",
+    "text": "Download the materials\nAll the materials of the workshop (data, code, slides) are in the workshop repository on GitHub.\nYou have two options:\n\nYou can fork the repository and clone it locally if you use git/GitHub.\nYou can simply download the repo by clicking on the Code button &gt; Download ZIP on GitHub.\n\n\n\n\n\n\n\nTip\n\n\n\nThis is an RStudio project. You can open it by double clicking on the basicBayes.Rproj file."
   },
   {
-    "objectID": "slides/03-regression.html#but",
-    "href": "slides/03-regression.html#but",
-    "title": "03 - Regression",
-    "section": "But…",
-    "text": "But…\n\nSpeech rate 0 doesn’t make sense!\n\nSpeech rate cannot be zero syllables per second.\n\n\n\n\nWe can centre speech rate.\n\nSubtract the mean speech rate from all the speech rate values."
+    "objectID": "slides/02-lognormal.html#is-a-gaussian-model-a-good-choice",
+    "href": "slides/02-lognormal.html#is-a-gaussian-model-a-good-choice",
+    "title": "02 - Lognormal models",
+    "section": "Is a Gaussian model a good choice?",
+    "text": "Is a Gaussian model a good choice?\n\n\nFigure 1: Posterior predictive check plot of rt_gauss."
   },
   {
-    "objectID": "slides/03-regression.html#centred-speech-rate",
-    "href": "slides/03-regression.html#centred-speech-rate",
-    "title": "03 - Regression",
-    "section": "Centred speech rate",
-    "text": "Centred speech rate\n\nmean(durations$speech_rate, na.rm = TRUE)\n\n[1] 5.314752\n\ndurations &lt;- durations |&gt; \n  mutate(\n    speech_rate_c = speech_rate - mean(speech_rate, na.rm = TRUE)\n  )\n\n\n\nspeach_rate_c = 0 means mean speech rate."
+    "objectID": "slides/02-lognormal.html#gaussian-variables-are-rare",
+    "href": "slides/02-lognormal.html#gaussian-variables-are-rare",
+    "title": "02 - Lognormal models",
+    "section": "Gaussian variables are rare…",
+    "text": "Gaussian variables are rare…\n\n\nReaction times can only be positive (negative values are excluded).\nVariables that can take only positive numbers (and are continuous) usually follow a log-normal distribution."
   },
   {
-    "objectID": "slides/03-regression.html#centred-speech-rate-plot",
-    "href": "slides/03-regression.html#centred-speech-rate-plot",
-    "title": "03 - Regression",
-    "section": "Centred speech rate: plot",
-    "text": "Centred speech rate: plot\n\n\nFigure 2: Vowel duration and (centred) speech rate."
+    "objectID": "slides/02-lognormal.html#the-log-normal-distribution",
+    "href": "slides/02-lognormal.html#the-log-normal-distribution",
+    "title": "02 - Lognormal models",
+    "section": "The log-normal distribution",
+    "text": "The log-normal distribution\n\n\nFigure 2: Log-normal distributions with varying mean and SD."
   },
   {
-    "objectID": "slides/03-regression.html#regression-model-of-vowel-durations-centred-speech-rate",
-    "href": "slides/03-regression.html#regression-model-of-vowel-durations-centred-speech-rate",
-    "title": "03 - Regression",
-    "section": "Regression model of vowel durations: centred speech rate",
-    "text": "Regression model of vowel durations: centred speech rate\n\\[\n\\begin{align}\ndur_i & \\sim LogNormal(\\mu_i, \\sigma)\\\\\n\\mu_i & = \\beta_0 + \\beta_1 \\cdot SR_{ctr[i]}\\\\\n\\end{align}\n\\]\n\n\n\\(\\beta_0\\) is the intercept. This is the mean RT when centred speech rate is 0 (i.e. when speech rate is at its mean = NA).\n\\(\\beta_1\\) is the slope. This is the change in RT for each unit increase of centred speech rate (i.e for every unit increase of speech rate)."
+    "objectID": "slides/02-lognormal.html#a-log-normal-model-of-rts",
+    "href": "slides/02-lognormal.html#a-log-normal-model-of-rts",
+    "title": "02 - Lognormal models",
+    "section": "A log-normal model of RTs",
+    "text": "A log-normal model of RTs\n\\[\n\\begin{align}\nRT & \\sim LogNormal(\\mu, \\sigma)\\\\\n\\end{align}\n\\]\n\n\nRT follow a log-normal distribution with mean \\(\\mu\\) and standard deviation \\(\\sigma\\).\n\\(\\mu\\) and \\(sigma\\) are the mean and SD of logged RTs.\n\n\n\n\nequivalent to:\n\\[\n\\begin{align}\nlog(RT) & \\sim Gaussian(\\mu, \\sigma)\\\\\n\\end{align}\n\\]"
   },
   {
-    "objectID": "slides/03-regression.html#regression-model-of-vowel-durations-code",
-    "href": "slides/03-regression.html#regression-model-of-vowel-durations-code",
-    "title": "03 - Regression",
-    "section": "Regression model of vowel durations: code",
-    "text": "Regression model of vowel durations: code\n\ndur_sr &lt;- brm(\n  v1_duration ~ 1 + speech_rate_c,\n  family = lognormal,\n  data = durations,\n  cores = 4,\n  seed = 1032,\n  file = \"data/cache/dur_sr\"\n)"
+    "objectID": "slides/02-lognormal.html#a-log-normal-model-of-rts-code",
+    "href": "slides/02-lognormal.html#a-log-normal-model-of-rts-code",
+    "title": "02 - Lognormal models",
+    "section": "A log-normal model of RTs: code",
+    "text": "A log-normal model of RTs: code\n\nrt_logn &lt;- brm(\n  RT ~ 1,\n  family = lognormal,\n  data = mald,\n  \n  ## Technical stuff\n  cores = 4,\n  seed = 1032,\n  file = \"data/cache/rt_logn\"\n)"
   },
   {
-    "objectID": "slides/03-regression.html#regression-model-summary",
-    "href": "slides/03-regression.html#regression-model-summary",
-    "title": "03 - Regression",
-    "section": "Regression model: summary",
-    "text": "Regression model: summary\n\nsummary(dur_sr)\n\n Family: lognormal \n  Links: mu = identity; sigma = identity \nFormula: v1_duration ~ 1 + speech_rate_c \n   Data: durations (Number of observations: 886) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n              Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept         4.72      0.01     4.71     4.74 1.00     4388     2452\nspeech_rate_c    -0.23      0.01    -0.25    -0.22 1.00     4482     2982\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma     0.22      0.01     0.21     0.23 1.00     3913     2983\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
+    "objectID": "slides/02-lognormal.html#a-log-normal-model-of-rts-posterior-predictive-checks",
+    "href": "slides/02-lognormal.html#a-log-normal-model-of-rts-posterior-predictive-checks",
+    "title": "02 - Lognormal models",
+    "section": "A log-normal model of RTs: posterior predictive checks",
+    "text": "A log-normal model of RTs: posterior predictive checks\n\npp_check(rt_logn, ndraws = 20)\n\n\n\nFigure 3"
   },
   {
-    "objectID": "slides/03-regression.html#interpreting-the-summary",
-    "href": "slides/03-regression.html#interpreting-the-summary",
-    "title": "03 - Regression",
-    "section": "Interpreting the summary",
-    "text": "Interpreting the summary\n\\[\n\\begin{align}\ndur_i & \\sim LogNormal(\\mu_i, \\sigma)\\\\\n\\mu_i & = \\beta_0 + \\beta_1 \\cdot SR_{ctr[i]}\\\\\n\\end{align}\n\\]\n\nfixef(dur_sr)\n\n                Estimate   Est.Error       Q2.5      Q97.5\nIntercept      4.7230357 0.007580906  4.7081901  4.7379128\nspeech_rate_c -0.2344362 0.009378120 -0.2525304 -0.2157794\n\n\n\n\nIntercept is \\(\\beta_0\\): mean duration when speech rate is at mean.\nspeech_rate_c is \\(\\beta_1\\): change in duration for each unit increase of speech rate."
+    "objectID": "slides/02-lognormal.html#a-log-normal-model-of-rts-summary",
+    "href": "slides/02-lognormal.html#a-log-normal-model-of-rts-summary",
+    "title": "02 - Lognormal models",
+    "section": "A log-normal model of RTs: summary",
+    "text": "A log-normal model of RTs: summary\n\nsummary(rt_logn)\n\n Family: lognormal \n  Links: mu = identity; sigma = identity \nFormula: RT ~ 1 \n   Data: mald (Number of observations: 5000) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n          Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nIntercept     6.88      0.00     6.87     6.88 1.00     3517     2562\n\nFurther Distributional Parameters:\n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma     0.28      0.00     0.27     0.28 1.00     2245     2019\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
   },
   {
-    "objectID": "slides/03-regression.html#interpreting-the-summary-intercept",
-    "href": "slides/03-regression.html#interpreting-the-summary-intercept",
-    "title": "03 - Regression",
-    "section": "Interpreting the summary: Intercept",
-    "text": "Interpreting the summary: Intercept\n\nfixef(dur_sr)\n\n                Estimate   Est.Error       Q2.5      Q97.5\nIntercept      4.7230357 0.007580906  4.7081901  4.7379128\nspeech_rate_c -0.2344362 0.009378120 -0.2525304 -0.2157794\n\n\n\n\nThe mean logged vowel duration is on average 4.72 (SD = 0.008).\nThere is a 95% probability that the mean logged vowel duration is between 4.71 and 4.74."
+    "objectID": "slides/02-lognormal.html#a-log-normal-model-of-rts-mcmc-draws",
+    "href": "slides/02-lognormal.html#a-log-normal-model-of-rts-mcmc-draws",
+    "title": "02 - Lognormal models",
+    "section": "A log-normal model of RTs: MCMC draws",
+    "text": "A log-normal model of RTs: MCMC draws\n\n\nThe MCMC draws are also called the posterior draws.\nThey allow us to construct the posterior probability distribution of each model parameter.\n\n\n\n\nrt_logn_draws &lt;- as_draws_df(rt_logn)\n\nrt_logn_draws\n\n# A draws_df: 1000 iterations, 4 chains, and 5 variables\n   b_Intercept sigma Intercept lprior   lp__\n1          6.9  0.28       6.9   -3.2 -35094\n2          6.9  0.28       6.9   -3.2 -35095\n3          6.9  0.27       6.9   -3.1 -35094\n4          6.9  0.28       6.9   -3.2 -35094\n5          6.9  0.28       6.9   -3.2 -35093\n6          6.9  0.28       6.9   -3.2 -35093\n7          6.9  0.27       6.9   -3.1 -35095\n8          6.9  0.28       6.9   -3.2 -35094\n9          6.9  0.28       6.9   -3.2 -35094\n10         6.9  0.28       6.9   -3.2 -35096\n# ... with 3990 more draws\n# ... hidden reserved variables {'.chain', '.iteration', '.draw'}"
   },
   {
-    "objectID": "slides/03-regression.html#interpreting-the-summary-speech_rate_c",
-    "href": "slides/03-regression.html#interpreting-the-summary-speech_rate_c",
-    "title": "03 - Regression",
-    "section": "Interpreting the summary: speech_rate_c",
-    "text": "Interpreting the summary: speech_rate_c\n\nfixef(dur_sr)\n\n                Estimate   Est.Error       Q2.5      Q97.5\nIntercept      4.7230357 0.007580906  4.7081901  4.7379128\nspeech_rate_c -0.2344362 0.009378120 -0.2525304 -0.2157794\n\n\n\n\nThe average change in logged vowel duration for each unit increase of speech rate is -0.23 (SD = 0.01).\nIn other words, for each increase of one syllable per second, the logged vowel duration decreases on average by -0.23.\nWe can be 95% confident that the decrease in logged duration is between -0.22 and -0.25."
+    "objectID": "slides/02-lognormal.html#plot-the-mcmc-draws-mu",
+    "href": "slides/02-lognormal.html#plot-the-mcmc-draws-mu",
+    "title": "02 - Lognormal models",
+    "section": "Plot the MCMC draws: \\(\\mu\\)",
+    "text": "Plot the MCMC draws: \\(\\mu\\)\n\nrt_logn_draws |&gt; \n  ggplot(aes(b_Intercept)) +\n  geom_density(alpha = 0.5, fill = \"darkgreen\") +\n  labs(x = expression(mu~\"of RTs (logged)\"))\n\n\n\nFigure 4: Posterior probability distribution of \\(\\mu\\) of RTs."
   },
   {
-    "objectID": "slides/03-regression.html#plotting-the-model-predictions",
-    "href": "slides/03-regression.html#plotting-the-model-predictions",
-    "title": "03 - Regression",
-    "section": "Plotting the model predictions",
-    "text": "Plotting the model predictions\n\nconditional_effects(dur_sr)\n\n\n\nFigure 3"
+    "objectID": "slides/02-lognormal.html#plot-the-mcmc-draws-mu-ms",
+    "href": "slides/02-lognormal.html#plot-the-mcmc-draws-mu-ms",
+    "title": "02 - Lognormal models",
+    "section": "Plot the MCMC draws: \\(\\mu\\) (ms)",
+    "text": "Plot the MCMC draws: \\(\\mu\\) (ms)\n\nrt_logn_draws |&gt; \n  ggplot(aes(exp(b_Intercept))) +\n  geom_density(alpha = 0.5, fill = \"darkgreen\") +\n  labs(x = expression(mu~\"of RTs (ms)\"))\n\n\n\nFigure 5: Posterior probability distribution of \\(\\mu\\) of RTs in ms."
   },
   {
-    "objectID": "slides/03-regression.html#posterior-predictive-checks",
-    "href": "slides/03-regression.html#posterior-predictive-checks",
-    "title": "03 - Regression",
-    "section": "Posterior predictive checks",
-    "text": "Posterior predictive checks\n\npp_check(dur_sr, ndraws = 20)\n\n\n\nFigure 4: Posterior predictive check plot of dur_sr."
+    "objectID": "slides/02-lognormal.html#summarise-the-mcmc-draws-mu",
+    "href": "slides/02-lognormal.html#summarise-the-mcmc-draws-mu",
+    "title": "02 - Lognormal models",
+    "section": "Summarise the MCMC draws: \\(\\mu\\)",
+    "text": "Summarise the MCMC draws: \\(\\mu\\)\n\nrt_logn_draws |&gt; \n  summarise(\n    mu_mean = round(mean(b_Intercept), 2),\n    mu_sd = round(sd(b_Intercept), 3)\n  )\n\n# A tibble: 1 × 2\n  mu_mean mu_sd\n    &lt;dbl&gt; &lt;dbl&gt;\n1    6.88 0.004"
   },
   {
-    "objectID": "slides/03-regression.html#summary",
-    "href": "slides/03-regression.html#summary",
-    "title": "03 - Regression",
+    "objectID": "slides/02-lognormal.html#summarise-the-mcmc-draws-mu-ms",
+    "href": "slides/02-lognormal.html#summarise-the-mcmc-draws-mu-ms",
+    "title": "02 - Lognormal models",
+    "section": "Summarise the MCMC draws: \\(\\mu\\) (ms)",
+    "text": "Summarise the MCMC draws: \\(\\mu\\) (ms)\n\nrt_logn_draws |&gt; \n  summarise(\n    mu_mean = round(mean(exp(b_Intercept))),\n    mu_sd = round(sd(exp(b_Intercept)))\n  )\n\n# A tibble: 1 × 2\n  mu_mean mu_sd\n    &lt;dbl&gt; &lt;dbl&gt;\n1     970     4\n\n\n\n\nThe mean RTs is on average 970 ms (SD = 4).\nAlways conditional on the model and the data.\n\n\n\n\\[\n\\text{SD}_{\\text{natural}} = \\sqrt{ \\left( e^{\\sigma^2} - 1 \\right) \\cdot e^{2\\mu + \\sigma^2} }\n\\]"
+  },
+  {
+    "objectID": "slides/02-lognormal.html#credible-intervals",
+    "href": "slides/02-lognormal.html#credible-intervals",
+    "title": "02 - Lognormal models",
+    "section": "Credible Intervals",
+    "text": "Credible Intervals\n\n\nUncertainty can be quantified with Bayesian Credible Intervals (CrIs).\nA 95% CrI means that we can be 95% confident that the value is within the interval.\n\n\n\n\nFrequentist Confidence Intervals are often wrongly interpreted as Bayesian Credible Intervals (Tan and Tan 2010; Foster 2014; Crooks, Bartel, and Alibali 2019; Gigerenzer 2004; Cassidy et al. 2019).\n\n\n\n\n\nThere is nothing special about 95%. You should obtain several."
+  },
+  {
+    "objectID": "slides/02-lognormal.html#credible-intervals-higher-level-larger-width",
+    "href": "slides/02-lognormal.html#credible-intervals-higher-level-larger-width",
+    "title": "02 - Lognormal models",
+    "section": "Credible Intervals: higher level = larger width",
+    "text": "Credible Intervals: higher level = larger width\n\n\nFigure 6: Several quantiles of a Gaussian distribution."
+  },
+  {
+    "objectID": "slides/02-lognormal.html#calculate-cris",
+    "href": "slides/02-lognormal.html#calculate-cris",
+    "title": "02 - Lognormal models",
+    "section": "Calculate CrIs",
+    "text": "Calculate CrIs\n\nlibrary(posterior)\n\nrt_logn_draws |&gt; \n  mutate(\n    mu_ms = exp(b_Intercept)\n  ) |&gt; \n  summarise(\n    hi_95 = quantile2(mu_ms, probs = 0.025),\n    lo_95 = quantile2(mu_ms, probs = 0.975),\n    hi_80 = quantile2(mu_ms, probs = 0.1),\n    lo_80 = quantile2(mu_ms, probs = 0.9),\n    hi_60 = quantile2(mu_ms, probs = 0.2),\n    lo_60 = quantile2(mu_ms, probs = 0.8),\n  ) |&gt; \n  mutate(across(everything(), round))\n\n# A tibble: 1 × 6\n  hi_95 lo_95 hi_80 lo_80 hi_60 lo_60\n  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1   962   977   965   975   967   973"
+  },
+  {
+    "objectID": "slides/02-lognormal.html#report",
+    "href": "slides/02-lognormal.html#report",
+    "title": "02 - Lognormal models",
+    "section": "Report",
+    "text": "Report\n\nWe fitted a Bayesian log-normal model of reaction times (RTs) with brms (Bürkner 2017) in R (R Core Team 2025).\nAccording to the model, the mean RT is between 962 and 977 ms, at 95% confidence (in logged ms, \\(\\beta\\) = 6.88, SD = 0.004). At 80% probability, the mean RT is 965-975 ms, while at 60% probability it is 967-973 ms."
+  },
+  {
+    "objectID": "slides/02-lognormal.html#summary",
+    "href": "slides/02-lognormal.html#summary",
+    "title": "02 - Lognormal models",
     "section": "Summary",
-    "text": "Summary\n\n\nRegression models are models that use the formula of a line.\nA simple regression model with one numeric predictor estimates the line’s intercept (\\(beta_0\\)) and slope (\\(beta_1\\)) and the overall standard deviation (\\(sigma\\)).\n\n\\[\n\\begin{align}\ny_i & \\sim LogNormal(\\mu_i, \\sigma)\\\\\n\\mu_i & = \\beta_0 + \\beta_1 \\cdot x\n\\end{align}\n\\]"
+    "text": "Summary\n\n\nGaussian variables are rare.\nVariables that are bounded to positive (real) numbers only usually follow a log-normal distribution. For example reaction times.\nLog-normal models estimate the mean and standard deviation of log-normal variables.\n\n\\[\ny \\sim LogNormal(\\mu, \\sigma)\n\\]"
+  },
+  {
+    "objectID": "slides/02-lognormal.html#references",
+    "href": "slides/02-lognormal.html#references",
+    "title": "02 - Lognormal models",
+    "section": "References",
+    "text": "References\n\n\n\n\nBürkner, Paul-Christian. 2017. “Brms: An r Package for Bayesian Multilevel Models Using Stan.” Journal of Statistical Software 80 (1): 128. https://doi.org/10.18637/jss.v080.i01.\n\n\nCassidy, Scott A., Ralitza Dimova, Benjamin Giguère, Jeffrey R. Spence, and David J. Stanley. 2019. “Failing Grade: 89 Per-Cent of Introduction to Psychology Textbooks That Define/Explain Statistical Significance Do so Incorrectly.” Advances in Methods and Practices in Psychological Science. https://doi.org/10.1177/2515245919858072.\n\n\nCrooks, Noelle M., Anna N. Bartel, and Martha W. Alibali. 2019. “Conceptual Knowledge of Confidence Intervals in Psychology Undergraduate and Graduate Students.” Statistics Education Research Journal 18 (1): 46–62. https://doi.org/10.52041/serj.v18i1.149.\n\n\nFoster, Colin. 2014. “Confidence Trick: The Interpretation of Confidence Intervals.” Canadian Journal of Science, Mathematics and Technology Education 14 (1): 2334. https://doi.org/10.1080/14926156.2014.874615.\n\n\nGigerenzer, Gerd. 2004. “Mindless Statistics.” The Journal of Socio-Economics 33 (5): 587606. https://doi.org/10.1016/j.socec.2004.09.033.\n\n\nR Core Team. 2025. R: A Language and Environment for Statistical Computing [Version 4.5.0].\n\n\nTan, Sze Huey, and Say Beng Tan. 2010. “The Correct Interpretation of Confidence Intervals.” Proceedings of Singapore Healthcare 19 (3): 276278. https://doi.org/10.1177/201010581001900316."
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#mald-accuracy",
+    "href": "slides/04-bernoulli.html#mald-accuracy",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "MALD: accuracy",
+    "text": "MALD: accuracy\n\n\nAccuracy of responses: correctly or incorrectly recognised the word type (real or nonce-word).\nLet’s model the effect of phonetic distance on accuracy.\nAccuracy is a binary variable.\n\n\n\n\n\nWith binary variables we model the probability of one of the two levels. Here, correct.\nThe probability of one level of a binary variable follows a Bernoulli distribution."
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#bernoulli-model",
+    "href": "slides/04-bernoulli.html#bernoulli-model",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "Bernoulli model",
+    "text": "Bernoulli model\n\\[\np(correct) \\sim Bernoulli(p)\n\\]\n\n\n\nBut… probabilities are bounded between 0 and 1.\nFor variables that can only have positive real numbers, we used the logarithmic function (log-normal models).\n\n\n\n\n\n\nWith probabilities, we can use the logistic function.\nThe logistic (or logit) function converts probabilities to log-odds (qlogis() in R)."
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#logistic-function",
+    "href": "slides/04-bernoulli.html#logistic-function",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "Logistic function",
+    "text": "Logistic function\n\n\nFigure 1: Correspondence between log-odds and probabilities."
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#bernoulli-regression-models",
+    "href": "slides/04-bernoulli.html#bernoulli-regression-models",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "Bernoulli (regression) models",
+    "text": "Bernoulli (regression) models\n\n\nBernoulli models use the logistic function to treat probabilities as if they were unbounded.\nThe model’s estimates are in log-odds.\nLog-odds can be converted back to probabilities with the inverse logit function (plogis() in R).\n\n\n\n\n\nBernoulli models are also known as binomial or logistic regression."
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#a-bernoulli-regression-of-accuracy-code",
+    "href": "slides/04-bernoulli.html#a-bernoulli-regression-of-accuracy-code",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "A Bernoulli regression of accuracy: code",
+    "text": "A Bernoulli regression of accuracy: code\n\nacc_bern &lt;- brm(\n  ACC ~ 1 + PhonLev,\n  family = bernoulli,\n  data = mald,\n  cores = 4,\n  seed = 8230,\n  file = \"data/cache/acc_bern\"\n)"
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#a-bernoulli-regression-of-accuracy-predicted-accuracy",
+    "href": "slides/04-bernoulli.html#a-bernoulli-regression-of-accuracy-predicted-accuracy",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "A Bernoulli regression of accuracy: predicted accuracy",
+    "text": "A Bernoulli regression of accuracy: predicted accuracy\n\nconditional_effects(acc_bern)\n\n\n\nFigure 2: Predicted accuracy based on phonetic distance."
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#brentari-2024-lengua-de-señas-nicaragüense-lsn",
+    "href": "slides/04-bernoulli.html#brentari-2024-lengua-de-señas-nicaragüense-lsn",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "Brentari 2024: Lengua de Señas Nicaragüense (LSN)",
+    "text": "Brentari 2024: Lengua de Señas Nicaragüense (LSN)\n\nbrentari2024 &lt;- read_csv(\"data/brentari2024/verb_org.csv\")\n\nbrentari2024"
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#brentari-2024",
+    "href": "slides/04-bernoulli.html#brentari-2024",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "Brentari 2024",
+    "text": "Brentari 2024\n\nbrentari2024 |&gt; \n  ggplot(aes(Group, fill = Num_Predicates)) +\n  geom_bar(position = \"fill\") +\n  labs(y = \"Proportion\")\n\n\n\nFigure 3: Proportion of predicate type by group."
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type",
+    "href": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "A Bernoulli model of predicate type",
+    "text": "A Bernoulli model of predicate type\n\\[\n\\begin{align}\npred_i & \\sim Bernoulli(p_i)\\\\\nlogit(p_i) & = \\beta_1 \\cdot G_{\\text{HS}[i]} + \\beta_2 \\cdot G_{\\text{NSL1}[i]} + \\beta_3 \\cdot G_{\\text{NSL2}[i]}\n\\end{align}\n\\]\n\n\nlogit(p) indicates a logit function is used (so the estimates are in log-odds).\n\\(G_{\\text{HS}[i]}, G_{\\text{NSL1}[i]},G_{\\text{NSL2}[i]}\\) are indicator variables, a way of including categorical predictors in a regression model."
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#indicator-variables",
+    "href": "slides/04-bernoulli.html#indicator-variables",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "Indicator variables",
+    "text": "Indicator variables\n\n\n\n\n\\(G_{\\text{HS}}\\)\n\\(G_{\\text{NSL1}}\\)\n\\(G_{\\text{NSL2}}\\)\n\n\n\n\nHomesign\n1\n0\n0\n\n\nNSL1\n0\n1\n0\n\n\nNSL2\n0\n0\n1\n\n\n\n\n\\[\n\\begin{align}\nlogit(p_i) & = \\beta_1 \\cdot G_{\\text{HS}[i]} + \\beta_2 \\cdot G_{\\text{NSL1}[i]} + \\beta_3 \\cdot G_{\\text{NSL2}[i]}\\\\\n\\text{homesign, } logit(p_i) & = \\beta_1 \\cdot 1 + \\beta_2 \\cdot 0 + \\beta_3 \\cdot 0\\\\\n& = \\beta_1\\\\\n\\text{NSL1, } logit(p_i) & = \\beta_1 \\cdot 0 + \\beta_2 \\cdot 1 + \\beta_3 \\cdot 0\\\\\n& = \\beta_2\\\\\n\\text{NSL2, } logit(p_i) & = \\beta_1 \\cdot 0 + \\beta_2 \\cdot 0 + \\beta_3 \\cdot 1\\\\\n& = \\beta_3\\\\\n\\end{align}\n\\]"
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#indicator-variables-1",
+    "href": "slides/04-bernoulli.html#indicator-variables-1",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "Indicator variables",
+    "text": "Indicator variables\n\n\nNote that indicator variables are dealt with by brms under the hood.\nWe talk about them to understand how the model is set up.\n\n\n\n\n\nThe model will estimate the probability \\(p\\) for each group.\nBut… the probability of what?"
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#prepare-data",
+    "href": "slides/04-bernoulli.html#prepare-data",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "Prepare data",
+    "text": "Prepare data\n\ntable(brentari2024$Num_Predicates)\n\n\nmultiple   single \n     215      415 \n\n\n\n\nbrentari2024 &lt;- brentari2024 |&gt; \n  mutate(\n    Pred_Type = factor(Num_Predicates, levels = c(\"single\", \"multiple\"))\n  )\n\ntable(brentari2024$Pred_Type)\n\n\n  single multiple \n     415      215 \n\n\n\n\n\n\nThe model will estimate the probability \\(p\\) of finding a multiple predicate, depending on group."
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-suppress-the-intercept",
+    "href": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-suppress-the-intercept",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "A Bernoulli model of predicate type: suppress the intercept",
+    "text": "A Bernoulli model of predicate type: suppress the intercept\n\n\nv1_duration ~ 1 + speech_rate_c\n\n\n1 stands for “intercept”. The model has an intercept and a slope.\n\n\n\n\n\nPred_Type ~ 0 + Group\n\n\n0 stands for “suppress the overall intercept”. The model estimates one “intercept” per level."
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-code",
+    "href": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-code",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "A Bernoulli model of predicate type: code",
+    "text": "A Bernoulli model of predicate type: code\n\npred_bern &lt;- brm(\n  Pred_Type ~ 0 + Group,\n  family = bernoulli,\n  data = brentari2024,\n  cores = 4,\n  seed = 3218,\n  file = \"data/cache/pred_bern\"\n)"
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-summary",
+    "href": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-summary",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "A Bernoulli model of predicate type: summary",
+    "text": "A Bernoulli model of predicate type: summary\n\nsummary(pred_bern)\n\n Family: bernoulli \n  Links: mu = logit \nFormula: Pred_Type ~ 0 + Group \n   Data: brentari2024 (Number of observations: 630) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nRegression Coefficients:\n              Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nGrouphomesign    -0.57      0.16    -0.87    -0.26 1.00     4384     3351\nGroupNSL1        -1.46      0.17    -1.79    -1.14 1.00     4209     2946\nGroupNSL2        -0.02      0.14    -0.29     0.25 1.00     3865     2727\n\nDraws were sampled using sampling(NUTS). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-predicted-probability",
+    "href": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-predicted-probability",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "A Bernoulli model of predicate type: predicted probability",
+    "text": "A Bernoulli model of predicate type: predicted probability\n\nconditional_effects(pred_bern)\n\n\n\nFigure 4: Predicted probability of multiple predicate by group."
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#posterior-draws",
+    "href": "slides/04-bernoulli.html#posterior-draws",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "Posterior draws",
+    "text": "Posterior draws\n\npred_bern_draws &lt;- as_draws_df(pred_bern)\n\npred_bern_draws"
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#credible-intervals-log-odds",
+    "href": "slides/04-bernoulli.html#credible-intervals-log-odds",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "Credible intervals: log-odds",
+    "text": "Credible intervals: log-odds\n\nlibrary(posterior)\n\npred_bern_draws |&gt; \n  pivot_longer(b_Grouphomesign:b_GroupNSL2, names_to = \"coef\", values_to = \"est\") |&gt; \n  group_by(coef) |&gt; \n  summarise(\n    ci_lo = quantile2(est, probs = 0.025),\n    ci_hi = quantile2(est, probs = 0.975)\n  )"
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#credible-intervals-probabilities",
+    "href": "slides/04-bernoulli.html#credible-intervals-probabilities",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "Credible intervals: probabilities",
+    "text": "Credible intervals: probabilities\n\npred_bern_draws |&gt; \n  pivot_longer(b_Grouphomesign:b_GroupNSL2, names_to = \"coef\", values_to = \"est\") |&gt; \n  group_by(coef) |&gt; \n  summarise(\n    ci_lo = round(quantile2(plogis(est), probs = 0.025), 2),\n    ci_hi = round(quantile2(plogis(est), probs = 0.975), 2)\n  )"
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#what-about-comparing-the-groups",
+    "href": "slides/04-bernoulli.html#what-about-comparing-the-groups",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "What about comparing the groups?",
+    "text": "What about comparing the groups?\n\nWhat if we want to know the difference between each group?\n\n\n\n\nWe can use the posterior draws. Simply take the row-wise difference and you will get a list of differences.\nThese are the posterior differences."
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#comparing-groups",
+    "href": "slides/04-bernoulli.html#comparing-groups",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "Comparing groups",
+    "text": "Comparing groups\n\npred_bern_draws &lt;- pred_bern_draws |&gt; \n  mutate(\n    NSL1_homesign = b_GroupNSL1 - b_Grouphomesign,\n    NSL2_homesign = b_GroupNSL2 - b_Grouphomesign,\n    NSL2_NSL1 = b_GroupNSL2 - b_GroupNSL1\n  )\n\npred_bern_draws"
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#credible-intervals-of-the-difference-log-odds",
+    "href": "slides/04-bernoulli.html#credible-intervals-of-the-difference-log-odds",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "Credible Intervals of the difference: log-odds",
+    "text": "Credible Intervals of the difference: log-odds\n\npred_bern_draws |&gt; \n  pivot_longer(NSL1_homesign:NSL2_NSL1, names_to = \"coef\", values_to = \"est\") |&gt; \n  group_by(coef) |&gt; \n  summarise(\n    ci_lo = round(quantile2(est, probs = 0.025), 2),\n    ci_hi = round(quantile2(est, probs = 0.975), 2)\n  )\n\nWarning: Dropping 'draws_df' class as required metadata was removed."
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#credible-intervals-of-the-difference-probabilities",
+    "href": "slides/04-bernoulli.html#credible-intervals-of-the-difference-probabilities",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "Credible Intervals of the difference: probabilities",
+    "text": "Credible Intervals of the difference: probabilities\n\npred_bern_draws |&gt; \n  mutate(\n    NSL1_homesign_p = plogis(b_GroupNSL1) - plogis(b_Grouphomesign),\n    NSL2_homesign_p = plogis(b_GroupNSL2) - plogis(b_Grouphomesign),\n    NSL2_NSL1_p = plogis(b_GroupNSL2) - plogis(b_GroupNSL1)\n  ) |&gt; \n  pivot_longer(NSL1_homesign_p:NSL2_NSL1_p, names_to = \"coef\", values_to = \"est_p\") |&gt; \n  group_by(coef) |&gt; \n  summarise(\n    ci_lo = round(quantile2(est_p, probs = 0.025), 2),\n    ci_hi = round(quantile2(est_p, probs = 0.975), 2)\n  )\n\nWarning: Dropping 'draws_df' class as required metadata was removed."
+  },
+  {
+    "objectID": "slides/04-bernoulli.html#summary",
+    "href": "slides/04-bernoulli.html#summary",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "Summary",
+    "text": "Summary\n\n\nBinary variables can be modelled with a Bernoulli distribution.\nBernoulli models estimate the probability \\(p\\) of the second level in the variable.\nCategorical predictors are modelled using indexing variables.\nYou can obtain posterior differences between levels by taking the difference of the posterior draws of those levels."
   }
 ]

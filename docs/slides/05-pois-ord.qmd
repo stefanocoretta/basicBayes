@@ -1,0 +1,248 @@
+---
+title: "04 - Poisson and ordinal regression models for count variables and likert scales"
+author: "Stefano Coretta"
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+theme_set(theme_light())
+library(brms)
+library(posterior)
+```
+
+## Summary
+
+::: box-note
+- **Gaussian** for Gaussian variables (very rare).
+
+- **Log-normal** for outcome variables that can take only positive (real) values.
+
+- **Bernoulli** for binary outcome variables.
+:::
+
+. . .
+
+::: box-tip
+Other common types of outcome variables:
+
+- Count data: *Poisson* and *negative binomial* models.
+
+- Likert scales: *Ordinal* models.
+
+:::
+
+## Counts of infants' gestures
+
+```{r}
+#| label: gestures
+#| message: false
+
+gestures <- read_csv("data/cameron2020/gestures.csv")
+gestures_count <- gestures |>
+  filter(months == 11) |> 
+  summarise(
+    count = sum(count, na.rm = TRUE),
+    .by = c(background, dyad)
+  )
+
+gestures_count
+```
+
+## Infants' gestures
+
+```{r}
+#| label: fig-gestures-point
+#| fig-cap: "Number of gestures by infant and group."
+gestures_count |> 
+  ggplot(aes(background, count, colour = background)) +
+  geom_point() +
+  labs(x = element_blank(), y = "Number of gestures") +
+  theme(legend.position = "none")
+```
+
+## Infants' gestures: histogram
+
+```{r}
+#| label: fig-gestures-hist
+#| fig-cap: "Histogram of number of gestures by group."
+gestures_count |> 
+  ggplot(aes(count, fill = background)) +
+  geom_histogram(alpha = 0.9, binwidth = 5) +
+  facet_grid(rows = vars(background)) +
+  labs(x = "Number of gestures", y = "Number of infants", caption = "Bin width = 5.") +
+  theme(legend.position = "none")
+```
+
+## Poisson regression: code
+
+```{r}
+#| label: gest-pois
+
+gest_pois <- brm(
+  count ~ 0 + background,
+  family = poisson,
+  data = gestures_count,
+  cores = 4,
+  seed = 8712,
+  file = "data/cache/gest_pois"
+)
+```
+
+## Poisson regression: posterior predictive check
+
+```{r}
+#| label: fig-gest-pois-pp
+#| fig-cap: "Posterior predictive check plot of `gest_pois`."
+
+pp_check(gest_pois, ndraws = 20)
+```
+
+## Negative binomial regression: code
+
+```{r}
+#| label: gest-negb
+
+gest_negb <- brm(
+  count ~ 0 + background,
+  family = negbinomial,
+  data = gestures_count,
+  cores = 4,
+  seed = 8258,
+  file = "data/cache/gest_negb"
+)
+```
+
+## Negative binomial: posterior predictive check
+
+```{r}
+#| label: fig-gest-negb-pp
+#| fig-cap: "Posterior predictive check of `gest_negb`."
+pp_check(gest_negb, ndraws = 20)
+```
+
+## Negative binomial: predicted counts
+
+```{r}
+#| label: fig-gest-negb-cond
+#| fig-cap: "Predicted counts of gestures by background."
+conditional_effects(gest_negb)
+```
+
+## Posterior draws
+
+```{r}
+#| label: gest-negb-draws
+
+gest_negb_draws <- as_draws_df(gest_negb)
+
+gest_negb_draws
+```
+
+## Predicted counts
+
+```{r}
+#| label: gest-negb-exp
+gest_negb_draws <- gest_negb_draws |> 
+  mutate(
+    Bengali = exp(b_backgroundBengali),
+    Chinese = exp(b_backgroundChinese),
+    English = exp(b_backgroundEnglish)
+  )
+
+gest_negb_draws |> select(Bengali:English)
+```
+
+## Credible intervals: counts
+
+```{r}
+#| label: gest-begb-cri
+gest_negb_draws |> 
+  select(Bengali:English) |> 
+  pivot_longer(Bengali:English, names_to = "coef", values_to = "est") |> 
+  group_by(coef) |> 
+  summarise(
+    ci_lo = round(quantile2(est, probs = 0.025)),
+    ci_hi = round(quantile2(est, probs = 0.975))
+  )
+```
+
+## Summary I
+
+::: box-tip
+- Count data (like the number of infants' gestures, or number of occurrences in a corpus) can be modelled with a Poisson distribution.
+
+- If the data has over-dispersion, the negative binomial distribution might be better.
+
+- The model estimates are in logged counts. Use `exp()` to convert them back to counts.
+:::
+
+## Likert scales
+
+```{r}
+#| label: emilian
+
+emilianto <- readRDS("data/hampton2023/emilianto_attitude.rds")
+
+emilian <- emilianto |> 
+  filter(language == "Emilian")
+
+emilian |> select(comprehend, speak, commuter, age)
+```
+
+## An ordinal model of comprehension: code
+
+```{r}
+#| label: compr-ord
+
+compr_ord <- brm(
+  comprehend ~ cs(commuter),
+  family = acat(link = "probit"),
+  data = emilian,
+  cores = 4,
+  seed = 1523,
+  file = "data/cache/compr_ord"
+)
+```
+
+## Predicted probability of each 
+
+```{r}
+#| label: fig-compr-ord-cond
+#| fig-cap: "Predicted probability of comprehension levels by commuter status."
+conditional_effects(compr_ord, categorical = TRUE)
+```
+
+## An ordinal model of speaking proficiency: code
+
+```{r}
+#| label: speak-ord
+
+speak_ord <- brm(
+  speak ~ age,
+  family = acat(link = "probit"),
+  data = emilian,
+  cores = 4,
+  seed = 1523,
+  file = "data/cache/speak_ord"
+)
+```
+
+## Predicted probability of speaking proficiency
+
+```{r}
+#| label: fig-speak-ord
+#| fig-cap: "Predicted probability of speaking proficiency levels by age."
+conditional_effects(speak_ord, categorical = TRUE)
+```
+
+
+## Summary II
+
+::: box-note
+- Likert scale data can be modelled with a an ordinal distribution.
+
+- Ordinal models estimate the probability of each level in the scale.
+:::

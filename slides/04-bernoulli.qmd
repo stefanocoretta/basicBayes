@@ -1,5 +1,5 @@
 ---
-title: "04 - Binary outcomes"
+title: "04 - Bernoulli models for binary outcomes"
 author: "Stefano Coretta"
 ---
 
