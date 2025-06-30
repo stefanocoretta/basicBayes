@@ -21,19 +21,19 @@ mald <- readRDS("data/tucker2019/mald_1_1.rds")
 ## MALD: accuracy
 
 ::: box-note
-- **Accuracy of responses**: correctly or incorrectly recognised the word type (real or nonce-word).
+-   **Accuracy of responses**: correctly or incorrectly recognised the word type (real or nonce-word).
 
-- Let's model the effect of phonetic distance on accuracy.
+-   Let's model the effect of phonetic distance on accuracy.
 
-- Accuracy is a **binary variable**.
+-   Accuracy is a **binary variable**.
 :::
 
 . . .
 
 ::: box-tip
-- With binary variables we model the probability of one of the two levels. Here, correct.
+-   With binary variables we model the probability of one of the two levels. Here, correct.
 
-- The probability of one level of a binary variable follows a Bernoulli distribution.
+-   The probability of one level of a binary variable follows a Bernoulli distribution.
 :::
 
 ## Bernoulli model
@@ -45,17 +45,17 @@ $$
 . . .
 
 ::: box-note
-- But... probabilities are bounded between 0 and 1.
+-   But... probabilities are bounded between 0 and 1.
 
-- For variables that can only have positive real numbers, we used the logarithmic function (log-normal models).
+-   For variables that can only have positive real numbers, we used the logarithmic function (log-normal models).
 :::
 
 . . .
 
 ::: box-tip
-- With probabilities, we can use the **logistic function**.
+-   With probabilities, we can use the **logistic function**.
 
-- The logistic (or logit) function converts probabilities to log-odds (`qlogis()` in R).
+-   The logistic (or logit) function converts probabilities to log-odds (`qlogis()` in R).
 :::
 
 ## Logistic function
@@ -96,17 +96,17 @@ p_log_odds
 ## Bernoulli (regression) models
 
 ::: box-note
-- Bernoulli models use the logistic function to treat probabilities as if they were unbounded.
+-   Bernoulli models use the logistic function to treat probabilities as if they were unbounded.
 
-- The model's estimates are in log-odds.
+-   The model's estimates are in log-odds.
 
-- Log-odds can be converted back to probabilities with the inverse logit function (`plogis()` in R).
+-   Log-odds can be converted back to probabilities with the inverse logit function (`plogis()` in R).
 :::
 
 . . .
 
 ::: box-warning
-- Bernoulli models are also known as binomial or logistic regression.
+-   Bernoulli models are also known as binomial or logistic regression.
 :::
 
 ## A Bernoulli regression of accuracy: code
@@ -147,12 +147,76 @@ brentari2024
 ## Brentari 2024
 
 ```{r}
+#| label: fig-prop
+#| fig-cap: "Proportion of predicate type by group."
 brentari2024 |> 
   ggplot(aes(Group, fill = Num_Predicates)) +
   geom_bar(position = "fill") +
   labs(y = "Proportion")
 ```
 
+## A Bernoulli model of predicate type
+
+$$
+\begin{align}
+pred_i & \sim Bernoulli(p_i)\\
+logit(p_i) & = \beta_1 \cdot G_{\text{HS}[i]} + \beta_2 \cdot G_{\text{NSL1}[i]} + \beta_3 \cdot G_{\text{NSL2}[i]}
+\end{align}
+$$
+
+::: box-note
+-   `logit(p)` indicates a logit function is used (so the estimates are in log-odds).
+
+-   $G_{\text{HS}[i]}, G_{\text{NSL1}[i]},G_{\text{NSL2}[i]}$ are **indicator variables**, a way of including categorical predictors in a regression model.
+:::
+
+## Indicator variables
+
+|          | $G_{\text{HS}}$ | $G_{\text{NSL1}}$ | $G_{\text{NSL2}}$ |
+|----------|-----------------|-------------------|-------------------|
+| Homesign | 1               | 0                 | 0                 |
+| NSL1     | 0               | 1                 | 0                 |
+| NSL2     | 0               | 0                 | 1                 |
+
+. . .
+
+$$
+\begin{align}
+logit(p_i) & = \beta_1 \cdot G_{\text{HS}[i]} + \beta_2 \cdot G_{\text{NSL1}[i]} + \beta_3 \cdot G_{\text{NSL2}[i]}\\
+\text{homesign, } logit(p_i) & = \beta_1 \cdot 1 + \beta_2 \cdot 0 + \beta_3 \cdot 0\\
+& = \beta_1\\
+\text{NSL1, } logit(p_i) & = \beta_1 \cdot 0 + \beta_2 \cdot 1 + \beta_3 \cdot 0\\
+& = \beta_2\\
+\text{NSL2, } logit(p_i) & = \beta_1 \cdot 0 + \beta_2 \cdot 0 + \beta_3 \cdot 1\\
+& = \beta_3\\
+\end{align}
+$$
+
+## Indicator variables
+
+::: box-warning
+-   Note that indicator variables are dealt with by brms under the hood.
+
+-   We talk about them to understand how the model is set up.
+:::
+
+. . .
+
+::: box-note
+-   The model will estimate the probability $p$ for each group.
+
+-   But... the probability of what?
+:::
+
+## Prepare data
+
+```{r}
+#| label: pred-type-table
+
+table(brentari2024$Num_Predicates)
+```
+
+. . .
 
 ```{r}
 #| label: pred-type
@@ -161,11 +225,41 @@ brentari2024 <- brentari2024 |>
   mutate(
     Pred_Type = factor(Num_Predicates, levels = c("single", "multiple"))
   )
+
+table(brentari2024$Pred_Type)
 ```
+
+. . .
+
+::: box-tip
+-   The model will estimate the probability $p$ of finding a multiple predicate, depending on group.
+:::
+
+## A Bernoulli model of predicate type: suppress the intercept
+
+:::: box-note
+::: {style="text-align: center;"}
+`v1_duration ~ 1 + speech_rate_c`
+:::
+
+- `1` stands for "intercept". The model has an intercept and a slope.
+::::
+
+. . .
+
+:::: box-note
+::: {style="text-align: center;"}
+`Pred_Type ~ 0 + Group`
+:::
+
+- `0` stands for "suppress the overall intercept". The model estimates one "intercept" per level.
+::::
+
+## A Bernoulli model of predicate type: code
 
 ```{r}
 #| label: pred-bern
-#| 
+
 pred_bern <- brm(
   Pred_Type ~ 0 + Group,
   family = bernoulli,
@@ -176,17 +270,24 @@ pred_bern <- brm(
 )
 ```
 
+## A Bernoulli model of predicate type: summary
+
 ```{r}
 #| label: pred-bern-summary
 
 summary(pred_bern)
 ```
 
+## A Bernoulli model of predicate type: predicted probability
+
 ```{r}
-#| label: pred-bern-cond
+#| label: fig-pred-bern-cond
+#| fig-cap: "Predicted probability of multiple predicate by group."
 
 conditional_effects(pred_bern)
 ```
+
+## Posterior draws
 
 ```{r}
 #| label: pred-bern-draws
@@ -196,8 +297,12 @@ pred_bern_draws <- as_draws_df(pred_bern)
 pred_bern_draws
 ```
 
+## Credible intervals: log-odds
+
 ```{r}
 #| label: pred-bern-ci
+#| message: false
+#| warning: false
 
 library(posterior)
 
@@ -210,8 +315,12 @@ pred_bern_draws |>
   )
 ```
 
+## Credible intervals: probabilities
+
 ```{r}
 #| label: pred-bern-ci-2
+#| message: false
+#| warning: false
 
 pred_bern_draws |> 
   pivot_longer(b_Grouphomesign:b_GroupNSL2, names_to = "coef", values_to = "est") |> 
@@ -221,6 +330,22 @@ pred_bern_draws |>
     ci_hi = round(quantile2(plogis(est), probs = 0.975), 2)
   )
 ```
+
+## What about comparing the groups?
+
+::: box-note
+What if we want to know the difference between each group?
+:::
+
+. . .
+
+::: box-tip
+- We can use the posterior draws. Simply take the row-wise difference and you will get a list of differences.
+
+- These are the posterior differences.
+:::
+
+## Comparing groups
 
 ```{r}
 #| label: pred-bern-diff
@@ -234,6 +359,8 @@ pred_bern_draws <- pred_bern_draws |>
 pred_bern_draws
 ```
 
+## Credible Intervals of the difference: log-odds
+
 ```{r}
 #| label: pred-bern-diff-ci
 pred_bern_draws |> 
@@ -244,6 +371,8 @@ pred_bern_draws |>
     ci_hi = round(quantile2(est, probs = 0.975), 2)
   )
 ```
+
+## Credible Intervals of the difference: probabilities
 
 ```{r}
 #| label: pred-bern-diff-ci-p
@@ -261,3 +390,14 @@ pred_bern_draws |>
   )
 ```
 
+## Summary
+
+::: box-tip
+- Binary variables can be modelled with a Bernoulli distribution.
+
+- Bernoulli models estimate the probability $p$ of the second level in the variable.
+
+- Categorical predictors are modelled using indexing variables.
+
+- You can obtain posterior differences between levels by taking the difference of the posterior draws of those levels.
+:::
