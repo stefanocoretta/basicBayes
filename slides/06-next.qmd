@@ -1,0 +1,145 @@
+---
+title: "06 - What's next?"
+author: "Stefano Coretta"
+bibliography: references.bib
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+theme_set(theme_light())
+library(brms)
+```
+
+```{r}
+#| label: mald
+#| include: false
+
+mald <- readRDS("data/tucker2019/mald_1_1.rds")
+```
+
+## This is just the beginning
+
+You have learnt a great deal already!
+
+::: box-note
+-   Statistics as a tool to deal with uncertainty and variability.
+
+-   Regression models (Gaussian, log-normal, Bernoulli, Poisson, negative binomial, ordinal) for a variety of outcome variables.
+
+-   One predictor: numeric or categorical.
+
+-   Working with posterior draws.
+:::
+
+. . .
+
+But there is more you need to learn to use regression models in actual research!
+
+## Many predictors: interactions
+
+```{r}
+#| label: fig-mald-int
+#| fig-cap: "Regression lines illustrating an interaction between phonetic distance and lexical status."
+#| message: false
+#| echo: false
+
+mald |> 
+  ggplot(aes(PhonLev, RT)) +
+  geom_smooth(aes(colour = IsWord), method = "lm") +
+  labs(
+    x = "Phonetic distance", y = "RT (ms)",
+    colour = "Real\nwords"
+  )
+```
+
+## Other types of outcome variables
+
+::: box-note
+-   Variables bounded between 0 and 1, like proportions. Use a beta regression.
+
+-   Categorical variables with more than two categories (but unordered). Use a categorical (multinomial) regression.
+
+-   Multiple outcome variables! Use multivariate regression models.
+
+-   Can you think of more types?
+:::
+
+## Non-linear effects: smooth terms
+
+```{r}
+#| label: durations
+#| include: false
+
+durations <- read_csv("data/coretta2018/token-measures.csv") |> 
+  filter(language == "Italian")
+```
+
+```{r}
+#| label: fig-durations
+#| fig-cap: "Vowel duration and speech rate."
+#| warning: false
+#| echo: false
+#| message: false
+
+durations |> 
+  ggplot(aes(speech_rate, v1_duration)) +
+  geom_point(alpha = 0.1) +
+  geom_smooth(method = "lm", colour = "red") +
+  geom_smooth(method = "gam") +
+  labs(
+    x = "Speech rate (syl/s)", y = "Vowel duration (ms)"
+  )
+```
+
+## Repeated measures: multilevel/hierarchical/mixed-effects
+
+```{r}
+#| label: fig-mald-subjs
+#| fig-cap: "Jitter plot showing RTs by lexical status for a selection of participants."
+#| message: false
+
+set.seed(3198)
+mald |> 
+  filter(Subject %in% sample(unique(mald$Subject), 12)) |> 
+  ggplot(aes(IsWord, RT)) +
+  geom_jitter(alpha = 0.25, width = 0.2) +
+  stat_summary(aes(colour = IsWord)) +
+  labs(
+    x = "Phonetic distance", y = "RT (ms)",
+    colour = "Real\nwords"
+  ) +
+  facet_wrap(vars(Subject))
+```
+
+## Model diagnostics
+
+::: box-note
+-   Model diagnostics help us determine cases when there is something wrong with the model or the data or both.
+
+-   The posterior predictive check plot is one type of diagnostic, but there are others (like $\hat{R}$ and Effective Sample Size in the model summary).
+:::
+
+## Prior probability distributions
+
+::: box-note
+-   We've been using the default priors set by brms. They are usually fine.
+
+-   It might be preferable to specify custom priors.
+
+-   In any case, learning the basics of prior specification is fundamental.
+:::
+
+## Frequentist vs Bayesian statistics
+
+::: box-note
+-   Modern research is dominated by the "null ritual", a degenerate form of frequentist statistics [@gigerenzer2004; @gigerenzer2004a; @gigerenzer2018]. It is based on "rejecting a nil hypothesis".
+
+-   The "null ritual" is **not** a robust statistical approach.
+
+-   Proper frequentist methods are difficult to apply in practice.
+
+-   Bayesian statistics is about estimating uncertainty and accounting for variability with posterior probability distributions.
+:::

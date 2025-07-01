@@ -1,5 +1,5 @@
 ---
-title: "04 - Poisson and ordinal regression models for count variables and likert scales"
+title: "05 - Poisson and ordinal regression models for count variables and likert scales"
 author: "Stefano Coretta"
 ---
 

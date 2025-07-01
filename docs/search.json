@@ -2,133 +2,133 @@
   {
     "objectID": "slides/05-pois-ord.html#summary",
     "href": "slides/05-pois-ord.html#summary",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
-    "section": "Summary",
-    "text": "Summary\n\n\nGaussian for Gaussian variables (very rare).\nLog-normal for outcome variables that can take only positive (real) values.\nBernoulli for binary outcome variables.\n\n\n\n\nOther common types of outcome variables:\n\nCount data: Poisson and negative binomial models.\nLikert scales: Ordinal models."
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "",
+    "text": "Gaussian for Gaussian variables (very rare).\nLog-normal for outcome variables that can take only positive (real) values.\nBernoulli for binary outcome variables.\n\n\n. . .\n\nOther common types of outcome variables:\n\nCount data: Poisson and negative binomial models.\nLikert scales: Ordinal models."
   },
   {
     "objectID": "slides/05-pois-ord.html#counts-of-infants-gestures",
     "href": "slides/05-pois-ord.html#counts-of-infants-gestures",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Counts of infants’ gestures",
-    "text": "Counts of infants’ gestures\n\ngestures &lt;- read_csv(\"data/cameron2020/gestures.csv\")\ngestures_count &lt;- gestures |&gt;\n  filter(months == 11) |&gt; \n  summarise(\n    count = sum(count, na.rm = TRUE),\n    .by = c(background, dyad)\n  )\n\ngestures_count\n\n# A tibble: 60 × 3\n   background dyad  count\n   &lt;chr&gt;      &lt;chr&gt; &lt;dbl&gt;\n 1 Bengali    b01       9\n 2 Bengali    b02      18\n 3 Bengali    b03      15\n 4 Bengali    b04      21\n 5 Bengali    b05      13\n 6 Bengali    b06       6\n 7 Bengali    b07       6\n 8 Bengali    b08      19\n 9 Bengali    b09       6\n10 Bengali    b10       1\n# ℹ 50 more rows"
+    "text": "Counts of infants’ gestures\n\ngestures &lt;- read_csv(\"data/cameron2020/gestures.csv\")\ngestures_count &lt;- gestures |&gt;\n  filter(months == 11) |&gt; \n  summarise(\n    count = sum(count, na.rm = TRUE),\n    .by = c(background, dyad)\n  )\n\ngestures_count"
   },
   {
     "objectID": "slides/05-pois-ord.html#infants-gestures",
     "href": "slides/05-pois-ord.html#infants-gestures",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Infants’ gestures",
-    "text": "Infants’ gestures\n\ngestures_count |&gt; \n  ggplot(aes(background, count, colour = background)) +\n  geom_point() +\n  labs(x = element_blank(), y = \"Number of gestures\") +\n  theme(legend.position = \"none\")\n\n\n\nFigure 1: Number of gestures by infant and group."
+    "text": "Infants’ gestures\n\ngestures_count |&gt; \n  ggplot(aes(background, count, colour = background)) +\n  geom_point() +\n  labs(x = element_blank(), y = \"Number of gestures\") +\n  theme(legend.position = \"none\")\n\n\n\n\n\n\n\nFigure 1: Number of gestures by infant and group."
   },
   {
     "objectID": "slides/05-pois-ord.html#infants-gestures-histogram",
     "href": "slides/05-pois-ord.html#infants-gestures-histogram",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Infants’ gestures: histogram",
-    "text": "Infants’ gestures: histogram\n\ngestures_count |&gt; \n  ggplot(aes(count, fill = background)) +\n  geom_histogram(alpha = 0.9, binwidth = 5) +\n  facet_grid(rows = vars(background)) +\n  labs(x = \"Number of gestures\", y = \"Number of infants\", caption = \"Bin width = 5.\") +\n  theme(legend.position = \"none\")\n\n\n\nFigure 2: Histogram of number of gestures by group."
+    "text": "Infants’ gestures: histogram\n\ngestures_count |&gt; \n  ggplot(aes(count, fill = background)) +\n  geom_histogram(alpha = 0.9, binwidth = 5) +\n  facet_grid(rows = vars(background)) +\n  labs(x = \"Number of gestures\", y = \"Number of infants\", caption = \"Bin width = 5.\") +\n  theme(legend.position = \"none\")\n\n\n\n\n\n\n\nFigure 2: Histogram of number of gestures by group."
   },
   {
     "objectID": "slides/05-pois-ord.html#poisson-regression-code",
     "href": "slides/05-pois-ord.html#poisson-regression-code",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Poisson regression: code",
     "text": "Poisson regression: code\n\ngest_pois &lt;- brm(\n  count ~ 0 + background,\n  family = poisson,\n  data = gestures_count,\n  cores = 4,\n  seed = 8712,\n  file = \"data/cache/gest_pois\"\n)"
   },
   {
     "objectID": "slides/05-pois-ord.html#poisson-regression-posterior-predictive-check",
     "href": "slides/05-pois-ord.html#poisson-regression-posterior-predictive-check",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Poisson regression: posterior predictive check",
-    "text": "Poisson regression: posterior predictive check\n\npp_check(gest_pois, ndraws = 20)\n\n\n\nFigure 3: Posterior predictive check plot of gest_pois."
+    "text": "Poisson regression: posterior predictive check\n\npp_check(gest_pois, ndraws = 20)\n\n\n\n\n\n\n\nFigure 3: Posterior predictive check plot of gest_pois."
   },
   {
     "objectID": "slides/05-pois-ord.html#negative-binomial-regression-code",
     "href": "slides/05-pois-ord.html#negative-binomial-regression-code",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Negative binomial regression: code",
     "text": "Negative binomial regression: code\n\ngest_negb &lt;- brm(\n  count ~ 0 + background,\n  family = negbinomial,\n  data = gestures_count,\n  cores = 4,\n  seed = 8258,\n  file = \"data/cache/gest_negb\"\n)"
   },
   {
     "objectID": "slides/05-pois-ord.html#negative-binomial-posterior-predictive-check",
     "href": "slides/05-pois-ord.html#negative-binomial-posterior-predictive-check",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Negative binomial: posterior predictive check",
-    "text": "Negative binomial: posterior predictive check\n\npp_check(gest_negb, ndraws = 20)\n\n\n\nFigure 4: Posterior predictive check of gest_negb."
+    "text": "Negative binomial: posterior predictive check\n\npp_check(gest_negb, ndraws = 20)\n\n\n\n\n\n\n\nFigure 4: Posterior predictive check of gest_negb."
   },
   {
     "objectID": "slides/05-pois-ord.html#negative-binomial-predicted-counts",
     "href": "slides/05-pois-ord.html#negative-binomial-predicted-counts",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Negative binomial: predicted counts",
-    "text": "Negative binomial: predicted counts\n\nconditional_effects(gest_negb)\n\n\n\nFigure 5: Predicted counts of gestures by background."
+    "text": "Negative binomial: predicted counts\n\nconditional_effects(gest_negb)\n\n\n\n\n\n\n\nFigure 5: Predicted counts of gestures by background."
   },
   {
     "objectID": "slides/05-pois-ord.html#posterior-draws",
     "href": "slides/05-pois-ord.html#posterior-draws",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Posterior draws",
-    "text": "Posterior draws\n\ngest_negb_draws &lt;- as_draws_df(gest_negb)\n\ngest_negb_draws\n\n# A draws_df: 1000 iterations, 4 chains, and 6 variables\n   b_backgroundBengali b_backgroundChinese b_backgroundEnglish shape lprior\n1                  2.6                 2.3                 2.3  1.05   -1.6\n2                  2.7                 2.5                 2.4  0.97   -1.5\n3                  2.6                 2.3                 2.5  0.77   -1.3\n4                  2.6                 2.6                 2.0  1.07   -1.6\n5                  2.8                 2.1                 2.2  1.70   -2.2\n6                  2.5                 2.3                 2.8  1.39   -2.0\n7                  2.4                 2.3                 2.7  1.29   -1.9\n8                  2.5                 2.7                 2.2  0.83   -1.4\n9                  2.7                 2.1                 2.7  0.97   -1.5\n10                 2.7                 2.8                 2.5  0.81   -1.4\n   lp__\n1  -211\n2  -211\n3  -212\n4  -212\n5  -218\n6  -217\n7  -215\n8  -212\n9  -214\n10 -213\n# ... with 3990 more draws\n# ... hidden reserved variables {'.chain', '.iteration', '.draw'}"
+    "text": "Posterior draws\n\ngest_negb_draws &lt;- as_draws_df(gest_negb)\n\ngest_negb_draws"
   },
   {
     "objectID": "slides/05-pois-ord.html#predicted-counts",
     "href": "slides/05-pois-ord.html#predicted-counts",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Predicted counts",
-    "text": "Predicted counts\n\ngest_negb_draws &lt;- gest_negb_draws |&gt; \n  mutate(\n    Bengali = exp(b_backgroundBengali),\n    Chinese = exp(b_backgroundChinese),\n    English = exp(b_backgroundEnglish)\n  )\n\ngest_negb_draws |&gt; select(Bengali:English)\n\n# A tibble: 4,000 × 3\n   Bengali Chinese English\n     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;\n 1    13.0    9.86    9.83\n 2    14.4   11.8    10.5 \n 3    14.0    9.74   12.5 \n 4    13.9   13.7     7.16\n 5    17.1    8.31    9.35\n 6    12.2    9.90   16.3 \n 7    11.5   10.3    14.3 \n 8    12.4   15.1     8.72\n 9    14.7    8.29   15.0 \n10    15.1   16.8    11.9 \n# ℹ 3,990 more rows"
+    "text": "Predicted counts\n\ngest_negb_draws &lt;- gest_negb_draws |&gt; \n  mutate(\n    Bengali = exp(b_backgroundBengali),\n    Chinese = exp(b_backgroundChinese),\n    English = exp(b_backgroundEnglish)\n  )\n\ngest_negb_draws |&gt; select(Bengali:English)\n\nWarning: Dropping 'draws_df' class as required metadata was removed."
   },
   {
     "objectID": "slides/05-pois-ord.html#credible-intervals-counts",
     "href": "slides/05-pois-ord.html#credible-intervals-counts",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Credible intervals: counts",
-    "text": "Credible intervals: counts\n\ngest_negb_draws |&gt; \n  select(Bengali:English) |&gt; \n  pivot_longer(Bengali:English, names_to = \"coef\", values_to = \"est\") |&gt; \n  group_by(coef) |&gt; \n  summarise(\n    ci_lo = round(quantile2(est, probs = 0.025)),\n    ci_hi = round(quantile2(est, probs = 0.975))\n  )\n\n# A tibble: 3 × 3\n  coef    ci_lo ci_hi\n  &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;\n1 Bengali     9    24\n2 Chinese     7    20\n3 English     6    16"
+    "text": "Credible intervals: counts\n\ngest_negb_draws |&gt; \n  select(Bengali:English) |&gt; \n  pivot_longer(Bengali:English, names_to = \"coef\", values_to = \"est\") |&gt; \n  group_by(coef) |&gt; \n  summarise(\n    ci_lo = round(quantile2(est, probs = 0.025)),\n    ci_hi = round(quantile2(est, probs = 0.975))\n  )\n\nWarning: Dropping 'draws_df' class as required metadata was removed."
   },
   {
     "objectID": "slides/05-pois-ord.html#summary-i",
     "href": "slides/05-pois-ord.html#summary-i",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Summary I",
     "text": "Summary I\n\n\nCount data (like the number of infants’ gestures, or number of occurrences in a corpus) can be modelled with a Poisson distribution.\nIf the data has over-dispersion, the negative binomial distribution might be better.\nThe model estimates are in logged counts. Use exp() to convert them back to counts."
   },
   {
     "objectID": "slides/05-pois-ord.html#likert-scales",
     "href": "slides/05-pois-ord.html#likert-scales",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Likert scales",
-    "text": "Likert scales\n\nemilianto &lt;- readRDS(\"data/hampton2023/emilianto_attitude.rds\")\n\nemilian &lt;- emilianto |&gt; \n  filter(language == \"Emilian\")\n\nemilian |&gt; select(comprehend, speak, commuter, age)\n\n# A tibble: 434 × 4\n   comprehend speak commuter   age\n   &lt;ord&gt;      &lt;ord&gt; &lt;chr&gt;    &lt;dbl&gt;\n 1 VG         VG    Sí          57\n 2 G          50/50 No          20\n 3 VG         VG    No          50\n 4 50/50      NO    No          25\n 5 VG         VG    No          65\n 6 VG         VG    No          56\n 7 VG         VG    No          62\n 8 VG         VG    No          65\n 9 VG         VG    No          63\n10 VG         G     No          61\n# ℹ 424 more rows"
+    "text": "Likert scales\n\nemilianto &lt;- readRDS(\"data/hampton2023/emilianto_attitude.rds\")\n\nemilian &lt;- emilianto |&gt; \n  filter(language == \"Emilian\")\n\nemilian |&gt; select(comprehend, speak, commuter, age)"
   },
   {
     "objectID": "slides/05-pois-ord.html#an-ordinal-model-of-comprehension-code",
     "href": "slides/05-pois-ord.html#an-ordinal-model-of-comprehension-code",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "An ordinal model of comprehension: code",
     "text": "An ordinal model of comprehension: code\n\ncompr_ord &lt;- brm(\n  comprehend ~ cs(commuter),\n  family = acat(link = \"probit\"),\n  data = emilian,\n  cores = 4,\n  seed = 1523,\n  file = \"data/cache/compr_ord\"\n)"
   },
   {
     "objectID": "slides/05-pois-ord.html#predicted-probability-of-each",
     "href": "slides/05-pois-ord.html#predicted-probability-of-each",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Predicted probability of each",
-    "text": "Predicted probability of each\n\nconditional_effects(compr_ord, categorical = TRUE)\n\n\n\nFigure 6: Predicted probability of comprehension levels by commuter status."
+    "text": "Predicted probability of each\n\nconditional_effects(compr_ord, categorical = TRUE)\n\n\n\n\n\n\n\nFigure 6: Predicted probability of comprehension levels by commuter status."
   },
   {
     "objectID": "slides/05-pois-ord.html#an-ordinal-model-of-speaking-proficiency-code",
     "href": "slides/05-pois-ord.html#an-ordinal-model-of-speaking-proficiency-code",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "An ordinal model of speaking proficiency: code",
     "text": "An ordinal model of speaking proficiency: code\n\nspeak_ord &lt;- brm(\n  speak ~ age,\n  family = acat(link = \"probit\"),\n  data = emilian,\n  cores = 4,\n  seed = 1523,\n  file = \"data/cache/speak_ord\"\n)"
   },
   {
     "objectID": "slides/05-pois-ord.html#predicted-probability-of-speaking-proficiency",
     "href": "slides/05-pois-ord.html#predicted-probability-of-speaking-proficiency",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Predicted probability of speaking proficiency",
-    "text": "Predicted probability of speaking proficiency\n\nconditional_effects(speak_ord, categorical = TRUE)\n\n\n\nFigure 7: Predicted probability of speaking proficiency levels by age."
+    "text": "Predicted probability of speaking proficiency\n\nconditional_effects(speak_ord, categorical = TRUE)\n\n\n\n\n\n\n\nFigure 7: Predicted probability of speaking proficiency levels by age."
   },
   {
     "objectID": "slides/05-pois-ord.html#summary-ii",
     "href": "slides/05-pois-ord.html#summary-ii",
-    "title": "04 - Poisson and ordinal regression models for count variables and likert scales",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Summary II",
     "text": "Summary II\n\n\nLikert scale data can be modelled with a an ordinal distribution.\nOrdinal models estimate the probability of each level in the scale."
   },
@@ -144,21 +144,21 @@
     "href": "slides/03-regression.html#vowel-durations-plot",
     "title": "03 - Regression models",
     "section": "Vowel durations: plot",
-    "text": "Vowel durations: plot\n\n\nFigure 1: Vowel duration and speech rate."
+    "text": "Vowel durations: plot\n\n\n\n\n\n\n\n\nFigure 1: Vowel duration and speech rate."
   },
   {
     "objectID": "slides/03-regression.html#a-log-normal-model-of-vowel-duration",
     "href": "slides/03-regression.html#a-log-normal-model-of-vowel-duration",
     "title": "03 - Regression models",
     "section": "A log-normal model of vowel duration",
-    "text": "A log-normal model of vowel duration\n\\[\ndur \\sim LogNormal(\\mu, \\sigma)\n\\]\n\n\ndur_logn &lt;- brm(\n  v1_duration ~ 1,\n  family = lognormal,\n  data = durations\n)\n\n\n\n\nBut we want to investigate the relationship between speech rate and vowel duration!"
+    "text": "A log-normal model of vowel duration\n\\[\ndur \\sim LogNormal(\\mu, \\sigma)\n\\]\n. . .\n\ndur_logn &lt;- brm(\n  v1_duration ~ 1,\n  family = lognormal,\n  data = durations\n)\n\n. . .\n\nBut we want to investigate the relationship between speech rate and vowel duration!"
   },
   {
     "objectID": "slides/03-regression.html#allow-mu-to-vary-depending-on-speech-rate",
     "href": "slides/03-regression.html#allow-mu-to-vary-depending-on-speech-rate",
     "title": "03 - Regression models",
     "section": "Allow \\(\\mu\\) to vary depending on speech rate",
-    "text": "Allow \\(\\mu\\) to vary depending on speech rate\n\\[\n\\begin{align}\ndur_i & \\sim LogNormal(\\mu_i, \\sigma)\\\\\n\\mu_i & = \\beta_0 + \\beta_1 \\cdot SR_i\\\\\n\\end{align}\n\\]\n\n\nDoes the formula for \\(\\mu\\) ring a bell?"
+    "text": "Allow \\(\\mu\\) to vary depending on speech rate\n\\[\n\\begin{align}\ndur_i & \\sim LogNormal(\\mu_i, \\sigma)\\\\\n\\mu_i & = \\beta_0 + \\beta_1 \\cdot SR_i\\\\\n\\end{align}\n\\]\n. . .\n\nDoes the formula for \\(\\mu\\) ring a bell?"
   },
   {
     "objectID": "slides/03-regression.html#the-formula-of-a-line",
@@ -179,7 +179,7 @@
     "href": "slides/03-regression.html#but",
     "title": "03 - Regression models",
     "section": "But…",
-    "text": "But…\n\nSpeech rate 0 doesn’t make sense!\n\nSpeech rate cannot be zero syllables per second.\n\n\n\n\nWe can centre speech rate.\n\nSubtract the mean speech rate from all the speech rate values."
+    "text": "But…\n\nSpeech rate 0 doesn’t make sense!\n\nSpeech rate cannot be zero syllables per second.\n\n\n. . .\n\nWe can centre speech rate.\n\nSubtract the mean speech rate from all the speech rate values."
   },
   {
     "objectID": "slides/03-regression.html#centred-speech-rate",
@@ -193,7 +193,7 @@
     "href": "slides/03-regression.html#centred-speech-rate-plot",
     "title": "03 - Regression models",
     "section": "Centred speech rate: plot",
-    "text": "Centred speech rate: plot\n\n\nFigure 2: Vowel duration and (centred) speech rate."
+    "text": "Centred speech rate: plot\n\n\n\n\n\n\n\n\nFigure 2: Vowel duration and (centred) speech rate."
   },
   {
     "objectID": "slides/03-regression.html#regression-model-of-vowel-durations-centred-speech-rate",
@@ -242,14 +242,14 @@
     "href": "slides/03-regression.html#plotting-the-model-predictions",
     "title": "03 - Regression models",
     "section": "Plotting the model predictions",
-    "text": "Plotting the model predictions\n\nconditional_effects(dur_sr)\n\n\n\nFigure 3"
+    "text": "Plotting the model predictions\n\nconditional_effects(dur_sr)\n\n\n\n\n\n\n\nFigure 3"
   },
   {
     "objectID": "slides/03-regression.html#posterior-predictive-checks",
     "href": "slides/03-regression.html#posterior-predictive-checks",
     "title": "03 - Regression models",
     "section": "Posterior predictive checks",
-    "text": "Posterior predictive checks\n\npp_check(dur_sr, ndraws = 20)\n\n\n\nFigure 4: Posterior predictive check plot of dur_sr."
+    "text": "Posterior predictive checks\n\npp_check(dur_sr, ndraws = 20)\n\n\n\n\n\n\n\nFigure 4: Posterior predictive check plot of dur_sr."
   },
   {
     "objectID": "slides/03-regression.html#summary",
@@ -262,8 +262,8 @@
     "objectID": "slides/01-introduction.html#disclaimer",
     "href": "slides/01-introduction.html#disclaimer",
     "title": "01 - Introduction",
-    "section": "Disclaimer",
-    "text": "Disclaimer\n\n\nThis workshop introduces you to the very basics of Bayesian regression modelling.\nTo be able to able to analyse real-world data you will need much more!"
+    "section": "",
+    "text": "This workshop introduces you to the very basics of Bayesian regression modelling.\nTo be able to able to analyse real-world data you will need much more!"
   },
   {
     "objectID": "slides/01-introduction.html#section",
@@ -277,14 +277,14 @@
     "href": "slides/01-introduction.html#inference-process",
     "title": "01 - Introduction",
     "section": "Inference process",
-    "text": "Inference process\n\nThe inference process.\nWe take a sample from the population.\nThis is our empirical data (the product of observation).\nHow do we go from data/observation to answering our question?\nWe can use inference.\nInference is the process of understanding something about a population based on the sample (aka the data) taken from that population."
+    "text": "Inference process\n\n\n\nThe inference process.\n\n\n\nWe take a sample from the population.\nThis is our empirical data (the product of observation).\nHow do we go from data/observation to answering our question?\nWe can use inference.\nInference is the process of understanding something about a population based on the sample (aka the data) taken from that population."
   },
   {
     "objectID": "slides/01-introduction.html#fallibility",
     "href": "slides/01-introduction.html#fallibility",
     "title": "01 - Introduction",
     "section": "Fallibility",
-    "text": "Fallibility\n\n\nHowever, inference based on data does not guarantee infallible answers.\nIn fact, any observation we make comes with a degree of uncertainty and variability.\n\n\n\n\n\nAny one observation is uncertain.\nThere aren’t any two observations that are identical."
+    "text": "Fallibility\n\n\nHowever, inference based on data does not guarantee infallible answers.\nIn fact, any observation we make comes with a degree of uncertainty and variability.\n\n\n. . .\n\n\nAny one observation is uncertain.\nThere aren’t any two observations that are identical."
   },
   {
     "objectID": "slides/01-introduction.html#uncertainty-and-variability",
@@ -319,7 +319,7 @@
     "href": "slides/01-introduction.html#statistical-model",
     "title": "01 - Introduction",
     "section": "Statistical model",
-    "text": "Statistical model\n\nA statistical model is a mathematical model that represents the relationship between variables in the data.\n\n\n\n\nAll models are wrong, but some are useful.\n\n—George Box"
+    "text": "Statistical model\n\nA statistical model is a mathematical model that represents the relationship between variables in the data.\n\n. . .\n\n\nAll models are wrong, but some are useful.\n\n—George Box"
   },
   {
     "objectID": "slides/01-introduction.html#the-path-ahead",
@@ -368,21 +368,21 @@
     "href": "slides/01-introduction.html#problem-uncertainty-and-variability",
     "title": "01 - Introduction",
     "section": "Problem: uncertainty and variability",
-    "text": "Problem: uncertainty and variability\n\n\nThese are the sample mean and standard deviation (SD).\nBut what about the population mean and SD?\n\n\n\n\n\nIn the face of uncertainty and variability, we can use probability distributions.\nA family of probability distributions that can be identified (i.e. summarised) by a mean and SD is the Gaussian (aka “normal”) distribution family (Gaussian distribution for short)."
+    "text": "Problem: uncertainty and variability\n\n\nThese are the sample mean and standard deviation (SD).\nBut what about the population mean and SD?\n\n\n. . .\n\n\nIn the face of uncertainty and variability, we can use probability distributions.\nA family of probability distributions that can be identified (i.e. summarised) by a mean and SD is the Gaussian (aka “normal”) distribution family (Gaussian distribution for short)."
   },
   {
     "objectID": "slides/01-introduction.html#gaussian-distribution",
     "href": "slides/01-introduction.html#gaussian-distribution",
     "title": "01 - Introduction",
     "section": "Gaussian distribution",
-    "text": "Gaussian distribution\n\n\nFigure 1: Gaussian distributions with varying mean and SD."
+    "text": "Gaussian distribution\n\n\n\n\n\n\n\n\nFigure 1: Gaussian distributions with varying mean and SD."
   },
   {
     "objectID": "slides/01-introduction.html#reaction-times",
     "href": "slides/01-introduction.html#reaction-times",
     "title": "01 - Introduction",
     "section": "Reaction Times",
-    "text": "Reaction Times\n\\[\nRT \\sim Gaussian(\\mu, \\sigma)\n\\]\n\n\nReaction Times (\\(RT\\)) are distributed according to (\\(\\sim\\)) a Gaussian distribution (\\(Gaussian()\\)) with mean \\(\\mu\\) and SD \\(\\sigma\\).\n\n\n\n\\[\n\\begin{align}\n\\mu & \\sim P(\\mu_1, \\sigma_1)\\\\\n\\sigma & \\sim P(\\mu_2, \\sigma_2)\n\\end{align}\n\\]\n\n\nThe mean \\(\\mu\\) comes from an undefined probability distribution \\(P()\\) with its own mean \\(\\mu_1\\) and SD \\(\\sigma_1\\).\nThe SD \\(\\sigma\\) comes from an undefined probability distribution \\(P()\\) with its own mean \\(\\mu_2\\) and SD \\(\\sigma_2\\)."
+    "text": "Reaction Times\n\\[\nRT \\sim Gaussian(\\mu, \\sigma)\n\\]\n\n\nReaction Times (\\(RT\\)) are distributed according to (\\(\\sim\\)) a Gaussian distribution (\\(Gaussian()\\)) with mean \\(\\mu\\) and SD \\(\\sigma\\).\n\n\n. . .\n\\[\n\\begin{align}\n\\mu & \\sim P(\\mu_1, \\sigma_1)\\\\\n\\sigma & \\sim P(\\mu_2, \\sigma_2)\n\\end{align}\n\\]\n\n\nThe mean \\(\\mu\\) comes from an undefined probability distribution \\(P()\\) with its own mean \\(\\mu_1\\) and SD \\(\\sigma_1\\).\nThe SD \\(\\sigma\\) comes from an undefined probability distribution \\(P()\\) with its own mean \\(\\mu_2\\) and SD \\(\\sigma_2\\)."
   },
   {
     "objectID": "slides/01-introduction.html#a-gaussian-model-of-rts",
@@ -396,21 +396,21 @@
     "href": "slides/01-introduction.html#fitting-bayesian-models-in-r",
     "title": "01 - Introduction",
     "section": "Fitting Bayesian models in R",
-    "text": "Fitting Bayesian models in R\n\n\nBayesian (regression) models can be fitted using the R (R Core Team 2025) package brms Bürkner (2017).\nbrms is an interface between R and Stan (a statistical software written in C++).\n\n\n\n\n\nbrms (and Stan) use a special algorithm to estimate the model’s parameters.\nMarkov Chain Monte Carlo, or MCMC for short."
+    "text": "Fitting Bayesian models in R\n\n\nBayesian (regression) models can be fitted using the R (R Core Team 2025) package brms Bürkner (2017).\nbrms is an interface between R and Stan (a statistical software written in C++).\n\n\n. . .\n\n\nbrms (and Stan) use a special algorithm to estimate the model’s parameters.\nMarkov Chain Monte Carlo, or MCMC for short."
   },
   {
     "objectID": "slides/01-introduction.html#a-gaussian-model-of-rts-the-code",
     "href": "slides/01-introduction.html#a-gaussian-model-of-rts-the-code",
     "title": "01 - Introduction",
     "section": "A Gaussian model of RTs: the code",
-    "text": "A Gaussian model of RTs: the code\n\nlibrary(brms)\n\nrt_gauss &lt;- brm(\n  RT ~ 1,\n  family = gaussian,\n  data = mald\n)\n\n\nCompiling Stan program...\nStart sampling\nSAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).\nChain 1: \nChain 1: Gradient evaluation took 0.000186 seconds\nChain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.86 seconds.\nChain 1: Adjust your expectations accordingly!\nChain 1: \nChain 1: \nChain 1: Iteration:    1 / 2000 [  0%]  (Warmup)\nChain 1: Iteration:  200 / 2000 [ 10%]  (Warmup)\nChain 1: Iteration:  400 / 2000 [ 20%]  (Warmup)\nChain 1: Iteration:  600 / 2000 [ 30%]  (Warmup)\nChain 1: Iteration:  800 / 2000 [ 40%]  (Warmup)\nChain 1: Iteration: 1000 / 2000 [ 50%]  (Warmup)\nChain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)\nChain 1: Iteration: 1200 / 2000 [ 60%]  (Sampling)\nChain 1: Iteration: 1400 / 2000 [ 70%]  (Sampling)\nChain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)\nChain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)\nChain 1: Iteration: 2000 / 2000 [100%]  (Sampling)\nChain 1: \nChain 1:  Elapsed Time: 0.518 seconds (Warm-up)\nChain 1:                0.307 seconds (Sampling)\nChain 1:                0.825 seconds (Total)\nChain 1: \n\nSAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).\nChain 2: \nChain 2: Gradient evaluation took 7.1e-05 seconds\nChain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.71 seconds.\nChain 2: Adjust your expectations accordingly!\nChain 2: \nChain 2: \nChain 2: Iteration:    1 / 2000 [  0%]  (Warmup)\nChain 2: Iteration:  200 / 2000 [ 10%]  (Warmup)\nChain 2: Iteration:  400 / 2000 [ 20%]  (Warmup)\nChain 2: Iteration:  600 / 2000 [ 30%]  (Warmup)\nChain 2: Iteration:  800 / 2000 [ 40%]  (Warmup)\nChain 2: Iteration: 1000 / 2000 [ 50%]  (Warmup)\nChain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)\nChain 2: Iteration: 1200 / 2000 [ 60%]  (Sampling)\nChain 2: Iteration: 1400 / 2000 [ 70%]  (Sampling)\nChain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)\nChain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)\nChain 2: Iteration: 2000 / 2000 [100%]  (Sampling)\nChain 2: \nChain 2:  Elapsed Time: 0.667 seconds (Warm-up)\nChain 2:                0.264 seconds (Sampling)\nChain 2:                0.931 seconds (Total)\nChain 2: \n\nSAMPLING FOR MODEL 'anon_model' NOW (CHAIN 3).\nChain 3: \nChain 3: Gradient evaluation took 6.7e-05 seconds\nChain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.67 seconds.\nChain 3: Adjust your expectations accordingly!\nChain 3: \nChain 3: \nChain 3: Iteration:    1 / 2000 [  0%]  (Warmup)\nChain 3: Iteration:  200 / 2000 [ 10%]  (Warmup)\nChain 3: Iteration:  400 / 2000 [ 20%]  (Warmup)\nChain 3: Iteration:  600 / 2000 [ 30%]  (Warmup)\nChain 3: Iteration:  800 / 2000 [ 40%]  (Warmup)\nChain 3: Iteration: 1000 / 2000 [ 50%]  (Warmup)\nChain 3: Iteration: 1001 / 2000 [ 50%]  (Sampling)\nChain 3: Iteration: 1200 / 2000 [ 60%]  (Sampling)\nChain 3: Iteration: 1400 / 2000 [ 70%]  (Sampling)\nChain 3: Iteration: 1600 / 2000 [ 80%]  (Sampling)\nChain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)\nChain 3: Iteration: 2000 / 2000 [100%]  (Sampling)\nChain 3: \nChain 3:  Elapsed Time: 0.574 seconds (Warm-up)\nChain 3:                0.333 seconds (Sampling)\nChain 3:                0.907 seconds (Total)\nChain 3: \n\nSAMPLING FOR MODEL 'anon_model' NOW (CHAIN 4).\nChain 4: \nChain 4: Gradient evaluation took 6.7e-05 seconds\nChain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.67 seconds.\nChain 4: Adjust your expectations accordingly!\nChain 4: \nChain 4: \nChain 4: Iteration:    1 / 2000 [  0%]  (Warmup)\nChain 4: Iteration:  200 / 2000 [ 10%]  (Warmup)\nChain 4: Iteration:  400 / 2000 [ 20%]  (Warmup)\nChain 4: Iteration:  600 / 2000 [ 30%]  (Warmup)\nChain 4: Iteration:  800 / 2000 [ 40%]  (Warmup)\nChain 4: Iteration: 1000 / 2000 [ 50%]  (Warmup)\nChain 4: Iteration: 1001 / 2000 [ 50%]  (Sampling)\nChain 4: Iteration: 1200 / 2000 [ 60%]  (Sampling)\nChain 4: Iteration: 1400 / 2000 [ 70%]  (Sampling)\nChain 4: Iteration: 1600 / 2000 [ 80%]  (Sampling)\nChain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)\nChain 4: Iteration: 2000 / 2000 [100%]  (Sampling)\nChain 4: \nChain 4:  Elapsed Time: 0.458 seconds (Warm-up)\nChain 4:                0.334 seconds (Sampling)\nChain 4:                0.792 seconds (Total)\nChain 4:"
+    "text": "A Gaussian model of RTs: the code\n\nlibrary(brms)\n\nrt_gauss &lt;- brm(\n  RT ~ 1,\n  family = gaussian,\n  data = mald\n)\n\n. . .\nCompiling Stan program...\nStart sampling\nSAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).\nChain 1: \nChain 1: Gradient evaluation took 0.000186 seconds\nChain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.86 seconds.\nChain 1: Adjust your expectations accordingly!\nChain 1: \nChain 1: \nChain 1: Iteration:    1 / 2000 [  0%]  (Warmup)\nChain 1: Iteration:  200 / 2000 [ 10%]  (Warmup)\nChain 1: Iteration:  400 / 2000 [ 20%]  (Warmup)\nChain 1: Iteration:  600 / 2000 [ 30%]  (Warmup)\nChain 1: Iteration:  800 / 2000 [ 40%]  (Warmup)\nChain 1: Iteration: 1000 / 2000 [ 50%]  (Warmup)\nChain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)\nChain 1: Iteration: 1200 / 2000 [ 60%]  (Sampling)\nChain 1: Iteration: 1400 / 2000 [ 70%]  (Sampling)\nChain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)\nChain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)\nChain 1: Iteration: 2000 / 2000 [100%]  (Sampling)\nChain 1: \nChain 1:  Elapsed Time: 0.518 seconds (Warm-up)\nChain 1:                0.307 seconds (Sampling)\nChain 1:                0.825 seconds (Total)\nChain 1: \n\nSAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).\nChain 2: \nChain 2: Gradient evaluation took 7.1e-05 seconds\nChain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.71 seconds.\nChain 2: Adjust your expectations accordingly!\nChain 2: \nChain 2: \nChain 2: Iteration:    1 / 2000 [  0%]  (Warmup)\nChain 2: Iteration:  200 / 2000 [ 10%]  (Warmup)\nChain 2: Iteration:  400 / 2000 [ 20%]  (Warmup)\nChain 2: Iteration:  600 / 2000 [ 30%]  (Warmup)\nChain 2: Iteration:  800 / 2000 [ 40%]  (Warmup)\nChain 2: Iteration: 1000 / 2000 [ 50%]  (Warmup)\nChain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)\nChain 2: Iteration: 1200 / 2000 [ 60%]  (Sampling)\nChain 2: Iteration: 1400 / 2000 [ 70%]  (Sampling)\nChain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)\nChain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)\nChain 2: Iteration: 2000 / 2000 [100%]  (Sampling)\nChain 2: \nChain 2:  Elapsed Time: 0.667 seconds (Warm-up)\nChain 2:                0.264 seconds (Sampling)\nChain 2:                0.931 seconds (Total)\nChain 2: \n\nSAMPLING FOR MODEL 'anon_model' NOW (CHAIN 3).\nChain 3: \nChain 3: Gradient evaluation took 6.7e-05 seconds\nChain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.67 seconds.\nChain 3: Adjust your expectations accordingly!\nChain 3: \nChain 3: \nChain 3: Iteration:    1 / 2000 [  0%]  (Warmup)\nChain 3: Iteration:  200 / 2000 [ 10%]  (Warmup)\nChain 3: Iteration:  400 / 2000 [ 20%]  (Warmup)\nChain 3: Iteration:  600 / 2000 [ 30%]  (Warmup)\nChain 3: Iteration:  800 / 2000 [ 40%]  (Warmup)\nChain 3: Iteration: 1000 / 2000 [ 50%]  (Warmup)\nChain 3: Iteration: 1001 / 2000 [ 50%]  (Sampling)\nChain 3: Iteration: 1200 / 2000 [ 60%]  (Sampling)\nChain 3: Iteration: 1400 / 2000 [ 70%]  (Sampling)\nChain 3: Iteration: 1600 / 2000 [ 80%]  (Sampling)\nChain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)\nChain 3: Iteration: 2000 / 2000 [100%]  (Sampling)\nChain 3: \nChain 3:  Elapsed Time: 0.574 seconds (Warm-up)\nChain 3:                0.333 seconds (Sampling)\nChain 3:                0.907 seconds (Total)\nChain 3: \n\nSAMPLING FOR MODEL 'anon_model' NOW (CHAIN 4).\nChain 4: \nChain 4: Gradient evaluation took 6.7e-05 seconds\nChain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.67 seconds.\nChain 4: Adjust your expectations accordingly!\nChain 4: \nChain 4: \nChain 4: Iteration:    1 / 2000 [  0%]  (Warmup)\nChain 4: Iteration:  200 / 2000 [ 10%]  (Warmup)\nChain 4: Iteration:  400 / 2000 [ 20%]  (Warmup)\nChain 4: Iteration:  600 / 2000 [ 30%]  (Warmup)\nChain 4: Iteration:  800 / 2000 [ 40%]  (Warmup)\nChain 4: Iteration: 1000 / 2000 [ 50%]  (Warmup)\nChain 4: Iteration: 1001 / 2000 [ 50%]  (Sampling)\nChain 4: Iteration: 1200 / 2000 [ 60%]  (Sampling)\nChain 4: Iteration: 1400 / 2000 [ 70%]  (Sampling)\nChain 4: Iteration: 1600 / 2000 [ 80%]  (Sampling)\nChain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)\nChain 4: Iteration: 2000 / 2000 [100%]  (Sampling)\nChain 4: \nChain 4:  Elapsed Time: 0.458 seconds (Warm-up)\nChain 4:                0.334 seconds (Sampling)\nChain 4:                0.792 seconds (Total)\nChain 4:"
   },
   {
     "objectID": "slides/01-introduction.html#a-gaussian-model-of-rts-plot-p",
     "href": "slides/01-introduction.html#a-gaussian-model-of-rts-plot-p",
     "title": "01 - Introduction",
     "section": "A Gaussian model of RTs: plot \\(P()\\)",
-    "text": "A Gaussian model of RTs: plot \\(P()\\)\n\n\nFigure 2: Posterior distributions of \\(\\mu\\) and \\(\\sigma\\) of RTs from the mald data."
+    "text": "A Gaussian model of RTs: plot \\(P()\\)\n\n\n\n\n\n\n\n\nFigure 2: Posterior distributions of \\(\\mu\\) and \\(\\sigma\\) of RTs from the mald data."
   },
   {
     "objectID": "slides/01-introduction.html#a-gaussian-model-of-rts-model-summary",
@@ -424,7 +424,7 @@
     "href": "slides/01-introduction.html#is-a-gaussian-model-a-good-choice",
     "title": "01 - Introduction",
     "section": "Is a Gaussian model a good choice?",
-    "text": "Is a Gaussian model a good choice?\n\n\npp_check(rt_gauss, ndraws = 20)\n\n\n\n\n\n\n\nFigure 3: Posterior predictive checks of rt_gauss."
+    "text": "Is a Gaussian model a good choice?\n. . .\n\npp_check(rt_gauss, ndraws = 20)\n\n\n\n\n\n\n\nFigure 3: Posterior predictive checks of rt_gauss."
   },
   {
     "objectID": "slides/01-introduction.html#summary",
@@ -486,8 +486,8 @@
     "objectID": "slides/02-lognormal.html#is-a-gaussian-model-a-good-choice",
     "href": "slides/02-lognormal.html#is-a-gaussian-model-a-good-choice",
     "title": "02 - Lognormal models",
-    "section": "Is a Gaussian model a good choice?",
-    "text": "Is a Gaussian model a good choice?\n\n\nFigure 1: Posterior predictive check plot of rt_gauss."
+    "section": "",
+    "text": "Figure 1: Posterior predictive check plot of rt_gauss."
   },
   {
     "objectID": "slides/02-lognormal.html#gaussian-variables-are-rare",
@@ -501,14 +501,14 @@
     "href": "slides/02-lognormal.html#the-log-normal-distribution",
     "title": "02 - Lognormal models",
     "section": "The log-normal distribution",
-    "text": "The log-normal distribution\n\n\nFigure 2: Log-normal distributions with varying mean and SD."
+    "text": "The log-normal distribution\n\n\n\n\n\n\n\n\nFigure 2: Log-normal distributions with varying mean and SD."
   },
   {
     "objectID": "slides/02-lognormal.html#a-log-normal-model-of-rts",
     "href": "slides/02-lognormal.html#a-log-normal-model-of-rts",
     "title": "02 - Lognormal models",
     "section": "A log-normal model of RTs",
-    "text": "A log-normal model of RTs\n\\[\n\\begin{align}\nRT & \\sim LogNormal(\\mu, \\sigma)\\\\\n\\end{align}\n\\]\n\n\nRT follow a log-normal distribution with mean \\(\\mu\\) and standard deviation \\(\\sigma\\).\n\\(\\mu\\) and \\(sigma\\) are the mean and SD of logged RTs.\n\n\n\n\nequivalent to:\n\\[\n\\begin{align}\nlog(RT) & \\sim Gaussian(\\mu, \\sigma)\\\\\n\\end{align}\n\\]"
+    "text": "A log-normal model of RTs\n\\[\n\\begin{align}\nRT & \\sim LogNormal(\\mu, \\sigma)\\\\\n\\end{align}\n\\]\n\n\nRT follow a log-normal distribution with mean \\(\\mu\\) and standard deviation \\(\\sigma\\).\n\\(\\mu\\) and \\(sigma\\) are the mean and SD of logged RTs.\n\n\n. . .\n\nequivalent to:\n\\[\n\\begin{align}\nlog(RT) & \\sim Gaussian(\\mu, \\sigma)\\\\\n\\end{align}\n\\]"
   },
   {
     "objectID": "slides/02-lognormal.html#a-log-normal-model-of-rts-code",
@@ -522,7 +522,7 @@
     "href": "slides/02-lognormal.html#a-log-normal-model-of-rts-posterior-predictive-checks",
     "title": "02 - Lognormal models",
     "section": "A log-normal model of RTs: posterior predictive checks",
-    "text": "A log-normal model of RTs: posterior predictive checks\n\npp_check(rt_logn, ndraws = 20)\n\n\n\nFigure 3"
+    "text": "A log-normal model of RTs: posterior predictive checks\n\npp_check(rt_logn, ndraws = 20)\n\n\n\n\n\n\n\nFigure 3"
   },
   {
     "objectID": "slides/02-lognormal.html#a-log-normal-model-of-rts-summary",
@@ -536,21 +536,21 @@
     "href": "slides/02-lognormal.html#a-log-normal-model-of-rts-mcmc-draws",
     "title": "02 - Lognormal models",
     "section": "A log-normal model of RTs: MCMC draws",
-    "text": "A log-normal model of RTs: MCMC draws\n\n\nThe MCMC draws are also called the posterior draws.\nThey allow us to construct the posterior probability distribution of each model parameter.\n\n\n\n\nrt_logn_draws &lt;- as_draws_df(rt_logn)\n\nrt_logn_draws\n\n# A draws_df: 1000 iterations, 4 chains, and 5 variables\n   b_Intercept sigma Intercept lprior   lp__\n1          6.9  0.28       6.9   -3.2 -35094\n2          6.9  0.28       6.9   -3.2 -35095\n3          6.9  0.27       6.9   -3.1 -35094\n4          6.9  0.28       6.9   -3.2 -35094\n5          6.9  0.28       6.9   -3.2 -35093\n6          6.9  0.28       6.9   -3.2 -35093\n7          6.9  0.27       6.9   -3.1 -35095\n8          6.9  0.28       6.9   -3.2 -35094\n9          6.9  0.28       6.9   -3.2 -35094\n10         6.9  0.28       6.9   -3.2 -35096\n# ... with 3990 more draws\n# ... hidden reserved variables {'.chain', '.iteration', '.draw'}"
+    "text": "A log-normal model of RTs: MCMC draws\n\n\nThe MCMC draws are also called the posterior draws.\nThey allow us to construct the posterior probability distribution of each model parameter.\n\n\n. . .\n\nrt_logn_draws &lt;- as_draws_df(rt_logn)\n\nrt_logn_draws\n\n# A draws_df: 1000 iterations, 4 chains, and 5 variables\n   b_Intercept sigma Intercept lprior   lp__\n1          6.9  0.28       6.9   -3.2 -35094\n2          6.9  0.28       6.9   -3.2 -35095\n3          6.9  0.27       6.9   -3.1 -35094\n4          6.9  0.28       6.9   -3.2 -35094\n5          6.9  0.28       6.9   -3.2 -35093\n6          6.9  0.28       6.9   -3.2 -35093\n7          6.9  0.27       6.9   -3.1 -35095\n8          6.9  0.28       6.9   -3.2 -35094\n9          6.9  0.28       6.9   -3.2 -35094\n10         6.9  0.28       6.9   -3.2 -35096\n# ... with 3990 more draws\n# ... hidden reserved variables {'.chain', '.iteration', '.draw'}"
   },
   {
     "objectID": "slides/02-lognormal.html#plot-the-mcmc-draws-mu",
     "href": "slides/02-lognormal.html#plot-the-mcmc-draws-mu",
     "title": "02 - Lognormal models",
     "section": "Plot the MCMC draws: \\(\\mu\\)",
-    "text": "Plot the MCMC draws: \\(\\mu\\)\n\nrt_logn_draws |&gt; \n  ggplot(aes(b_Intercept)) +\n  geom_density(alpha = 0.5, fill = \"darkgreen\") +\n  labs(x = expression(mu~\"of RTs (logged)\"))\n\n\n\nFigure 4: Posterior probability distribution of \\(\\mu\\) of RTs."
+    "text": "Plot the MCMC draws: \\(\\mu\\)\n\nrt_logn_draws |&gt; \n  ggplot(aes(b_Intercept)) +\n  geom_density(alpha = 0.5, fill = \"darkgreen\") +\n  labs(x = expression(mu~\"of RTs (logged)\"))\n\n\n\n\n\n\n\nFigure 4: Posterior probability distribution of \\(\\mu\\) of RTs."
   },
   {
     "objectID": "slides/02-lognormal.html#plot-the-mcmc-draws-mu-ms",
     "href": "slides/02-lognormal.html#plot-the-mcmc-draws-mu-ms",
     "title": "02 - Lognormal models",
     "section": "Plot the MCMC draws: \\(\\mu\\) (ms)",
-    "text": "Plot the MCMC draws: \\(\\mu\\) (ms)\n\nrt_logn_draws |&gt; \n  ggplot(aes(exp(b_Intercept))) +\n  geom_density(alpha = 0.5, fill = \"darkgreen\") +\n  labs(x = expression(mu~\"of RTs (ms)\"))\n\n\n\nFigure 5: Posterior probability distribution of \\(\\mu\\) of RTs in ms."
+    "text": "Plot the MCMC draws: \\(\\mu\\) (ms)\n\nrt_logn_draws |&gt; \n  ggplot(aes(exp(b_Intercept))) +\n  geom_density(alpha = 0.5, fill = \"darkgreen\") +\n  labs(x = expression(mu~\"of RTs (ms)\"))\n\n\n\n\n\n\n\nFigure 5: Posterior probability distribution of \\(\\mu\\) of RTs in ms."
   },
   {
     "objectID": "slides/02-lognormal.html#summarise-the-mcmc-draws-mu",
@@ -571,14 +571,14 @@
     "href": "slides/02-lognormal.html#credible-intervals",
     "title": "02 - Lognormal models",
     "section": "Credible Intervals",
-    "text": "Credible Intervals\n\n\nUncertainty can be quantified with Bayesian Credible Intervals (CrIs).\nA 95% CrI means that we can be 95% confident that the value is within the interval.\n\n\n\n\nFrequentist Confidence Intervals are often wrongly interpreted as Bayesian Credible Intervals (Tan and Tan 2010; Foster 2014; Crooks, Bartel, and Alibali 2019; Gigerenzer 2004; Cassidy et al. 2019).\n\n\n\n\n\nThere is nothing special about 95%. You should obtain several."
+    "text": "Credible Intervals\n\n\nUncertainty can be quantified with Bayesian Credible Intervals (CrIs).\nA 95% CrI means that we can be 95% confident that the value is within the interval.\n\n\n. . .\n\nFrequentist Confidence Intervals are often wrongly interpreted as Bayesian Credible Intervals (Tan and Tan 2010; Foster 2014; Crooks, Bartel, and Alibali 2019; Gigerenzer 2004; Cassidy et al. 2019).\n\n. . .\n\n\nThere is nothing special about 95%. You should obtain several."
   },
   {
     "objectID": "slides/02-lognormal.html#credible-intervals-higher-level-larger-width",
     "href": "slides/02-lognormal.html#credible-intervals-higher-level-larger-width",
     "title": "02 - Lognormal models",
     "section": "Credible Intervals: higher level = larger width",
-    "text": "Credible Intervals: higher level = larger width\n\n\nFigure 6: Several quantiles of a Gaussian distribution."
+    "text": "Credible Intervals: higher level = larger width\n\n\n\n\n\n\n\n\nFigure 6: Several quantiles of a Gaussian distribution."
   },
   {
     "objectID": "slides/02-lognormal.html#calculate-cris",
@@ -613,28 +613,28 @@
     "href": "slides/04-bernoulli.html#mald-accuracy",
     "title": "04 - Bernoulli models for binary outcomes",
     "section": "MALD: accuracy",
-    "text": "MALD: accuracy\n\n\nAccuracy of responses: correctly or incorrectly recognised the word type (real or nonce-word).\nLet’s model the effect of phonetic distance on accuracy.\nAccuracy is a binary variable.\n\n\n\n\n\nWith binary variables we model the probability of one of the two levels. Here, correct.\nThe probability of one level of a binary variable follows a Bernoulli distribution."
+    "text": "MALD: accuracy\n\n\nAccuracy of responses: correctly or incorrectly recognised the word type (real or nonce-word).\nLet’s model the effect of phonetic distance on accuracy.\nAccuracy is a binary variable.\n\n\n. . .\n\n\nWith binary variables we model the probability of one of the two levels. Here, correct.\nThe probability of one level of a binary variable follows a Bernoulli distribution."
   },
   {
     "objectID": "slides/04-bernoulli.html#bernoulli-model",
     "href": "slides/04-bernoulli.html#bernoulli-model",
     "title": "04 - Bernoulli models for binary outcomes",
     "section": "Bernoulli model",
-    "text": "Bernoulli model\n\\[\np(correct) \\sim Bernoulli(p)\n\\]\n\n\n\nBut… probabilities are bounded between 0 and 1.\nFor variables that can only have positive real numbers, we used the logarithmic function (log-normal models).\n\n\n\n\n\n\nWith probabilities, we can use the logistic function.\nThe logistic (or logit) function converts probabilities to log-odds (qlogis() in R)."
+    "text": "Bernoulli model\n\\[\np(correct) \\sim Bernoulli(p)\n\\]\n. . .\n\n\nBut… probabilities are bounded between 0 and 1.\nFor variables that can only have positive real numbers, we used the logarithmic function (log-normal models).\n\n\n. . .\n\n\nWith probabilities, we can use the logistic function.\nThe logistic (or logit) function converts probabilities to log-odds (qlogis() in R)."
   },
   {
     "objectID": "slides/04-bernoulli.html#logistic-function",
     "href": "slides/04-bernoulli.html#logistic-function",
     "title": "04 - Bernoulli models for binary outcomes",
     "section": "Logistic function",
-    "text": "Logistic function\n\n\nFigure 1: Correspondence between log-odds and probabilities."
+    "text": "Logistic function\n\n\n\n\n\n\n\n\nFigure 1: Correspondence between log-odds and probabilities."
   },
   {
     "objectID": "slides/04-bernoulli.html#bernoulli-regression-models",
     "href": "slides/04-bernoulli.html#bernoulli-regression-models",
     "title": "04 - Bernoulli models for binary outcomes",
     "section": "Bernoulli (regression) models",
-    "text": "Bernoulli (regression) models\n\n\nBernoulli models use the logistic function to treat probabilities as if they were unbounded.\nThe model’s estimates are in log-odds.\nLog-odds can be converted back to probabilities with the inverse logit function (plogis() in R).\n\n\n\n\n\nBernoulli models are also known as binomial or logistic regression."
+    "text": "Bernoulli (regression) models\n\n\nBernoulli models use the logistic function to treat probabilities as if they were unbounded.\nThe model’s estimates are in log-odds.\nLog-odds can be converted back to probabilities with the inverse logit function (plogis() in R).\n\n\n. . .\n\n\nBernoulli models are also known as binomial or logistic regression."
   },
   {
     "objectID": "slides/04-bernoulli.html#a-bernoulli-regression-of-accuracy-code",
@@ -648,7 +648,7 @@
     "href": "slides/04-bernoulli.html#a-bernoulli-regression-of-accuracy-predicted-accuracy",
     "title": "04 - Bernoulli models for binary outcomes",
     "section": "A Bernoulli regression of accuracy: predicted accuracy",
-    "text": "A Bernoulli regression of accuracy: predicted accuracy\n\nconditional_effects(acc_bern)\n\n\n\nFigure 2: Predicted accuracy based on phonetic distance."
+    "text": "A Bernoulli regression of accuracy: predicted accuracy\n\nconditional_effects(acc_bern)\n\n\n\n\n\n\n\nFigure 2: Predicted accuracy based on phonetic distance."
   },
   {
     "objectID": "slides/04-bernoulli.html#brentari-2024-lengua-de-señas-nicaragüense-lsn",
@@ -662,7 +662,7 @@
     "href": "slides/04-bernoulli.html#brentari-2024",
     "title": "04 - Bernoulli models for binary outcomes",
     "section": "Brentari 2024",
-    "text": "Brentari 2024\n\nbrentari2024 |&gt; \n  ggplot(aes(Group, fill = Num_Predicates)) +\n  geom_bar(position = \"fill\") +\n  labs(y = \"Proportion\")\n\n\n\nFigure 3: Proportion of predicate type by group."
+    "text": "Brentari 2024\n\nbrentari2024 |&gt; \n  ggplot(aes(Group, fill = Num_Predicates)) +\n  geom_bar(position = \"fill\") +\n  labs(y = \"Proportion\")\n\n\n\n\n\n\n\nFigure 3: Proportion of predicate type by group."
   },
   {
     "objectID": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type",
@@ -676,28 +676,28 @@
     "href": "slides/04-bernoulli.html#indicator-variables",
     "title": "04 - Bernoulli models for binary outcomes",
     "section": "Indicator variables",
-    "text": "Indicator variables\n\n\n\n\n\\(G_{\\text{HS}}\\)\n\\(G_{\\text{NSL1}}\\)\n\\(G_{\\text{NSL2}}\\)\n\n\n\n\nHomesign\n1\n0\n0\n\n\nNSL1\n0\n1\n0\n\n\nNSL2\n0\n0\n1\n\n\n\n\n\\[\n\\begin{align}\nlogit(p_i) & = \\beta_1 \\cdot G_{\\text{HS}[i]} + \\beta_2 \\cdot G_{\\text{NSL1}[i]} + \\beta_3 \\cdot G_{\\text{NSL2}[i]}\\\\\n\\text{homesign, } logit(p_i) & = \\beta_1 \\cdot 1 + \\beta_2 \\cdot 0 + \\beta_3 \\cdot 0\\\\\n& = \\beta_1\\\\\n\\text{NSL1, } logit(p_i) & = \\beta_1 \\cdot 0 + \\beta_2 \\cdot 1 + \\beta_3 \\cdot 0\\\\\n& = \\beta_2\\\\\n\\text{NSL2, } logit(p_i) & = \\beta_1 \\cdot 0 + \\beta_2 \\cdot 0 + \\beta_3 \\cdot 1\\\\\n& = \\beta_3\\\\\n\\end{align}\n\\]"
+    "text": "Indicator variables\n\n\n\n\n\\(G_{\\text{HS}}\\)\n\\(G_{\\text{NSL1}}\\)\n\\(G_{\\text{NSL2}}\\)\n\n\n\n\nHomesign\n1\n0\n0\n\n\nNSL1\n0\n1\n0\n\n\nNSL2\n0\n0\n1\n\n\n\n. . .\n\\[\n\\begin{align}\nlogit(p_i) & = \\beta_1 \\cdot G_{\\text{HS}[i]} + \\beta_2 \\cdot G_{\\text{NSL1}[i]} + \\beta_3 \\cdot G_{\\text{NSL2}[i]}\\\\\n\\text{homesign, } logit(p_i) & = \\beta_1 \\cdot 1 + \\beta_2 \\cdot 0 + \\beta_3 \\cdot 0\\\\\n& = \\beta_1\\\\\n\\text{NSL1, } logit(p_i) & = \\beta_1 \\cdot 0 + \\beta_2 \\cdot 1 + \\beta_3 \\cdot 0\\\\\n& = \\beta_2\\\\\n\\text{NSL2, } logit(p_i) & = \\beta_1 \\cdot 0 + \\beta_2 \\cdot 0 + \\beta_3 \\cdot 1\\\\\n& = \\beta_3\\\\\n\\end{align}\n\\]"
   },
   {
     "objectID": "slides/04-bernoulli.html#indicator-variables-1",
     "href": "slides/04-bernoulli.html#indicator-variables-1",
     "title": "04 - Bernoulli models for binary outcomes",
     "section": "Indicator variables",
-    "text": "Indicator variables\n\n\nNote that indicator variables are dealt with by brms under the hood.\nWe talk about them to understand how the model is set up.\n\n\n\n\n\nThe model will estimate the probability \\(p\\) for each group.\nBut… the probability of what?"
+    "text": "Indicator variables\n\n\nNote that indicator variables are dealt with by brms under the hood.\nWe talk about them to understand how the model is set up.\n\n\n. . .\n\n\nThe model will estimate the probability \\(p\\) for each group.\nBut… the probability of what?"
   },
   {
     "objectID": "slides/04-bernoulli.html#prepare-data",
     "href": "slides/04-bernoulli.html#prepare-data",
     "title": "04 - Bernoulli models for binary outcomes",
     "section": "Prepare data",
-    "text": "Prepare data\n\ntable(brentari2024$Num_Predicates)\n\n\nmultiple   single \n     215      415 \n\n\n\n\nbrentari2024 &lt;- brentari2024 |&gt; \n  mutate(\n    Pred_Type = factor(Num_Predicates, levels = c(\"single\", \"multiple\"))\n  )\n\ntable(brentari2024$Pred_Type)\n\n\n  single multiple \n     415      215 \n\n\n\n\n\n\nThe model will estimate the probability \\(p\\) of finding a multiple predicate, depending on group."
+    "text": "Prepare data\n\ntable(brentari2024$Num_Predicates)\n\n\nmultiple   single \n     215      415 \n\n\n. . .\n\nbrentari2024 &lt;- brentari2024 |&gt; \n  mutate(\n    Pred_Type = factor(Num_Predicates, levels = c(\"single\", \"multiple\"))\n  )\n\ntable(brentari2024$Pred_Type)\n\n\n  single multiple \n     415      215 \n\n\n. . .\n\n\nThe model will estimate the probability \\(p\\) of finding a multiple predicate, depending on group."
   },
   {
     "objectID": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-suppress-the-intercept",
     "href": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-suppress-the-intercept",
     "title": "04 - Bernoulli models for binary outcomes",
     "section": "A Bernoulli model of predicate type: suppress the intercept",
-    "text": "A Bernoulli model of predicate type: suppress the intercept\n\n\nv1_duration ~ 1 + speech_rate_c\n\n\n1 stands for “intercept”. The model has an intercept and a slope.\n\n\n\n\n\nPred_Type ~ 0 + Group\n\n\n0 stands for “suppress the overall intercept”. The model estimates one “intercept” per level."
+    "text": "A Bernoulli model of predicate type: suppress the intercept\n\n\nv1_duration ~ 1 + speech_rate_c\n\n\n1 stands for “intercept”. The model has an intercept and a slope.\n\n\n. . .\n\n\nPred_Type ~ 0 + Group\n\n\n0 stands for “suppress the overall intercept”. The model estimates one “intercept” per level."
   },
   {
     "objectID": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-code",
@@ -718,7 +718,7 @@
     "href": "slides/04-bernoulli.html#a-bernoulli-model-of-predicate-type-predicted-probability",
     "title": "04 - Bernoulli models for binary outcomes",
     "section": "A Bernoulli model of predicate type: predicted probability",
-    "text": "A Bernoulli model of predicate type: predicted probability\n\nconditional_effects(pred_bern)\n\n\n\nFigure 4: Predicted probability of multiple predicate by group."
+    "text": "A Bernoulli model of predicate type: predicted probability\n\nconditional_effects(pred_bern)\n\n\n\n\n\n\n\nFigure 4: Predicted probability of multiple predicate by group."
   },
   {
     "objectID": "slides/04-bernoulli.html#posterior-draws",
@@ -746,7 +746,7 @@
     "href": "slides/04-bernoulli.html#what-about-comparing-the-groups",
     "title": "04 - Bernoulli models for binary outcomes",
     "section": "What about comparing the groups?",
-    "text": "What about comparing the groups?\n\nWhat if we want to know the difference between each group?\n\n\n\n\nWe can use the posterior draws. Simply take the row-wise difference and you will get a list of differences.\nThese are the posterior differences."
+    "text": "What about comparing the groups?\n\nWhat if we want to know the difference between each group?\n\n. . .\n\n\nWe can use the posterior draws. Simply take the row-wise difference and you will get a list of differences.\nThese are the posterior differences."
   },
   {
     "objectID": "slides/04-bernoulli.html#comparing-groups",
@@ -775,5 +775,96 @@
     "title": "04 - Bernoulli models for binary outcomes",
     "section": "Summary",
     "text": "Summary\n\n\nBinary variables can be modelled with a Bernoulli distribution.\nBernoulli models estimate the probability \\(p\\) of the second level in the variable.\nCategorical predictors are modelled using indexing variables.\nYou can obtain posterior differences between levels by taking the difference of the posterior draws of those levels."
+  },
+  {
+    "objectID": "slides/06-next.html",
+    "href": "slides/06-next.html",
+    "title": "06 - What’s next?",
+    "section": "",
+    "text": "You have learnt a great deal already!\n\n\nStatistics as a tool to deal with uncertainty and variability.\nRegression models (Gaussian, log-normal, Bernoulli, Poisson, negative binomial, ordinal) for a variety of outcome variables.\nOne predictor: numeric or categorical.\nWorking with posterior draws.\n\n\n. . .\nBut there is more you need to learn to use regression models in actual research!"
+  },
+  {
+    "objectID": "slides/06-next.html#this-is-just-the-beginning",
+    "href": "slides/06-next.html#this-is-just-the-beginning",
+    "title": "06 - What’s next?",
+    "section": "This is just the beginning",
+    "text": "This is just the beginning\nYou have learnt a great deal already!\n\n\nStatistics as a tool to deal with uncertainty and variability.\nRegression models (Gaussian, log-normal, Bernoulli, Poisson, negative binomial, ordinal) for a variety of outcome variables.\nOne predictor: numeric or categorical.\nWorking with posterior draws.\n\n\n\nBut there is more you need to learn to use regression models in actual research!"
+  },
+  {
+    "objectID": "slides/05-pois-ord.html",
+    "href": "slides/05-pois-ord.html",
+    "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
+    "section": "",
+    "text": "Gaussian for Gaussian variables (very rare).\nLog-normal for outcome variables that can take only positive (real) values.\nBernoulli for binary outcome variables.\n\n\n. . .\n\nOther common types of outcome variables:\n\nCount data: Poisson and negative binomial models.\nLikert scales: Ordinal models."
+  },
+  {
+    "objectID": "slides/01-introduction.html",
+    "href": "slides/01-introduction.html",
+    "title": "01 - Introduction",
+    "section": "",
+    "text": "This workshop introduces you to the very basics of Bayesian regression modelling.\nTo be able to able to analyse real-world data you will need much more!"
+  },
+  {
+    "objectID": "slides/02-lognormal.html",
+    "href": "slides/02-lognormal.html",
+    "title": "02 - Lognormal models",
+    "section": "",
+    "text": "Figure 1: Posterior predictive check plot of rt_gauss."
+  },
+  {
+    "objectID": "slides/04-bernoulli.html",
+    "href": "slides/04-bernoulli.html",
+    "title": "04 - Bernoulli models for binary outcomes",
+    "section": "",
+    "text": "mald &lt;- readRDS(\"data/tucker2019/mald_1_1.rds\")"
+  },
+  {
+    "objectID": "slides/06-next.html#many-predictors-interactions",
+    "href": "slides/06-next.html#many-predictors-interactions",
+    "title": "06 - What’s next?",
+    "section": "Many predictors: interactions",
+    "text": "Many predictors: interactions\n\nmald |&gt; \n  ggplot(aes(PhonLev, RT)) +\n  geom_smooth(aes(colour = IsWord), method = \"lm\") +\n  labs(\n    x = \"Phonetic distance\", y = \"RT (ms)\",\n    colour = \"Real\\nwords\"\n  )\n\n\n\nFigure 1: Regression lines illustrating an interaction between phonetic distance and lexical status."
+  },
+  {
+    "objectID": "slides/06-next.html#other-types-of-outcome-variables",
+    "href": "slides/06-next.html#other-types-of-outcome-variables",
+    "title": "06 - What’s next?",
+    "section": "Other types of outcome variables",
+    "text": "Other types of outcome variables\n\n\nVariables bounded between 0 and 1, like proportions. Use a beta regression.\nCategorical variables with more than two categories (but unordered). Use a categorical (multinomial) regression.\nMultiple outcome variables! Use multivariate regression models.\nCan you think of more types?"
+  },
+  {
+    "objectID": "slides/06-next.html#non-linear-effects-smooth-terms",
+    "href": "slides/06-next.html#non-linear-effects-smooth-terms",
+    "title": "06 - What’s next?",
+    "section": "Non-linear effects: smooth terms",
+    "text": "Non-linear effects: smooth terms\n\n\nFigure 2: Vowel duration and speech rate."
+  },
+  {
+    "objectID": "slides/06-next.html#repeated-measures-multilevelhierarchicalmixed-effects",
+    "href": "slides/06-next.html#repeated-measures-multilevelhierarchicalmixed-effects",
+    "title": "06 - What’s next?",
+    "section": "Repeated measures: multilevel/hierarchical/mixed-effects",
+    "text": "Repeated measures: multilevel/hierarchical/mixed-effects\n\nset.seed(3198)\nmald |&gt; \n  filter(Subject %in% sample(unique(mald$Subject), 12)) |&gt; \n  ggplot(aes(IsWord, RT)) +\n  geom_jitter(alpha = 0.25, width = 0.2) +\n  stat_summary(aes(colour = IsWord)) +\n  labs(\n    x = \"Phonetic distance\", y = \"RT (ms)\",\n    colour = \"Real\\nwords\"\n  ) +\n  facet_wrap(vars(Subject))\n\n\n\nFigure 3: Jitter plot showing RTs by lexical status for a selection of participants."
+  },
+  {
+    "objectID": "slides/06-next.html#model-diagnostics",
+    "href": "slides/06-next.html#model-diagnostics",
+    "title": "06 - What’s next?",
+    "section": "Model diagnostics",
+    "text": "Model diagnostics\n\n\nModel diagnostics help us determine cases when there is something wrong with the model or the data or both.\nThe posterior predictive check plot is one type of diagnostic, but there are others (like \\(\\hat{R}\\) and Effective Sample Size in the model summary)."
+  },
+  {
+    "objectID": "slides/06-next.html#prior-probability-distributions",
+    "href": "slides/06-next.html#prior-probability-distributions",
+    "title": "06 - What’s next?",
+    "section": "Prior probability distributions",
+    "text": "Prior probability distributions\n\n\nWe’ve been using the default priors set by brms. They are usually fine.\nIt might be preferable to specify custom priors.\nIn any case, learning the basics of prior specification is fundamental."
+  },
+  {
+    "objectID": "slides/06-next.html#frequentist-vs-bayesian-statistics",
+    "href": "slides/06-next.html#frequentist-vs-bayesian-statistics",
+    "title": "06 - What’s next?",
+    "section": "Frequentist vs Bayesian statistics",
+    "text": "Frequentist vs Bayesian statistics\n\n\nModern research is dominated by the “null ritual”, a degenerate form of frequentist statistics (Gigerenzer, Krauss, and Vitouch 2004; Gigerenzer 2004, 2018). It is based on “rejecting a nil hypothesis”.\nThe “null ritual” is not a robust statistical approach.\nProper frequentist methods are difficult to apply in practice.\nBayesian statistics is about estimating uncertainty and accounting for variability with posterior probability distributions.\n\n\n\n\n\n\nGigerenzer, Gerd. 2004. “Mindless Statistics.” The Journal of Socio-Economics 33 (5): 587–606. https://doi.org/10.1016/j.socec.2004.09.033.\n\n\n———. 2018. “Statistical Rituals: The Replication Delusion and How We Got There.” Advances in Methods and Practices in Psychological Science 1 (2): 198218. https://doi.org/10.1177/2515245918771329.\n\n\nGigerenzer, Gerd, Stefan Krauss, and Oliver Vitouch. 2004. “The Null Ritual. What You Always Wanted to Know about Significance Testing but Were Afraid to Ask.” In, 391408."
   }
 ]
