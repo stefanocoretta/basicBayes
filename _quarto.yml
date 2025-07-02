@@ -29,6 +29,8 @@ website:
             text: "04 - Bernoulli"
           - href: "slides/05-pois-ord.qmd"
             text: "05 - Poisson and Ordinal"
+          - href: "slides/06-next.qmd"
+            text: "06 - What's next?"
 
 format:
   html:
