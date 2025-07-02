@@ -32,7 +32,7 @@
     "href": "slides/06-next.html#repeated-measures-multilevelhierarchicalmixed-effects",
     "title": "06 - What’s next?",
     "section": "Repeated measures: multilevel/hierarchical/mixed-effects",
-    "text": "Repeated measures: multilevel/hierarchical/mixed-effects\n\nset.seed(3198)\nmald |&gt; \n  filter(Subject %in% sample(unique(mald$Subject), 12)) |&gt; \n  ggplot(aes(IsWord, RT)) +\n  geom_jitter(alpha = 0.25, width = 0.2) +\n  stat_summary(aes(colour = IsWord)) +\n  labs(\n    x = \"Phonetic distance\", y = \"RT (ms)\",\n    colour = \"Real\\nwords\"\n  ) +\n  facet_wrap(vars(Subject))\n\n\n\nFigure 3: Jitter plot showing RTs by lexical status for a selection of participants."
+    "text": "Repeated measures: multilevel/hierarchical/mixed-effects\n\n\nFigure 3: Jitter plot showing RTs by lexical status for a selection of participants."
   },
   {
     "objectID": "slides/06-next.html#model-diagnostics",
@@ -508,7 +508,7 @@
     "href": "slides/01-introduction.html#the-path-ahead",
     "title": "01 - Introduction",
     "section": "The path ahead",
-    "text": "The path ahead"
+    "text": "The path ahead\n\n\nTopics:\n\nGaussian, log-normal, Bernoulli, Poisson, negative binomial, ordinal regression models.\nOne predictor (numeric or categorical; centring and indexing).\n\nCase studies:\n\nReaction times and accuracy in a lexical decision task in English (Tucker et al. 2019).\nVowel duration in Italian (Coretta 2018, 2020b, 2019, 2020a).\nPredicate type in Nicaraguan Sign Language (Brentari et al. 2024).\nNumber of gestures in British, Chinese and Bangladeshi infants (Cameron-Faulkner et al. 2020).\nProficiency in Emilian (Gallo-Romance) (Hampton and Coretta 2024)."
   },
   {
     "objectID": "slides/01-introduction.html#section-2",
@@ -620,7 +620,7 @@
     "href": "slides/01-introduction.html#references",
     "title": "01 - Introduction",
     "section": "References",
-    "text": "References\n\n\n\n\nBürkner, Paul-Christian. 2017. “Brms: An r Package for Bayesian Multilevel Models Using Stan.” Journal of Statistical Software 80 (1): 128. https://doi.org/10.18637/jss.v080.i01.\n\n\nR Core Team. 2025. R: A Language and Environment for Statistical Computing [Version 4.5.0].\n\n\nTucker, Benjamin V, Daniel Brenner, Kyle Danielson D, Matthew C Kelley, Filip Nenadić, and Michelle Sims. 2019. “The Massive Auditory Lexical Decision (MALD) Database.” Behavior Research Methods 51 (3): 11871204. https://doi.org/10.3758/s13428-018-1056-1."
+    "text": "References\n\n\n\n\nBrentari, Diane, Susan Goldin-Meadow, Laura Horton, Ann Senghas, and Marie Coppola. 2024. “The Organization of Verb Meaning in Lengua de Señas Nicaragüense (LSN): Sequential or Simultaneous Structures?” Glossa: A Journal of General Linguistics 9 (1). https://doi.org/10.16995/glossa.10342.\n\n\nBürkner, Paul-Christian. 2017. “Brms: An r Package for Bayesian Multilevel Models Using Stan.” Journal of Statistical Software 80 (1): 128. https://doi.org/10.18637/jss.v080.i01.\n\n\nCameron-Faulkner, Thea, Nivedita Malik, Circle Steele, Stefano Coretta, Ludovica Serratrice, and Elena Lieven. 2020. “A Cross-Cultural Analysis of Early Prelinguistic Gesture Development and Its Relationship to Language Development.” Child Development 92 (1): 273290. https://doi.org/10.1111/cdev.13406.\n\n\nCoretta, Stefano. 2018. “An Exploratory Study of the Voicing Effect in Italian and Polish [Data V1.0.0].” Open Science Framework. https://doi.org/10.17605/OSF.IO/8ZHKU.\n\n\n———. 2019. “An Exploratory Study of Voicing-Related Differences in Vowel Duration as Compensatory Temporal Adjustment in Italian and Polish.” Glossa: A Journal of General Linguistics 4 (1): 1–25. https://doi.org/10.5334/gjgl.869.\n\n\n———. 2020a. “Longer Vowel Duration Correlates with Greater Tongue Root Advancement at Vowel Offset: Acoustic and Articulatory Data from Italian and Polish.” The Journal of the Acoustical Society of America 147: 245–59. https://doi.org/10.1121/10.0000556.\n\n\n———. 2020b. “Vowel Duration and Consonant Voicing: A Production Study.” PhD thesis, The University of Manchester.\n\n\nHampton, Jessica, and Stefano Coretta. 2024. “Language Practices of Emilian and Esperanto Communities: Spaces of Use, Explicit Language Attitudes and Self-Reported Competence.” Journal of Multilingual and Multicultural Development, October, 1–26. https://doi.org/10.1080/01434632.2024.2413933.\n\n\nR Core Team. 2025. R: A Language and Environment for Statistical Computing [Version 4.5.0].\n\n\nTucker, Benjamin V, Daniel Brenner, Kyle Danielson D, Matthew C Kelley, Filip Nenadić, and Michelle Sims. 2019. “The Massive Auditory Lexical Decision (MALD) Database.” Behavior Research Methods 51 (3): 11871204. https://doi.org/10.3758/s13428-018-1056-1."
   },
   {
     "objectID": "slides/03-regression.html#vowel-duration",

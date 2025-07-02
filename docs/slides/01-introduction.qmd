@@ -1,14 +1,15 @@
 ---
 title: "01 - Introduction"
 author: "Stefano Coretta"
+bibliography: references.bib
 ---
 
 ## Disclaimer
 
 ::: box-error
-- This workshop introduces you to the very basics of Bayesian regression modelling.
+-   This workshop introduces you to the very basics of Bayesian regression modelling.
 
-- To be able to able to analyse real-world data you will need much more!
+-   To be able to able to analyse real-world data you will need much more!
 :::
 
 ## 
@@ -82,6 +83,25 @@ A **statistical model** is a mathematical model that represents the relationship
 —[George Box](https://en.wikipedia.org/wiki/All_models_are_wrong)
 
 ## The path ahead
+
+::: box-note
+-   Topics:
+
+    -   Gaussian, log-normal, Bernoulli, Poisson, negative binomial, ordinal regression models.
+    -   One predictor (numeric or categorical; centring and indexing).
+
+-   Case studies:
+
+    -   Reaction times and accuracy in a lexical decision task in English [@tucker2019].
+
+    -   Vowel duration in Italian [@coretta2018k; @coretta2020a; @coretta2019l; @coretta2020c].
+
+    -   Predicate type in Nicaraguan Sign Language [@brentari2024].
+
+    -   Number of gestures in British, Chinese and Bangladeshi infants [@cameronfaulkner2020].
+
+    -   Proficiency in Emilian (Gallo-Romance) [@hampton2024].
+:::
 
 ##  {background-color="var(--inverse)"}
 
@@ -439,11 +459,11 @@ pp_check(rt_gauss, ndraws = 20)
 ## Summary
 
 ::: box-tip
-- Inference allows us to learn something about a population from a sample of that population.
+-   Inference allows us to learn something about a population from a sample of that population.
 
-- Statistics is a tool to quantify uncertainty and account for variability.
+-   Statistics is a tool to quantify uncertainty and account for variability.
 
-- Gaussian models are a statistical tool that can estimate a mean and standard deviation from the data.
+-   Gaussian models are a statistical tool that can estimate a mean and standard deviation from the data.
 
 $$
 y \sim Gaussian(\mu, \sigma)
