@@ -231,10 +231,10 @@ Stefano Coretta
 <p>You have learnt a great deal already!</p>
 <div class="box-note">
 <ul>
-<li><p>Statistics as a tool to deal with uncertainty and variability.</p></li>
-<li><p>Regression models (Gaussian, log-normal, Bernoulli, Poisson, negative binomial, ordinal) for a variety of outcome variables.</p></li>
-<li><p>One predictor: numeric or categorical.</p></li>
-<li><p>Working with posterior draws.</p></li>
+<li><p>Statistics as a tool to deal with <strong>uncertainty and variability</strong>.</p></li>
+<li><p><strong>Regression models</strong> (Gaussian, log-normal, Bernoulli, Poisson, negative binomial, ordinal) for a variety of outcome variables.</p></li>
+<li><p><strong>One predictor</strong>: numeric or categorical.</p></li>
+<li><p>Working with <strong>posterior draws</strong>.</p></li>
 </ul>
 </div>
 <div class="fragment">
@@ -243,16 +243,7 @@ Stefano Coretta
 </section>
 <section id="many-predictors-interactions" class="slide level2">
 <h2>Many predictors: interactions</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>mald <span class="sc">|&gt;</span> </span>
-<span id="cb1-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(PhonLev, RT)) <span class="sc">+</span></span>
-<span id="cb1-3"><a></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">colour =</span> IsWord), <span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
-<span id="cb1-4"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb1-5"><a></a>    <span class="at">x =</span> <span class="st">"Phonetic distance"</span>, <span class="at">y =</span> <span class="st">"RT (ms)"</span>,</span>
-<span id="cb1-6"><a></a>    <span class="at">colour =</span> <span class="st">"Real</span><span class="sc">\n</span><span class="st">words"</span></span>
-<span id="cb1-7"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
-</div>
 <img data-src="06-next_files/figure-revealjs/fig-mald-int-1.png" width="960" class="r-stretch quarto-figure-center" id="fig-mald-int"><p class="caption">
 Figure&nbsp;1: Regression lines illustrating an interaction between phonetic distance and lexical status.
 </p></section>
@@ -260,10 +251,10 @@ Figure&nbsp;1: Regression lines illustrating an interaction between phonetic dis
 <h2>Other types of outcome variables</h2>
 <div class="box-note">
 <ul>
-<li><p>Variables bounded between 0 and 1, like proportions. Use a beta regression.</p></li>
-<li><p>Categorical variables with more than two categories (but unordered). Use a categorical (multinomial) regression.</p></li>
-<li><p>Multiple outcome variables! Use multivariate regression models.</p></li>
-<li><p>Can you think of more types?</p></li>
+<li><p>Variables bounded between 0 and 1, like proportions. Use a <strong>beta regression</strong>.</p></li>
+<li><p>Categorical variables with more than two categories (but unordered). Use a <strong>categorical (multinomial) regression</strong>.</p></li>
+<li><p>Multiple outcome variables! Use <strong>multivariate regression</strong> models.</p></li>
+<li><p><em>Can you think of more types?</em></p></li>
 </ul>
 </div>
 </section>
@@ -276,17 +267,17 @@ Figure&nbsp;2: Vowel duration and speech rate.
 <section id="repeated-measures-multilevelhierarchicalmixed-effects" class="slide level2">
 <h2>Repeated measures: multilevel/hierarchical/mixed-effects</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">set.seed</span>(<span class="dv">3198</span>)</span>
-<span id="cb2-2"><a></a>mald <span class="sc">|&gt;</span> </span>
-<span id="cb2-3"><a></a>  <span class="fu">filter</span>(Subject <span class="sc">%in%</span> <span class="fu">sample</span>(<span class="fu">unique</span>(mald<span class="sc">$</span>Subject), <span class="dv">12</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb2-4"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(IsWord, RT)) <span class="sc">+</span></span>
-<span id="cb2-5"><a></a>  <span class="fu">geom_jitter</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">width =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb2-6"><a></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">colour =</span> IsWord)) <span class="sc">+</span></span>
-<span id="cb2-7"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb2-8"><a></a>    <span class="at">x =</span> <span class="st">"Phonetic distance"</span>, <span class="at">y =</span> <span class="st">"RT (ms)"</span>,</span>
-<span id="cb2-9"><a></a>    <span class="at">colour =</span> <span class="st">"Real</span><span class="sc">\n</span><span class="st">words"</span></span>
-<span id="cb2-10"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb2-11"><a></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(Subject))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">set.seed</span>(<span class="dv">3198</span>)</span>
+<span id="cb1-2"><a></a>mald <span class="sc">|&gt;</span> </span>
+<span id="cb1-3"><a></a>  <span class="fu">filter</span>(Subject <span class="sc">%in%</span> <span class="fu">sample</span>(<span class="fu">unique</span>(mald<span class="sc">$</span>Subject), <span class="dv">12</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb1-4"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(IsWord, RT)) <span class="sc">+</span></span>
+<span id="cb1-5"><a></a>  <span class="fu">geom_jitter</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">width =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb1-6"><a></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">colour =</span> IsWord)) <span class="sc">+</span></span>
+<span id="cb1-7"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb1-8"><a></a>    <span class="at">x =</span> <span class="st">"Phonetic distance"</span>, <span class="at">y =</span> <span class="st">"RT (ms)"</span>,</span>
+<span id="cb1-9"><a></a>    <span class="at">colour =</span> <span class="st">"Real</span><span class="sc">\n</span><span class="st">words"</span></span>
+<span id="cb1-10"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb1-11"><a></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(Subject))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="06-next_files/figure-revealjs/fig-mald-subjs-1.png" width="960" class="r-stretch quarto-figure-center" id="fig-mald-subjs"><p class="caption">
@@ -296,8 +287,8 @@ Figure&nbsp;3: Jitter plot showing RTs by lexical status for a selection of part
 <h2>Model diagnostics</h2>
 <div class="box-note">
 <ul>
-<li><p>Model diagnostics help us determine cases when there is something wrong with the model or the data or both.</p></li>
-<li><p>The posterior predictive check plot is one type of diagnostic, but there are others (like <span class="math inline">\(\hat{R}\)</span> and Effective Sample Size in the model summary).</p></li>
+<li><p><strong>Model diagnostics</strong> help us determine cases when there is something wrong with the model or the data or both.</p></li>
+<li><p>The <strong>posterior predictive check</strong> plot is one type of diagnostic, but there are others (like <span class="math inline">\(\hat{R}\)</span> and Effective Sample Size in the model summary).</p></li>
 </ul>
 </div>
 </section>
@@ -305,22 +296,86 @@ Figure&nbsp;3: Jitter plot showing RTs by lexical status for a selection of part
 <h2>Prior probability distributions</h2>
 <div class="box-note">
 <ul>
-<li><p>We’ve been using the default priors set by brms. They are usually fine.</p></li>
+<li><p>We’ve been using the <strong>default priors</strong> set by brms. They are usually fine.</p></li>
 <li><p>It might be preferable to specify custom priors.</p></li>
-<li><p>In any case, learning the basics of prior specification is fundamental.</p></li>
+<li><p>In any case, learning the <strong>basics of prior specification</strong> is fundamental.</p></li>
 </ul>
 </div>
 </section>
-<section id="frequentist-vs-bayesian-statistics" class="slide level2 smaller scrollable">
+<section id="frequentist-vs-bayesian-statistics" class="slide level2">
 <h2>Frequentist vs Bayesian statistics</h2>
 <div class="box-note">
 <ul>
-<li><p>Modern research is dominated by the “null ritual”, a degenerate form of frequentist statistics <span class="citation" data-cites="gigerenzer2004 gigerenzer2004a gigerenzer2018">(<a href="#/frequentist-vs-bayesian-statistics" role="doc-biblioref" onclick="">Gigerenzer, Krauss, and Vitouch 2004</a>; <a href="#/frequentist-vs-bayesian-statistics" role="doc-biblioref" onclick="">Gigerenzer 2004</a>, <a href="#/frequentist-vs-bayesian-statistics" role="doc-biblioref" onclick="">2018</a>)</span>. It is based on “rejecting a nil hypothesis”.</p></li>
+<li><p>Modern research is dominated by the <strong>“null ritual”</strong>, a degenerate form of frequentist statistics <span class="citation" data-cites="gigerenzer2004 gigerenzer2004a gigerenzer2018">(<a href="#/references" role="doc-biblioref" onclick="">Gigerenzer, Krauss, and Vitouch 2004</a>; <a href="#/references" role="doc-biblioref" onclick="">Gigerenzer 2004</a>, <a href="#/references" role="doc-biblioref" onclick="">2018</a>)</span>. It is based on “rejecting a nil hypothesis”.</p></li>
 <li><p>The “null ritual” is <strong>not</strong> a robust statistical approach.</p></li>
-<li><p>Proper frequentist methods are difficult to apply in practice.</p></li>
-<li><p>Bayesian statistics is about estimating uncertainty and accounting for variability with posterior probability distributions.</p></li>
+<li><p>Proper frequentist methods are <strong>difficult to apply</strong> in practice: they tell us <span class="math inline">\(P(d | H)\)</span> but we want <span class="math inline">\(P(H | d)\)</span>.</p></li>
+<li><p><strong>Bayesian statistics</strong> is about estimating uncertainty and accounting for variability with posterior probability distributions.</p></li>
 </ul>
 </div>
+</section>
+<section id="dimensionality-reduction" class="slide level2">
+<h2>Dimensionality reduction</h2>
+<div class="box-note">
+<ul>
+<li><p>Methods to <strong>reduce “dimensionality”</strong> of the data.</p>
+<ul>
+<li><p>Principal Component Analysis.</p></li>
+<li><p>Multiple Correspondence Analysis.</p></li>
+<li><p>Clustering Methods.</p></li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="causal-inference" class="slide level2">
+<h2>Causal inference</h2>
+<div class="box-note">
+<ul>
+<li><p>“Correlation is not causation!”</p></li>
+<li><p>Well… it is if you adopt a <strong>causal inference</strong> approach.</p></li>
+<li><p>Directed Acyclic Graphs (<strong>DAGs</strong>).</p></li>
+</ul>
+</div>
+<div class="fragment">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="../img/dag.png" width="400"></p>
+<figcaption>A DAG of project funding selection.</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="causal-inference-collider-bias" class="slide level2">
+<h2>Causal inference: collider bias</h2>
+
+<img data-src="../img/collider-bias.png" class="r-stretch quarto-figure-center"><p class="caption">From <span class="citation" data-cites="mcelreath2020">McElreath (<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span>.</p></section>
+<section id="modelling-mindsets" class="slide level2">
+<h2>Modelling mindsets</h2>
+<div class="box-note">
+<ul>
+<li><p><span class="citation" data-cites="molnar2022">Molnar (<a href="#/references" role="doc-biblioref" onclick="">2022</a>)</span>: <em>Modeling Mindsets: The Many Cultures Of Learning From Data</em>.</p></li>
+<li><p>Statistical modelling, frequentism, Bayesianims, likelihoodism, causal inference, machine learning, supervised learning, unsupervised learning, reinforcement learning, deep learning.</p></li>
+<li><p><strong>Be a T-shaped Modeller.</strong></p>
+<ul>
+<li>Deep knowledge of one approach, superficial knowledge of the rest.</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="where-can-i-learn-all-that" class="slide level2">
+<h2>Where can I learn all that?</h2>
+<div class="box-note">
+<ul>
+<li><p>Resources for learning are linked on this page: <a href="https://uoelel.github.io/analysis.html" class="uri">https://uoelel.github.io/analysis.html</a></p></li>
+<li><p>You can watch recordings of other workshops I run here: <a href="https://uoelel.github.io/stew.html" class="uri">https://uoelel.github.io/stew.html</a></p></li>
+</ul>
+</div>
+</section>
+<section id="thank-you" class="slide level2">
+<h2>Thank you!</h2>
+
+<img data-src="../img/230302162002-01-worlds-ugliest-dog-competition-file-062423.jpg" class="r-stretch quarto-figure-center"><p class="caption">Mr.&nbsp;Happy Face, the 2022 winner of the World’s Ugliest Dog Competition, looks towards the camera. Josh Edelson/AFP/Getty Images</p></section>
+<section id="references" class="slide level2 smaller scrollable">
+<h2>References</h2>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
@@ -332,6 +387,12 @@ Gigerenzer, Gerd. 2004. <span>“Mindless Statistics.”</span> <em>The Journal 
 </div>
 <div id="ref-gigerenzer2004" class="csl-entry" role="listitem">
 Gigerenzer, Gerd, Stefan Krauss, and Oliver Vitouch. 2004. <span>“The Null Ritual. What You Always Wanted to Know about Signi<span>fi</span>cance Testing but Were Afraid to Ask.”</span> In, 391408.
+</div>
+<div id="ref-mcelreath2020" class="csl-entry" role="listitem">
+McElreath, Richard. 2020. <em>Statistical Rethinking: A Bayesian Course with Examples in R and Stan</em>. Second edition. Chapman &amp; Hall/CRC Texts in Statistical Science Series. Boca Raton: CRC Press.
+</div>
+<div id="ref-molnar2022" class="csl-entry" role="listitem">
+Molnar, Christoph. 2022. <em>Modeling Mindsets: The Many Cultures of Learning from Data</em>. MUCBOOK.
 </div>
 </div>
 </section>

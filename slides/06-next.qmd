@@ -25,13 +25,13 @@ mald <- readRDS("data/tucker2019/mald_1_1.rds")
 You have learnt a great deal already!
 
 ::: box-note
--   Statistics as a tool to deal with uncertainty and variability.
+-   Statistics as a tool to deal with **uncertainty and variability**.
 
--   Regression models (Gaussian, log-normal, Bernoulli, Poisson, negative binomial, ordinal) for a variety of outcome variables.
+-   **Regression models** (Gaussian, log-normal, Bernoulli, Poisson, negative binomial, ordinal) for a variety of outcome variables.
 
--   One predictor: numeric or categorical.
+-   **One predictor**: numeric or categorical.
 
--   Working with posterior draws.
+-   Working with **posterior draws**.
 :::
 
 . . .
@@ -58,13 +58,13 @@ mald |>
 ## Other types of outcome variables
 
 ::: box-note
--   Variables bounded between 0 and 1, like proportions. Use a beta regression.
+-   Variables bounded between 0 and 1, like proportions. Use a **beta regression**.
 
--   Categorical variables with more than two categories (but unordered). Use a categorical (multinomial) regression.
+-   Categorical variables with more than two categories (but unordered). Use a **categorical (multinomial) regression**.
 
--   Multiple outcome variables! Use multivariate regression models.
+-   Multiple outcome variables! Use **multivariate regression** models.
 
--   Can you think of more types?
+-   *Can you think of more types?*
 :::
 
 ## Non-linear effects: smooth terms
@@ -117,29 +117,85 @@ mald |>
 ## Model diagnostics
 
 ::: box-note
--   Model diagnostics help us determine cases when there is something wrong with the model or the data or both.
+-   **Model diagnostics** help us determine cases when there is something wrong with the model or the data or both.
 
--   The posterior predictive check plot is one type of diagnostic, but there are others (like $\hat{R}$ and Effective Sample Size in the model summary).
+-   The **posterior predictive check** plot is one type of diagnostic, but there are others (like $\hat{R}$ and Effective Sample Size in the model summary).
 :::
 
 ## Prior probability distributions
 
 ::: box-note
--   We've been using the default priors set by brms. They are usually fine.
+-   We've been using the **default priors** set by brms. They are usually fine.
 
 -   It might be preferable to specify custom priors.
 
--   In any case, learning the basics of prior specification is fundamental.
+-   In any case, learning the **basics of prior specification** is fundamental.
 :::
 
 ## Frequentist vs Bayesian statistics
 
 ::: box-note
--   Modern research is dominated by the "null ritual", a degenerate form of frequentist statistics [@gigerenzer2004; @gigerenzer2004a; @gigerenzer2018]. It is based on "rejecting a nil hypothesis".
+-   Modern research is dominated by the **"null ritual"**, a degenerate form of frequentist statistics [@gigerenzer2004; @gigerenzer2004a; @gigerenzer2018]. It is based on "rejecting a nil hypothesis".
 
 -   The "null ritual" is **not** a robust statistical approach.
 
--   Proper frequentist methods are difficult to apply in practice.
+-   Proper frequentist methods are **difficult to apply** in practice: they tell us $P(d | H)$ but we want $P(H | d)$.
 
--   Bayesian statistics is about estimating uncertainty and accounting for variability with posterior probability distributions.
+-   **Bayesian statistics** is about estimating uncertainty and accounting for variability with posterior probability distributions.
 :::
+
+## Dimensionality reduction
+
+::: box-note
+-   Methods to **reduce "dimensionality"** of the data.
+
+    -   Principal Component Analysis.
+
+    -   Multiple Correspondence Analysis.
+
+    -   Clustering Methods.
+:::
+
+## Causal inference
+
+::: box-note
+-   "Correlation is not causation!"
+
+-   Well... it is if you adopt a **causal inference** approach.
+
+-   Directed Acyclic Graphs (**DAGs**).
+:::
+
+. . .
+
+![A DAG of project funding selection.](/img/dag.png){fig-align="center" width="400"}
+
+## Causal inference: collider bias
+
+![From @mcelreath2020.](/img/collider-bias.png){fig-align="center"}
+
+## Modelling mindsets
+
+::: box-note
+-   @molnar2022: *Modeling Mindsets: The Many Cultures Of Learning From Data*.
+
+-   Statistical modelling, frequentism, Bayesianims, likelihoodism, causal inference, machine learning, supervised learning, unsupervised learning, reinforcement learning, deep learning.
+
+-   **Be a T-shaped Modeller.**
+
+    -   Deep knowledge of one approach, superficial knowledge of the rest.
+:::
+
+## Where can I learn all that?
+
+::: box-note
+-   Resources for learning are linked on this page: <https://uoelel.github.io/analysis.html>
+
+-   You can watch recordings of other workshops I run here: <https://uoelel.github.io/stew.html>
+:::
+
+## Thank you!
+
+![Mr. Happy Face, the 2022 winner of the World's Ugliest Dog Competition, looks towards the camera. Josh Edelson/AFP/Getty Images](/img/230302162002-01-worlds-ugliest-dog-competition-file-062423.jpg){fig-align="center"}
+
+## References
