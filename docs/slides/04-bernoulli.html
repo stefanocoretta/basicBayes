@@ -96,7 +96,7 @@
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-03eab3ff4a95aeccc7a11566666cbd85.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-92ff2c9cd3ace199cab1bd9eb556d0d9.css">
   <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -206,12 +206,6 @@ Stefano Coretta
 </div>
 
 </section>
-<section class="slide level2">
-
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>mald <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"data/tucker2019/mald_1_1.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
 <section id="mald-accuracy" class="slide level2">
 <h2>MALD: accuracy</h2>
 <div class="box-note">
@@ -278,20 +272,20 @@ Figure&nbsp;1: Correspondence between log-odds and probabilities.
 <section id="a-bernoulli-regression-of-accuracy-code" class="slide level2">
 <h2>A Bernoulli regression of accuracy: code</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>acc_bern <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
-<span id="cb2-2"><a></a>  ACC <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> PhonLev,</span>
-<span id="cb2-3"><a></a>  <span class="at">family =</span> bernoulli,</span>
-<span id="cb2-4"><a></a>  <span class="at">data =</span> mald,</span>
-<span id="cb2-5"><a></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb2-6"><a></a>  <span class="at">seed =</span> <span class="dv">8230</span>,</span>
-<span id="cb2-7"><a></a>  <span class="at">file =</span> <span class="st">"data/cache/acc_bern"</span></span>
-<span id="cb2-8"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>acc_bern <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
+<span id="cb1-2"><a></a>  ACC <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> PhonLev,</span>
+<span id="cb1-3"><a></a>  <span class="at">family =</span> bernoulli,</span>
+<span id="cb1-4"><a></a>  <span class="at">data =</span> mald,</span>
+<span id="cb1-5"><a></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb1-6"><a></a>  <span class="at">seed =</span> <span class="dv">8230</span>,</span>
+<span id="cb1-7"><a></a>  <span class="at">file =</span> <span class="st">"data/cache/acc_bern"</span></span>
+<span id="cb1-8"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="a-bernoulli-regression-of-accuracy-predicted-accuracy" class="slide level2">
 <h2>A Bernoulli regression of accuracy: predicted accuracy</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">conditional_effects</span>(acc_bern)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">conditional_effects</span>(acc_bern)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="04-bernoulli_files/figure-revealjs/fig-acc-bern-cond-1.png" width="960" class="r-stretch quarto-figure-center" id="fig-acc-bern-cond"><p class="caption">
@@ -300,9 +294,9 @@ Figure&nbsp;2: Predicted accuracy based on phonetic distance.
 <section id="brentari-2024-lengua-de-señas-nicaragüense-lsn" class="slide level2">
 <h2>Brentari 2024: Lengua de Señas Nicaragüense (LSN)</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>brentari2024 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/brentari2024/verb_org.csv"</span>)</span>
-<span id="cb4-2"><a></a></span>
-<span id="cb4-3"><a></a>brentari2024</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>brentari2024 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/brentari2024/verb_org.csv"</span>)</span>
+<span id="cb3-2"><a></a></span>
+<span id="cb3-3"><a></a>brentari2024</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 630 × 6
    Group    Participant Object   Number Agency   Num_Predicates
@@ -324,10 +318,10 @@ Figure&nbsp;2: Predicted accuracy based on phonetic distance.
 <section id="brentari-2024" class="slide level2">
 <h2>Brentari 2024</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>brentari2024 <span class="sc">|&gt;</span> </span>
-<span id="cb6-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Group, <span class="at">fill =</span> Num_Predicates)) <span class="sc">+</span></span>
-<span id="cb6-3"><a></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
-<span id="cb6-4"><a></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Proportion"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>brentari2024 <span class="sc">|&gt;</span> </span>
+<span id="cb5-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Group, <span class="at">fill =</span> Num_Predicates)) <span class="sc">+</span></span>
+<span id="cb5-3"><a></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb5-4"><a></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Proportion"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="04-bernoulli_files/figure-revealjs/fig-prop-1.png" width="960" class="r-stretch quarto-figure-center" id="fig-prop"><p class="caption">
@@ -414,7 +408,7 @@ logit(p_i) &amp; = \beta_1 \cdot G_{\text{HS}[i]} + \beta_2 \cdot G_{\text{NSL1}
 <section id="prepare-data" class="slide level2">
 <h2>Prepare data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">table</span>(brentari2024<span class="sc">$</span>Num_Predicates)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">table</span>(brentari2024<span class="sc">$</span>Num_Predicates)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 multiple   single 
@@ -423,12 +417,12 @@ multiple   single
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>brentari2024 <span class="ot">&lt;-</span> brentari2024 <span class="sc">|&gt;</span> </span>
-<span id="cb9-2"><a></a>  <span class="fu">mutate</span>(</span>
-<span id="cb9-3"><a></a>    <span class="at">Pred_Type =</span> <span class="fu">factor</span>(Num_Predicates, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"single"</span>, <span class="st">"multiple"</span>))</span>
-<span id="cb9-4"><a></a>  )</span>
-<span id="cb9-5"><a></a></span>
-<span id="cb9-6"><a></a><span class="fu">table</span>(brentari2024<span class="sc">$</span>Pred_Type)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>brentari2024 <span class="ot">&lt;-</span> brentari2024 <span class="sc">|&gt;</span> </span>
+<span id="cb8-2"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-3"><a></a>    <span class="at">Pred_Type =</span> <span class="fu">factor</span>(Num_Predicates, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"single"</span>, <span class="st">"multiple"</span>))</span>
+<span id="cb8-4"><a></a>  )</span>
+<span id="cb8-5"><a></a></span>
+<span id="cb8-6"><a></a><span class="fu">table</span>(brentari2024<span class="sc">$</span>Pred_Type)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
   single multiple 
@@ -468,20 +462,20 @@ multiple   single
 <section id="a-bernoulli-model-of-predicate-type-code" class="slide level2">
 <h2>A Bernoulli model of predicate type: code</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>pred_bern <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
-<span id="cb11-2"><a></a>  Pred_Type <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> Group,</span>
-<span id="cb11-3"><a></a>  <span class="at">family =</span> bernoulli,</span>
-<span id="cb11-4"><a></a>  <span class="at">data =</span> brentari2024,</span>
-<span id="cb11-5"><a></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb11-6"><a></a>  <span class="at">seed =</span> <span class="dv">3218</span>,</span>
-<span id="cb11-7"><a></a>  <span class="at">file =</span> <span class="st">"data/cache/pred_bern"</span></span>
-<span id="cb11-8"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>pred_bern <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
+<span id="cb10-2"><a></a>  Pred_Type <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> Group,</span>
+<span id="cb10-3"><a></a>  <span class="at">family =</span> bernoulli,</span>
+<span id="cb10-4"><a></a>  <span class="at">data =</span> brentari2024,</span>
+<span id="cb10-5"><a></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb10-6"><a></a>  <span class="at">seed =</span> <span class="dv">3218</span>,</span>
+<span id="cb10-7"><a></a>  <span class="at">file =</span> <span class="st">"data/cache/pred_bern"</span></span>
+<span id="cb10-8"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="a-bernoulli-model-of-predicate-type-summary" class="slide level2">
 <h2>A Bernoulli model of predicate type: summary</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">summary</span>(pred_bern)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">summary</span>(pred_bern)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> Family: bernoulli 
   Links: mu = logit 
@@ -505,7 +499,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <section id="a-bernoulli-model-of-predicate-type-predicted-probability" class="slide level2">
 <h2>A Bernoulli model of predicate type: predicted probability</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a><span class="fu">conditional_effects</span>(pred_bern)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">conditional_effects</span>(pred_bern)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="04-bernoulli_files/figure-revealjs/fig-pred-bern-cond-1.png" width="960" class="r-stretch quarto-figure-center" id="fig-pred-bern-cond"><p class="caption">
@@ -514,9 +508,9 @@ Figure&nbsp;4: Predicted probability of multiple predicate by group.
 <section id="posterior-draws" class="slide level2">
 <h2>Posterior draws</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>pred_bern_draws <span class="ot">&lt;-</span> <span class="fu">as_draws_df</span>(pred_bern)</span>
-<span id="cb15-2"><a></a></span>
-<span id="cb15-3"><a></a>pred_bern_draws</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>pred_bern_draws <span class="ot">&lt;-</span> <span class="fu">as_draws_df</span>(pred_bern)</span>
+<span id="cb14-2"><a></a></span>
+<span id="cb14-3"><a></a>pred_bern_draws</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A draws_df: 1000 iterations, 4 chains, and 5 variables
    b_Grouphomesign b_GroupNSL1 b_GroupNSL2 lprior lp__
@@ -538,15 +532,15 @@ Figure&nbsp;4: Predicted probability of multiple predicate by group.
 <section id="credible-intervals-log-odds" class="slide level2">
 <h2>Credible intervals: log-odds</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">library</span>(posterior)</span>
-<span id="cb17-2"><a></a></span>
-<span id="cb17-3"><a></a>pred_bern_draws <span class="sc">|&gt;</span> </span>
-<span id="cb17-4"><a></a>  <span class="fu">pivot_longer</span>(b_Grouphomesign<span class="sc">:</span>b_GroupNSL2, <span class="at">names_to =</span> <span class="st">"coef"</span>, <span class="at">values_to =</span> <span class="st">"est"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb17-5"><a></a>  <span class="fu">group_by</span>(coef) <span class="sc">|&gt;</span> </span>
-<span id="cb17-6"><a></a>  <span class="fu">summarise</span>(</span>
-<span id="cb17-7"><a></a>    <span class="at">ci_lo =</span> <span class="fu">quantile2</span>(est, <span class="at">probs =</span> <span class="fl">0.025</span>),</span>
-<span id="cb17-8"><a></a>    <span class="at">ci_hi =</span> <span class="fu">quantile2</span>(est, <span class="at">probs =</span> <span class="fl">0.975</span>)</span>
-<span id="cb17-9"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a><span class="fu">library</span>(posterior)</span>
+<span id="cb16-2"><a></a></span>
+<span id="cb16-3"><a></a>pred_bern_draws <span class="sc">|&gt;</span> </span>
+<span id="cb16-4"><a></a>  <span class="fu">pivot_longer</span>(b_Grouphomesign<span class="sc">:</span>b_GroupNSL2, <span class="at">names_to =</span> <span class="st">"coef"</span>, <span class="at">values_to =</span> <span class="st">"est"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb16-5"><a></a>  <span class="fu">group_by</span>(coef) <span class="sc">|&gt;</span> </span>
+<span id="cb16-6"><a></a>  <span class="fu">summarise</span>(</span>
+<span id="cb16-7"><a></a>    <span class="at">ci_lo =</span> <span class="fu">quantile2</span>(est, <span class="at">probs =</span> <span class="fl">0.025</span>),</span>
+<span id="cb16-8"><a></a>    <span class="at">ci_hi =</span> <span class="fu">quantile2</span>(est, <span class="at">probs =</span> <span class="fl">0.975</span>)</span>
+<span id="cb16-9"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 3
   coef             ci_lo  ci_hi
@@ -560,13 +554,13 @@ Figure&nbsp;4: Predicted probability of multiple predicate by group.
 <section id="credible-intervals-probabilities" class="slide level2">
 <h2>Credible intervals: probabilities</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>pred_bern_draws <span class="sc">|&gt;</span> </span>
-<span id="cb19-2"><a></a>  <span class="fu">pivot_longer</span>(b_Grouphomesign<span class="sc">:</span>b_GroupNSL2, <span class="at">names_to =</span> <span class="st">"coef"</span>, <span class="at">values_to =</span> <span class="st">"est"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb19-3"><a></a>  <span class="fu">group_by</span>(coef) <span class="sc">|&gt;</span> </span>
-<span id="cb19-4"><a></a>  <span class="fu">summarise</span>(</span>
-<span id="cb19-5"><a></a>    <span class="at">ci_lo =</span> <span class="fu">round</span>(<span class="fu">quantile2</span>(<span class="fu">plogis</span>(est), <span class="at">probs =</span> <span class="fl">0.025</span>), <span class="dv">2</span>),</span>
-<span id="cb19-6"><a></a>    <span class="at">ci_hi =</span> <span class="fu">round</span>(<span class="fu">quantile2</span>(<span class="fu">plogis</span>(est), <span class="at">probs =</span> <span class="fl">0.975</span>), <span class="dv">2</span>)</span>
-<span id="cb19-7"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>pred_bern_draws <span class="sc">|&gt;</span> </span>
+<span id="cb18-2"><a></a>  <span class="fu">pivot_longer</span>(b_Grouphomesign<span class="sc">:</span>b_GroupNSL2, <span class="at">names_to =</span> <span class="st">"coef"</span>, <span class="at">values_to =</span> <span class="st">"est"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb18-3"><a></a>  <span class="fu">group_by</span>(coef) <span class="sc">|&gt;</span> </span>
+<span id="cb18-4"><a></a>  <span class="fu">summarise</span>(</span>
+<span id="cb18-5"><a></a>    <span class="at">ci_lo =</span> <span class="fu">round</span>(<span class="fu">quantile2</span>(<span class="fu">plogis</span>(est), <span class="at">probs =</span> <span class="fl">0.025</span>), <span class="dv">2</span>),</span>
+<span id="cb18-6"><a></a>    <span class="at">ci_hi =</span> <span class="fu">round</span>(<span class="fu">quantile2</span>(<span class="fu">plogis</span>(est), <span class="at">probs =</span> <span class="fl">0.975</span>), <span class="dv">2</span>)</span>
+<span id="cb18-7"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 3
   coef            ci_lo ci_hi
@@ -594,14 +588,14 @@ Figure&nbsp;4: Predicted probability of multiple predicate by group.
 <section id="comparing-groups" class="slide level2">
 <h2>Comparing groups</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>pred_bern_draws <span class="ot">&lt;-</span> pred_bern_draws <span class="sc">|&gt;</span> </span>
-<span id="cb21-2"><a></a>  <span class="fu">mutate</span>(</span>
-<span id="cb21-3"><a></a>    <span class="at">NSL1_homesign =</span> b_GroupNSL1 <span class="sc">-</span> b_Grouphomesign,</span>
-<span id="cb21-4"><a></a>    <span class="at">NSL2_homesign =</span> b_GroupNSL2 <span class="sc">-</span> b_Grouphomesign,</span>
-<span id="cb21-5"><a></a>    <span class="at">NSL2_NSL1 =</span> b_GroupNSL2 <span class="sc">-</span> b_GroupNSL1</span>
-<span id="cb21-6"><a></a>  )</span>
-<span id="cb21-7"><a></a></span>
-<span id="cb21-8"><a></a>pred_bern_draws</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>pred_bern_draws <span class="ot">&lt;-</span> pred_bern_draws <span class="sc">|&gt;</span> </span>
+<span id="cb20-2"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-3"><a></a>    <span class="at">NSL1_homesign =</span> b_GroupNSL1 <span class="sc">-</span> b_Grouphomesign,</span>
+<span id="cb20-4"><a></a>    <span class="at">NSL2_homesign =</span> b_GroupNSL2 <span class="sc">-</span> b_Grouphomesign,</span>
+<span id="cb20-5"><a></a>    <span class="at">NSL2_NSL1 =</span> b_GroupNSL2 <span class="sc">-</span> b_GroupNSL1</span>
+<span id="cb20-6"><a></a>  )</span>
+<span id="cb20-7"><a></a></span>
+<span id="cb20-8"><a></a>pred_bern_draws</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A draws_df: 1000 iterations, 4 chains, and 8 variables
    b_Grouphomesign b_GroupNSL1 b_GroupNSL2 lprior lp__ NSL1_homesign
@@ -634,13 +628,13 @@ Figure&nbsp;4: Predicted probability of multiple predicate by group.
 <section id="credible-intervals-of-the-difference-log-odds" class="slide level2">
 <h2>Credible Intervals of the difference: log-odds</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>pred_bern_draws <span class="sc">|&gt;</span> </span>
-<span id="cb23-2"><a></a>  <span class="fu">pivot_longer</span>(NSL1_homesign<span class="sc">:</span>NSL2_NSL1, <span class="at">names_to =</span> <span class="st">"coef"</span>, <span class="at">values_to =</span> <span class="st">"est"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb23-3"><a></a>  <span class="fu">group_by</span>(coef) <span class="sc">|&gt;</span> </span>
-<span id="cb23-4"><a></a>  <span class="fu">summarise</span>(</span>
-<span id="cb23-5"><a></a>    <span class="at">ci_lo =</span> <span class="fu">round</span>(<span class="fu">quantile2</span>(est, <span class="at">probs =</span> <span class="fl">0.025</span>), <span class="dv">2</span>),</span>
-<span id="cb23-6"><a></a>    <span class="at">ci_hi =</span> <span class="fu">round</span>(<span class="fu">quantile2</span>(est, <span class="at">probs =</span> <span class="fl">0.975</span>), <span class="dv">2</span>)</span>
-<span id="cb23-7"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>pred_bern_draws <span class="sc">|&gt;</span> </span>
+<span id="cb22-2"><a></a>  <span class="fu">pivot_longer</span>(NSL1_homesign<span class="sc">:</span>NSL2_NSL1, <span class="at">names_to =</span> <span class="st">"coef"</span>, <span class="at">values_to =</span> <span class="st">"est"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb22-3"><a></a>  <span class="fu">group_by</span>(coef) <span class="sc">|&gt;</span> </span>
+<span id="cb22-4"><a></a>  <span class="fu">summarise</span>(</span>
+<span id="cb22-5"><a></a>    <span class="at">ci_lo =</span> <span class="fu">round</span>(<span class="fu">quantile2</span>(est, <span class="at">probs =</span> <span class="fl">0.025</span>), <span class="dv">2</span>),</span>
+<span id="cb22-6"><a></a>    <span class="at">ci_hi =</span> <span class="fu">round</span>(<span class="fu">quantile2</span>(est, <span class="at">probs =</span> <span class="fl">0.975</span>), <span class="dv">2</span>)</span>
+<span id="cb22-7"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 3
   coef          ci_lo ci_hi
@@ -654,18 +648,18 @@ Figure&nbsp;4: Predicted probability of multiple predicate by group.
 <section id="credible-intervals-of-the-difference-probabilities" class="slide level2">
 <h2>Credible Intervals of the difference: probabilities</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>pred_bern_draws <span class="sc">|&gt;</span> </span>
-<span id="cb25-2"><a></a>  <span class="fu">mutate</span>(</span>
-<span id="cb25-3"><a></a>    <span class="at">NSL1_homesign_p =</span> <span class="fu">plogis</span>(b_GroupNSL1) <span class="sc">-</span> <span class="fu">plogis</span>(b_Grouphomesign),</span>
-<span id="cb25-4"><a></a>    <span class="at">NSL2_homesign_p =</span> <span class="fu">plogis</span>(b_GroupNSL2) <span class="sc">-</span> <span class="fu">plogis</span>(b_Grouphomesign),</span>
-<span id="cb25-5"><a></a>    <span class="at">NSL2_NSL1_p =</span> <span class="fu">plogis</span>(b_GroupNSL2) <span class="sc">-</span> <span class="fu">plogis</span>(b_GroupNSL1)</span>
-<span id="cb25-6"><a></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb25-7"><a></a>  <span class="fu">pivot_longer</span>(NSL1_homesign_p<span class="sc">:</span>NSL2_NSL1_p, <span class="at">names_to =</span> <span class="st">"coef"</span>, <span class="at">values_to =</span> <span class="st">"est_p"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb25-8"><a></a>  <span class="fu">group_by</span>(coef) <span class="sc">|&gt;</span> </span>
-<span id="cb25-9"><a></a>  <span class="fu">summarise</span>(</span>
-<span id="cb25-10"><a></a>    <span class="at">ci_lo =</span> <span class="fu">round</span>(<span class="fu">quantile2</span>(est_p, <span class="at">probs =</span> <span class="fl">0.025</span>), <span class="dv">2</span>),</span>
-<span id="cb25-11"><a></a>    <span class="at">ci_hi =</span> <span class="fu">round</span>(<span class="fu">quantile2</span>(est_p, <span class="at">probs =</span> <span class="fl">0.975</span>), <span class="dv">2</span>)</span>
-<span id="cb25-12"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a>pred_bern_draws <span class="sc">|&gt;</span> </span>
+<span id="cb24-2"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb24-3"><a></a>    <span class="at">NSL1_homesign_p =</span> <span class="fu">plogis</span>(b_GroupNSL1) <span class="sc">-</span> <span class="fu">plogis</span>(b_Grouphomesign),</span>
+<span id="cb24-4"><a></a>    <span class="at">NSL2_homesign_p =</span> <span class="fu">plogis</span>(b_GroupNSL2) <span class="sc">-</span> <span class="fu">plogis</span>(b_Grouphomesign),</span>
+<span id="cb24-5"><a></a>    <span class="at">NSL2_NSL1_p =</span> <span class="fu">plogis</span>(b_GroupNSL2) <span class="sc">-</span> <span class="fu">plogis</span>(b_GroupNSL1)</span>
+<span id="cb24-6"><a></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb24-7"><a></a>  <span class="fu">pivot_longer</span>(NSL1_homesign_p<span class="sc">:</span>NSL2_NSL1_p, <span class="at">names_to =</span> <span class="st">"coef"</span>, <span class="at">values_to =</span> <span class="st">"est_p"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb24-8"><a></a>  <span class="fu">group_by</span>(coef) <span class="sc">|&gt;</span> </span>
+<span id="cb24-9"><a></a>  <span class="fu">summarise</span>(</span>
+<span id="cb24-10"><a></a>    <span class="at">ci_lo =</span> <span class="fu">round</span>(<span class="fu">quantile2</span>(est_p, <span class="at">probs =</span> <span class="fl">0.025</span>), <span class="dv">2</span>),</span>
+<span id="cb24-11"><a></a>    <span class="at">ci_hi =</span> <span class="fu">round</span>(<span class="fu">quantile2</span>(est_p, <span class="at">probs =</span> <span class="fl">0.975</span>), <span class="dv">2</span>)</span>
+<span id="cb24-12"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 3
   coef            ci_lo ci_hi

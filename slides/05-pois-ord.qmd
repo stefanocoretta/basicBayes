@@ -56,6 +56,7 @@ gestures_count
 ```{r}
 #| label: fig-gestures-point
 #| fig-cap: "Number of gestures by infant and group."
+#| echo: false
 gestures_count |> 
   ggplot(aes(background, count, colour = background)) +
   geom_point() +
@@ -68,6 +69,7 @@ gestures_count |>
 ```{r}
 #| label: fig-gestures-hist
 #| fig-cap: "Histogram of number of gestures by group."
+#| echo: false
 gestures_count |> 
   ggplot(aes(count, fill = background)) +
   geom_histogram(alpha = 0.9, binwidth = 5) +

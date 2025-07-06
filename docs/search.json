@@ -767,14 +767,14 @@
     "href": "slides/05-pois-ord.html#infants-gestures",
     "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Infants’ gestures",
-    "text": "Infants’ gestures\n\ngestures_count |&gt; \n  ggplot(aes(background, count, colour = background)) +\n  geom_point() +\n  labs(x = element_blank(), y = \"Number of gestures\") +\n  theme(legend.position = \"none\")\n\n\n\nFigure 1: Number of gestures by infant and group."
+    "text": "Infants’ gestures\n\n\nFigure 1: Number of gestures by infant and group."
   },
   {
     "objectID": "slides/05-pois-ord.html#infants-gestures-histogram",
     "href": "slides/05-pois-ord.html#infants-gestures-histogram",
     "title": "05 - Poisson and ordinal regression models for count variables and likert scales",
     "section": "Infants’ gestures: histogram",
-    "text": "Infants’ gestures: histogram\n\ngestures_count |&gt; \n  ggplot(aes(count, fill = background)) +\n  geom_histogram(alpha = 0.9, binwidth = 5) +\n  facet_grid(rows = vars(background)) +\n  labs(x = \"Number of gestures\", y = \"Number of infants\", caption = \"Bin width = 5.\") +\n  theme(legend.position = \"none\")\n\n\n\nFigure 2: Histogram of number of gestures by group."
+    "text": "Infants’ gestures: histogram\n\n\nFigure 2: Histogram of number of gestures by group."
   },
   {
     "objectID": "slides/05-pois-ord.html#poisson-regression-code",
